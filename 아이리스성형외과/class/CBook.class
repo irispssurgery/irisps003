@@ -1,0 +1,198 @@
+<?
+	class CBook
+	{
+		var $db;
+
+		function CBook()
+		{
+			global $db;
+
+			if(!$db || !is_object($db))
+				return -1;
+
+			$this->db=$db;
+		}
+
+		function mInsert($data)
+		{
+			if(!$data)
+				return false;
+
+			while(list($key, $value)=each($data))
+			{
+				$col[]=$key;
+				$row[]="'".$value."'";
+			}
+
+			$cols=implode(",", $col);
+			$tuple=implode(",", $row);
+
+			$query="INSERT INTO SC_TRAN (tr_senddate, tr_sendstat, tr_phone, tr_callback ,tr_msg) ";
+			$query.="VALUES (now(), '0', '".$data["book_phone"]."', '0518090021', '".$data["book_name"]."님 예약접수가 성공적으로 되었습니다.');";
+			$result=$this->db->ExecuteDML($query);
+
+			$query="INSERT INTO booking (".$cols.", regsigndate) VALUES (".$tuple.", now());";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function mListAll()
+		{
+			$args=func_get_args();
+
+			if($args[0]&&$args[1])
+				$add_query="WHERE ".$args[0]." LIKE '%".$args[1]."%'";
+				
+			$query="SELECT * FROM booking ".$add_query." ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mListPart()
+		{
+			global $PAGE;
+
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$GET_RECORD=10;
+			$START_RECORD=($this->PAGE-1)*$GET_RECORD;
+
+			$args=func_get_args();
+
+			if($args[0]&&$args[1])
+				$add_query="WHERE ".$args[0]." LIKE '%".$args[1]."%'";
+
+			$query="SELECT * FROM booking ".$add_query." ORDER BY idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mListAllEach($book_name, $book_phone)
+		{
+			$query="SELECT * FROM booking WHERE book_name='".$book_name."' AND book_phone='".$book_phone."' ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mListPartEach($book_name, $book_phone)
+		{
+			global $PAGE;
+
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$GET_RECORD=10;
+			$START_RECORD=($this->PAGE-1)*$GET_RECORD;
+
+			$query="SELECT * FROM booking WHERE book_name='".$book_name."' AND book_phone='".$book_phone."' ORDER BY idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mDeleteByidx($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="DELETE FROM booking WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function mAccepRegister($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="UPDATE booking SET is_book='Y' WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function mCancelRegister($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="UPDATE booking SET is_book='N' WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function mLoginBook($book_name, $book_phone)
+		{
+			if(!$book_name || !$book_phone)
+				return false;
+
+			$query="SELECT count(*) FROM booking WHERE book_name='".$book_name."' AND book_phone='".$book_phone."'";
+			$result=$this->db->ExecuteDML($query);
+			$isBook=$this->db->getResult($result, 0, 0);
+
+			if($isBook<=0)
+				return false;
+			else
+				return true;
+		}
+
+		function getData($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="SELECT * FROM booking WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+	}
+?>

@@ -1,0 +1,52 @@
+<?
+	class CDownload
+	{
+		var $mOFile;
+		var $mSFile;
+
+		function CDownload($oFile, $sFile)
+		{
+			if (!$oFile || !$sFile)
+				return -1;
+
+			$this->mOFile=$oFile;
+			$this->mSFile=$sFile;
+
+		}
+
+		function download($mode)
+		{
+			global $HTTP_USER_AGENT;
+
+			if (!$mode)
+				$mode="attachment";		
+		
+			if(eregi("(MSIE 5.5|MSIE 6.0)", $HTTP_USER_AGENT)) 
+			{ 
+				header("Content-Type: application/octet-stream");  
+				header("Content-Disposition:  filename=".$this->mOFile);  
+				header("Content-Transfer-Encoding: binary");  
+				header("Pragma: no-cache");  
+				header("Expires: 0");  
+			} 
+			else 
+			{ 
+				header("Content-Type: application/octet-stream"); 
+				header("Content-disposition: ".$mode."; filename=".$this->mOFile); 
+				header("Pragma: no-cache"); 
+				header("Expires: 0"); 
+			} 
+		
+			if (is_file($this->mSFile)) 
+			{ 
+				$fp = fopen($this->mSFile, "r"); 
+				if (!fpassthru($fp)) 
+				fclose($fp); 
+			} 
+
+		}
+
+	}
+
+
+?>

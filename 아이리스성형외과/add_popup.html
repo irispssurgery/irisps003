@@ -1,0 +1,93 @@
+<?
+	include "./CObject.lib";
+
+	if($dong)
+	{
+		$dong_result=$member->searchDong($dong);
+
+		if(count($dong_result)>0)
+		{
+			foreach($dong_result as $key => $value)
+			{
+				$address=$value["sido"]." ".$value["gugun"]." ".$value["dong"]." ".$value["bunji"];
+
+				$search_list.="<tr> \n";
+				$search_list.="    <td bgcolor=\"#F4F2E1\"><a href=\"javascript:addr('".$value["zipcode"]."', '".$address."');\">".$value["zipcode"]." ".$value["sido"]." ".$value["gugun"]." ".$value["dong"]." ".$value["bunji"]."</a></td>\n";
+				$search_list.="  </tr>\n";
+			}
+		}
+		else
+		{
+			$search_list.="<tr> \n";
+			$search_list.="    <td bgcolor=\"#F4F2E1\">검색된 주소가 없습니다.</td>\n";
+			$search_list.="  </tr>\n";
+		}
+	}
+?>
+<link href="css/iris.css" rel="stylesheet" type="text/css">
+<Script language="javascript">
+
+function checkForm()
+{
+	var form=document.form1;
+
+	if(!form.dong.value)
+	{
+		alert("검색하실 '동'을 입력하여 주십시요.");
+		form.dong.focus();
+
+		return false;
+	}
+}
+
+function addr(zipcode, addr)
+{
+	opener.document.member_join.zipcode.value=zipcode;
+	opener.document.member_join.address1.value=addr;
+	self.close();
+
+}
+
+function adapt(user_id)
+{
+	opener.document.member.user_id_member.value=user_id;
+	self.close();
+}
+
+</Script>
+<body bgcolor="#FFFFFF" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<form name="form1" method="post" action="./add_popup.html" onsubmit="return checkForm();">
+  <table width="370" border="0" cellpadding="1" cellspacing="0" bordercolorlight="#CCCCCC" bordercolordark="#FFFFFF" height="300">
+    <tr align="center"> 
+      <td height="23" colspan="2"><img src="images/address_title.gif" width="370" height="23"></td>
+    </tr>
+    <tr align="center"> 
+      <td valign="top" colspan="2" bgcolor="D2CCAF"> <img src="images/x.gif" width="26" height="5"><br>
+        <table width="330" border="0" cellspacing="0" cellpadding="0">
+          <tr> 
+            <td>귀하의 주소에서 동이름 혹은 읍/면의 이름을 기입해주세요. <br>
+              예&gt;역삼2동, 내촌면 </td>
+          </tr>
+          <tr> 
+            <td> 
+              <input id=user_id style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" name="dong">
+              <input type="image" src="images/join_btn6.gif" width="53" height="23" align="absmiddle"> 
+            </td>
+          </tr>
+        </table>  
+        <img src="images/x.gif" width="26" height="5"> 
+
+        <img src="images/x.gif" width="26" height="5"> 
+        <table width="98%" border="0" cellspacing="1" cellpadding="3">
+          <?echo $search_list;?>
+        </table>
+      </td>
+    </tr>
+    <tr align="center"> 
+      <td height="23" colspan="2"><a href="javascript:self.close();"><IMG 
+                                height=23 
+                                src="images/close.gif" 
+                                width=370 align=absMiddle border=0></a></td>
+    </tr>
+  </table>
+</form>

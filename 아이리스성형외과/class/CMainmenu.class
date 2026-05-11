@@ -1,0 +1,150 @@
+<?
+	class CMainmenu
+	{
+		var $db;
+
+		function CMainmenu()
+		{
+			global $db;
+
+			if(!is_object($db) || !isset($db))
+				return -1;
+
+			$this->db=$db;
+		}
+
+		function mInsert($data)
+		{
+			if(!$data)
+				return false;
+
+			while(list($key, $value)=each($data))
+			{
+				$col[]=$key;
+				$row[]="'".$value."'";
+			}
+
+			$cols=implode(",", $col);
+			$tuple=implode(",", $row);
+
+			$query="INSERT INTO main_menu (".$cols.", mm_signdate) VALUES (".$tuple.", now());";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function mListAll()
+		{
+			$query="SELECT * FROM main_menu ORDER BY mm_idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mListByOyder($column, $order)
+		{
+			if(!$order)
+				return false;
+
+			$query="SELECT * FROM main_menu ORDER BY ".$column." ".$order."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mDeleteByIdx($mm_idx)
+		{
+			if(!$mm_idx)
+				return false;
+
+			$query="DELETE FROM main_menu WHERE mm_idx=".$mm_idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getInfoMenu($mm_idx)
+		{
+			if(!$mm_idx)
+				return false;
+
+			$query="SELECT * FROM main_menu WHERE mm_idx=".$mm_idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mUpdateMenu($code, $name, $mm_idx)
+		{
+			if(!$code || !$name || !$mm_idx)
+				return false;
+
+			$query="UPDATE main_menu SET mm_code='".$code."', mm_name='".$name."' WHERE mm_idx=".$mm_idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getMenuName($mm_code)
+		{
+			if(!$mm_code)
+				return false;
+
+			$query="SELECT mm_name FROM main_menu WHERE mm_code='".$mm_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getSubMenuCount($mm_code)
+		{
+			if(!$mm_code)
+				return false;
+
+			$query="SELECT count(*) FROM sub_menu WHERE mm_code='".$mm_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getSubMenu($mm_code)
+		{
+			if(!$mm_code)
+				return false;
+
+			$query="SELECT * FROM sub_menu WHERE mm_code='".$mm_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+	}
+?>

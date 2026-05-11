@@ -1,0 +1,61 @@
+<?
+	include "./CObject.lib";
+
+	$result_user=$member->checkId($user_id);
+?>
+<link href="css/iris.css" rel="stylesheet" type="text/css">
+<Script language="javascript">
+
+function checkForm()
+{
+	var form=document.form1;
+
+	if(!form.user_id.value)
+	{
+		alert("아이디를 입력하여 주십시요.");
+		form.user_id.focus();
+
+		return false;
+	}
+}
+
+function adapt(user_id)
+{
+	opener.document.member_join.user_id.value=user_id;
+	self.close();
+}
+
+</Script>
+<body bgcolor="#FFFFFF" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<form name="form1" method="post" action="./id_popup.html" onsubmit="return checkForm();">
+  <table width="370" border="0" cellpadding="1" cellspacing="0" bordercolorlight="#CCCCCC" bordercolordark="#FFFFFF" height="130">
+    <tr align="center"> 
+      <td height="23" colspan="2"><img src="images/id_title.gif" width="370" height="23"></td>
+    </tr>
+    <tr align="center"> 
+      <td colspan="2" bgcolor="D2CCAF">
+	  <?
+		if($result_user)
+		{
+	  ?>
+		<a href="javascript:adapt('<?echo $user_id;?>');"><?echo $user_id;?>는 사용가능한 아이디 입니다.</a>
+	  <?
+	  }
+	  else
+	  {
+	  ?>
+	    <?echo $user_id;?>는 이미 사용중인 아이디 입니다.<br>
+		<input type="text" name="user_id" style="border-color:gray; border-width:1;">&nbsp;<input type="image" src="images/join_btn4.gif" width="53" height="23" align="absmiddle" border="0">
+	  <?
+	  }
+		  ?>
+	  </td>
+    </tr>
+    <tr align="center"> 
+      <td height="23" colspan="2"><a href="javascript:self.close();"><IMG 
+                                height=23 
+                                src="images/close.gif" 
+                                width=370 align=absMiddle border=0></a></td>
+    </tr>
+  </table>
+</form>

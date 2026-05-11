@@ -1,0 +1,23 @@
+<? include "project.lib";?>
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<style type="text/css">
+<!--
+table {  font-family: "굴림체"; font-size: 9pt}
+-->
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+<table width="100%" border="1">
+  <tr>
+    <td width="22%" align="center" valign="top">&nbsp;<?include getenv("DOCUMENT_ROOT")."/intranet/schedule/schedule.php";?></td>
+    <td width="78%" valign="top">
+		<? include getenv("DOCUMENT_ROOT")."/intranet/bbs/result_bbs_list.html?bbscode_code=".BBS_CODE."";?>
+	</td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<?
+	include "../../CObject.lib";
+
+	if($mode=="del")
+	{
+		$del_result=$ins_admin->delAdmin($admin_id);
+	}
+
+	$result=$ins_admin->listAdmin();
+
+	if(count($result)<=0)
+	{
+		$admin_list.="<tr bgcolor=#ffffff>";
+		$admin_list.="	<td align=\"center\" colspan=\"4\">등록된 관리자가 없습니다.</td>";
+		$admin_list.="</tr>";
+	}
+	else
+	{
+		foreach($result as $key => $value)
+		{
+			$admin_list.="<tr bgcolor=#ffffff> \n";
+			$admin_list.="  <td width=\"25%\" height=\"25\" align=\"center\">&nbsp;".$value["admin_id"]."</td>\n";
+			$admin_list.="  <td width=\"25%\" height=\"25\" align=\"center\">&nbsp;".$value["admin_pwd"]."</td>\n";
+			$admin_list.="  <td width=\"25%\" height=\"25\" align=\"center\">&nbsp;<a href=\"../email/sendmail.html?email=".$value["admin_email"]."\">".$value["admin_email"]."</a></td>\n";
+			$admin_list.="  <td width=\"25%\" height=\"25\" align=\"center\"><a href=\"".$PHP_SELF."?admin_id=".$value["admin_id"]."&mode=del\">[삭제]</td>\n";
+			$admin_list.="</tr>\n";
+		}
+	}
+?>
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<style type="text/css">
+<!--
+table {  font-family: "굴림체"; font-size: 9pt}
+-->
+</style>
+</head>
+
+<body bgcolor="#eeeeee">
+<form name="form1" method="post" action="">
+  <table width="700" border="1" cellpadding="1" cellspacing="0" bordercolorlight="B7B292" bordercolordark="#FFFFFF" align="center">
+    <tr align="center"> 
+      <td width="25%" height="30" bgcolor="E7E5D7"><font color="#000000">관리자 아이디</font></td>
+      <td width="25%" height="30" bgcolor="E7E5D7"><font color="#000000">관리자비밀번호</font></td>
+      <td width="25%" height="30" bgcolor="E7E5D7"><font color="#000000">관리자 이메일</font></td>
+      <td width="25%" height="30" bgcolor="E7E5D7"><font color="#000000">관리자 삭제</font></td>
+    </tr>
+    <?echo $admin_list;?>
+    <tr align="center" bgcolor="E7E5D7"> 
+      <td colspan="4" height="25" align="center"><a href="./form_admin_write.html"><font color="Black"><b>관리자 
+        추가</b></font></a></td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>

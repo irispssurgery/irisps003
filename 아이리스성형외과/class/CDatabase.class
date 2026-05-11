@@ -1,0 +1,56 @@
+<?
+	class CDatabase
+	{
+		var $connect;
+
+		function CDatabase($dbname, $host, $id, $pwd)
+		{
+			if(!isset($dbname) || !isset($host))
+				$this->errorMsg("DB NAME IS NOT DEFINE or HOST IS NOT DEFINE");
+
+			$this->connect = mysql_connect($host, $id, $pwd);
+
+			if($this->connect)
+				mysql_select_db($dbname, $this->connect);
+			else
+				$this->errorMsg("DB IS NOT CONNECTING");
+
+		}
+
+		function ExecuteDML($query)
+		{
+			$result = mysql_query($query);
+			return $result;
+		}
+
+		function getResult($result, $s, $e)
+		{
+			$record = @mysql_result($result, $s, $e);
+			
+			return $record;
+		}
+
+		function FetchArray($result)
+		{
+			$result = @mysql_fetch_array($result);
+
+			return $result;
+		}
+
+		function freeResult($result)
+		{
+			@mysql_free_result($result);
+		}
+
+		function errorMsg($str)
+		{
+			die($str);
+		}
+
+
+		function _CDatabase()
+		{
+			mysql_close($this->connect);
+		}
+	}
+?>

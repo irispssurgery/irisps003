@@ -1,0 +1,150 @@
+BODY {scrollbar-face-color: #FFFFFF; scrollbar-shadow-color: #666666; scrollbar-highlight-color: #666666; scrollbar-3dlight-color: #FFFFFF; scrollbar-darkshadow-color: #FFFFFF; scrollbar-track-color: #FFFFFF;
+scrollbar-arrow-color: #666666}
+
+table {  font-family: "µ¸¿ò"; font-size: 9pt; color: #666666}
+.smallfont {  font-family: "µ¸¿ò"; font-size: 8pt; color: #666666; padding-top: 3px}
+.form1 {  font-family: "±¼¸²"; font-size: 9pt; color: #333333; border: 1px #999999 solid}
+.form2 {  font-family: "µ¸¿ò"; font-size: 9pt; color: #FFFFFF; background-color: #A49D94; border-color: #000000 #FFFFFF #FFFFFF #000000; border-style: inset; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px}
+.txtsize {  font-family: "±¼¸²"; font-size: 9pt; line-height: 18px}
+
+a.notice:visited {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none}
+a.notice:link {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none}
+a.notice:hover {  font-family: "µ¸¿ò"; font-size: 9pt; color: #3399CC; text-decoration: none}
+
+a.news:visited {  font-family: "±¼¸²"; font-size: 9pt; text-decoration: none}
+a.news:link {  font-family: "±¼¸²"; font-size: 9pt; text-decoration: none}
+a.news:hover {  font-family: "±¼¸²"; font-size: 9pt; color: #55B600; text-decoration: none}
+
+a.top:visited {  font-family: "±¼¸²"; font-size: 9pt; text-decoration: none}
+a.top:link {  font-family: "±¼¸²"; font-size: 9pt; text-decoration: none}
+a.top:hover {  font-family: "±¼¸²"; font-size: 9pt; color: #FFFFFF; text-decoration: none}
+
+a:visited {  font-family: "µ¸¿ò"; font-size: 9pt; color: #333333; text-decoration: none}
+a:link {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #333333}
+a:hover {  font-family: "µ¸¿ò"; font-size: 9pt; color: #0099FF; text-decoration: underline}
+
+a.sub1:visited {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000; padding-top: 3px}
+a.sub1:link {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000; padding-top: 3px}
+a.sub1:hover {  font-family: "µ¸¿ò"; font-size: 9pt; color: 3793CE; text-decoration: none; padding-top: 3px}
+
+a.sub2:visited {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub2:link {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub2:hover {  font-family: "µ¸¿ò"; font-size: 9pt; color: 68B902; text-decoration: none}
+
+a.sub3:visited {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub3:link {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub3:hover {  font-family: "µ¸¿ò"; font-size: 9pt; color: 01918E; text-decoration: none}
+
+a.sub4:visited {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub4:link {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub4:hover {  font-family: "µ¸¿ò"; font-size: 9pt; color: 027EA7; text-decoration: none}
+
+a.sub5:visited {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub5:link {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub5:hover {  font-family: "µ¸¿ò"; font-size: 9pt; color: A156CD; text-decoration: none}
+
+a.sub6:visited {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub6:link {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub6:hover {  font-family: "µ¸¿ò"; font-size: 9pt; color: #FFFFFF; text-decoration: none}
+
+a.sub7:visited {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub7:link {  font-family: "µ¸¿ò"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub7:hover {  font-family: "µ¸¿ò"; font-size: 9pt; color: FC9F16; text-decoration: none}
+
+a.sub8:visited {  font-family: "±¼¸²"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub8:link {  font-family: "±¼¸²"; font-size: 9pt; text-decoration: none; color: #000000}
+a.sub8:hover {  font-family: "±¼¸²"; font-size: 9pt; color: 91B055; text-decoration: none}
+
+.text_black_16px_bold { FONT-SIZE: 16px; COLOR: #08537B; line-height: normal; FONT-FAMILY: "µ¸¿ò", "µ¸¿òÃ¼", "±¼¸²", "±¼¸²Ã¼", Verdana, Arial; font-weight: bold; }
+.simple { font-size: 11px; background: white 1px solid; BORDER-BOTTOM: #999999 1px solid; BORDER-LEFT: #999999 1px solid; BORDER-RIGHT: #999999 1px solid; BORDER-TOP: #999999 1px solid }.underline {  font-family: "±¼¸²"; font-size: 9pt; text-decoration: underline}
+.txtsize2 {  font-family: "±¼¸²"; font-size: 9pt; line-height: 18px}
+
+/* Å×ÀÌºí LEFT ÆÐµù */
+.TablePadding-05 {font-family:"±¼¸²","µ¸¿ò","Tahoma","Verdana"; font-size:9pt; color:#242628; padding-left:5px}
+.TablePadding-10 {font-family:"±¼¸²","µ¸¿ò","Tahoma","Verdana"; font-size:9pt; color:#242628; padding-left:10px}
+.TablePadall-10 {font-family:"±¼¸²","µ¸¿ò","Tahoma","Verdana"; font-size:9pt; color:#242628; padding:10px}
+
+/* INPUT FORM Ä®¶ó¼³Á¤ */
+.Input-Gray     {border:1 solid #FFFFFF; background-color:#EEEEEE;  font-size: 8pt; color:#323B42}
+.Input-DarkGray {border:1 solid #FFFFFF; background-color:#A6A6A6;  font-size: 8pt; color:#FFFFFF}
+.Input-Blue		{border:1 solid #AFAFAF; background-color:CFD2F6; height:21;}
+.Input-Line		{border: #CCCCCC; border-style:solid; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px}
+
+/* µðÀÚÀÎµÈ ¼¿·ºÆ® Æû */
+.selectdesign {behavior: url('/work/css/selectbox.htc');}
+
+/*Å×ÀÌºí*/
+.table1 {
+    color: #e7eef6;
+	font-weight:bold;
+}
+.table2 {
+	color: #525e87;
+	font-weight: bold;
+}
+.table3 {
+	color: #5b6074;
+}
+.table4 {
+	color: #9095ab;
+	font-weight: bold;
+}
+
+/* Å×ÀÌºí¿¡ ½ºÅ©·Ñ¹Ù »ý¼º <TD><DIV id="ScrollBox">³»¿ë</DIV></TD>*/
+#ScrollBox  {width:500; height:300; overflow:auto; padding:10px; border:1; border-style:solid; border-color:#9A9A9A}
+
+font         {line-height:130%}
+p            {margin-top:3px; margin-bottom:3px;}
+.board_p     {font-size:9pt; font-family:±¼¸²; line-height:160%}
+.board_p_old {font-size:9pt; color:#666666; font-family:"±¼¸²"; line-height:160%;}
+
+.boardtxt {  font-family: "µ¸¿ò"; font-size: 11pt; line-height: 22px; padding-left:5px; padding-right:5px;padding-top:5px; padding-bottom:5px; color: #000000;}
+
+/* Ä¶¸°´õ */
+.fc_main { background: #DDDDDD; border: 1px solid #000000; font-family: Verdana; font-size: 10px; }
+.fc_date { font-family: tahoma; border: 1px solid #D9D9D9;  cursor:pointer; font-size: 8pt; text-align: center;}
+.fc_dateHover, TD.fc_date:hover { font-family: tahoma;cursor:pointer; border-top: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; border-right: 1px solid #999999; border-bottom: 1px solid #999999; background: #E7E7E7; font-size: 8pt; text-align: center; }
+.fc_wk {font-family: Verdana; font-size: 11px; text-align: center;}
+.fc_wknd { color: #FF0000; font-weight: bold; font-size: 11px; text-align: center;}
+.fc_wknd1 { color: blue; font-weight: bold; font-size: 11px; text-align: center;}
+.fc_head { background: #000066; color: #FFFFFF; font-weight:bold; text-align: left;  font-size: 11px; }
+
+
+/* ´Þ·Â */
+.calendar { width: 750px; margin: 1em auto; }
+.calendar caption { display: none; }
+.calendar .month { padding: 6px 0; text-align: center; }
+.calendar .month * { display: inline; margin: 0; padding: 0; background: 0; letter-spacing: 0; }
+.calendar .month img { margin: 0 6px 3px; vertical-align: middle; }
+.calendar table { border-collapse: collapse; width: 100%; margin: 0; border-top: 2px solid #60A4E1; border-bottom:  1px solid #ddd; border-left: 1px solid #ddd; line-height: 1.25; }
+.calendar table th { width:107px; height:40px; padding: 10px; margin: 0; border-bottom: 1px solid #ddd; border-right: 1px solid #ddd; vertical-align: center; white-space:normal; text-align: center; }
+.calendar table td { width:107px; height:80px; padding: 0px; margin: 0; border-bottom: 1px solid #ddd; border-right: 1px solid #ddd; vertical-align: top; }
+.calendar table th, .calendar table tr.day td { margin:0; padding: 0; font-weight: bold; }
+.calendar table .sun,
+.calendar table .sun a  { color: #f60; margin:7px 0 0 0; padding:2px 0 0 3px;}
+.calendar table .sat,
+.calendar table .sat a {color: #09c; margin:7px 0 0 0; padding:2px 0 0 3px; }
+.calendar table .num,
+.calendar table .num a {margin:7px 0 0 0; padding:2px 0 0 3px; }
+.calendar table td.today, .calendar table td.today:hover { background: #ce9; }
+.calendar table td span {padding:3px 0 0 2px}
+.calendar table td.today span {font-weight:bold; padding:0 0 0 2px}
+.calendar table td a { display: block; width:100%; border:0px solid #000; margin: 0; padding: 2px 0 3px 1px; background: transparent; }
+.calendar table td p.schedule {margin:0; padding: 0; color:#555; }
+.calendar table td p.schedule div {position:absolute; width:100%; left:3px; top:15px; z-index:1; }
+.calendar table td p.schedule a {margin:0; padding: 2px 0 0 10px; color:#555; background:url(/img/all/bu11.gif) no-repeat 0 1px; font-weight:normal;}
+/* height = ((Å×ÀÌºíÀüÃ¼400-°¡·Î¶óÀÎÀüÃ¼9-¿äÀÏ19)/6)-¼¿³ôÀÌ4 = 58 */
+.calendar table td:hover { background: #ffc; }
+.calendar .hh { padding: 0 10px 5px 0; }
+.calendar .hh img { vertical-align: top; _margin: -2px 0 0 0; }
+.calendar .month_hh { font-size: 1.334em; font-weight: bold; font-family:Arial, Helvetica, sans-serif ; }
+.calendar .font_color { color: #187AD1; }
+.calendar_topimg { background:url(/img/01/calendar_011.gif) no-repeat top left; position:relative; margin:0; padding:30px 10px 30px 120px; width:500px; height:60px;}
+.calendar_topimg .select_box { position:absolute; top:30px; left:510px; width:100px; float:right;}
+
+
+#mytd {width:20px; height:20px; cursor:hand; font-size: 9pt; color: #404040}
+#mylink {color: #333333; text-decoration: none}
+#mylink:link {color: #333333; text-decoration: none}
+#mylink:visited {color: #333333; text-decoration: none}
+#mylink:hover {color: #999999; text-decoration: underline}

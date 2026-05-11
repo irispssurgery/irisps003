@@ -1,0 +1,91 @@
+<?
+	class CBanner
+	{
+		var $db;
+		var $save_data;
+		var $origin_data;
+
+		function CBanner()
+		{
+			global $db;
+
+			if(!$db || !is_object($db))
+				return -1;
+
+			$this->db=$db;
+		}
+
+		function mInsert($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+
+			################################기존의 있던 배너는 삭제#############################
+			$query="SELECT * FROM major_banner WHERE position='".$data["position"]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				if($resultSet["save_data"])
+					unlink(BANNER_DATA."/".$resultSet["save_data"]);
+			}
+
+			$query="DELETE FROM major_banner WHERE position='".$data["position"]."'";
+			$result=$this->db->ExecuteDML($query);
+			####################################################################################
+			
+			if(isset($data["save_data"]) && isset($data["origin_data"]))
+			{
+				$this->save_data = time();
+				$this->origin_data = $data["save_data"];
+
+				if(!$this->FileUpload(BANNER_DATA))
+					return false;
+
+				$data["save_data"] = $this->save_data;
+			}
+
+			while(list($key, $value) = each($data))
+			{
+				$kf[]= $key;
+				$vf[]="'".$value."'";
+			}	
+		
+			$k = implode(",", $kf);
+			$v = implode(",", $vf);
+
+			$query = "INSERT INTO major_banner (".$k.", reg_signdate) VALUES (".$v.", now());";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function FileUpload($save_path)
+		{
+			if(!$save_path)
+				return false;
+	
+			if(copy($this->origin_data, BANNER_DATA."/".$this->save_data))
+			{
+				unlink($this->origin_data);
+				return true;
+			}
+			else
+			{
+				unlink($this->origin_data);
+				return false;
+			}
+		}
+
+		function getBannerImage($position)
+		{
+			if(!$position)
+				return false;
+
+			$query="SELECT save_data FROM major_banner WHERE position='".$position."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+	}
+?>

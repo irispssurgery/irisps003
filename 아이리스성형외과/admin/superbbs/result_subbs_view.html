@@ -1,0 +1,159 @@
+<? include "./result_subbs_view.php";?>
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<style type="text/css">
+<!--
+table {  font-family: "굴림체"; font-size: 9pt}
+-->
+</style>
+<Script language="javascript">
+function del(idx)
+{
+	if(confirm("정말 삭제하시겠습니까?"))
+		location.href="proc_subbs_delete.html?bbscode_idx="+idx;
+
+}
+</Script>
+</head>
+<body bgcolor="#FFFFFF">
+<form name="form1" method="post" action="">
+<center>
+  <table width="742" border="1" height="552" cellspacing="0" cellpadding="3" bordercolorlight='silver' bordercolordark='white'>
+    <tr> 
+      <td colspan="3" align="center" bgcolor="f2f2f2"><b>게시판 생성 및 환경설정</b></td>
+    </tr>
+    <tr> 
+      <td width="156" align="center" rowspan="2" bgcolor="eff3fc">게시판 관리자 설정</td>
+      <td width="130" align="center" bgcolor="f9f9f9">아이디</td>
+      <td width="392">&nbsp; <?echo $bbscode_id;?></td>
+    </tr>
+    <tr> 
+      <td align="center" width="130" bgcolor="f9f9f9">비민번호</td>
+      <td width="392">&nbsp; <?echo $bbscode_passwd;?></td>
+    </tr>
+    <tr> 
+      <td width="156" align="center" bgcolor="eff3fc">게시판 제목 설정</td>
+      <td colspan="2">&nbsp; <?echo $bbscode_title;?></td>
+    </tr>
+	<tr> 
+      <td width="156" align="center" bgcolor="eff3fc">사이트명</td>
+      <td colspan="2">&nbsp; <?echo $site_list[$site_code];?></td>
+    </tr>
+    <tr> 
+      <td width="156" align="center" rowspan="2" bgcolor="eff3fc">게시판 환경설정</td>
+      <td height="94" colspan="2"> 
+        <table width="525" cellspacing="0" cellpadding="3" border="1" bordercolorlight="silver" bordercolordark="#FFFFFF">
+          <tr align="center" bgcolor="f4fdec"> 
+            <td colspan="3">게시판 목록 설정</td>
+          </tr>
+          <tr> 
+            <td width="161" align="center" bgcolor="f9f9f9" height="25">테두리 색깔</td>
+            <td colspan="2" height="25">&nbsp; <?echo $list_border_color;?></td>
+          </tr>
+          <tr> 
+            <td width="161" align="center" rowspan="7" bgcolor="f9f9f9">주메뉴 색깔</td>
+            <td width="88" height="11" align="center">선택</td>
+            <td width="256" height="11">&nbsp; <?echo $list_select_color;?></td>
+          </tr>
+          <tr> 
+            <td width="88" align="center" height="15">순번</td>
+            <td width="256" height="15">&nbsp; <?echo $list_number_color;?></td>
+          </tr>
+          <tr> 
+            <td width="88" align="center" height="30">제목</td>
+            <td width="256" height="30">&nbsp; <?echo $list_title_color;?></td>
+          </tr>
+          <tr> 
+            <td width="88" align="center">이름</td>
+            <td width="256">&nbsp; <?echo $list_name_color;?></td>
+          </tr>
+          <tr> 
+            <td width="88" align="center">파일</td>
+            <td width="256">&nbsp; <?echo $list_file_color;?></td>
+          </tr>
+          <tr> 
+            <td width="88" align="center">날짜</td>
+            <td width="256">&nbsp; <?echo $list_date_color;?></td>
+          </tr>
+          <tr> 
+            <td width="88" align="center">조회수</td>
+            <td width="256">&nbsp; <?echo $list_hit_color;?></td>
+          </tr>
+          <tr> 
+            <td width="161" align="center" bgcolor="f9f9f9">링크 글자 색깔</td>
+            <td colspan="2">&nbsp; <?echo $link_color;?></td>
+          </tr>
+          <tr> 
+            <td width="161" align="center" bgcolor="f9f9f9">일반 글자 색깔</td>
+            <td colspan="2">&nbsp; <?echo $unlink_color;?></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr> 
+      <td height="79" colspan="2"> 
+        <table width="529" border="1" cellpadding="3" cellspacing="0" bordercolorlight="silver" bordercolordark="#FFFFFF">
+          <tr align="center"> 
+            <td colspan="3" bgcolor="f4fdec">게시판 보기, 작성, 수정 환경설정</td>
+          </tr>
+          <tr> 
+            <td width="159" align="center" rowspan="2" bgcolor="f9f9f9">주메뉴 색깔</td>
+            <td align="center" width="99">메뉴색깔</td>
+            <td width="249">&nbsp; <?echo $view_major_color;?></td>
+          </tr>
+          <tr> 
+            <td align="center" height="28" width="99">입력색깔</td>
+            <td height="28" width="249">&nbsp; <?echo $view_submajor_color;?></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr> 
+      <td width="156" align="center" bgcolor="eff3fc">파일업로드 유무</td>
+      <td colspan="2">&nbsp; <?echo $file;?></td>
+    </tr>
+    <tr> 
+      <td width="156" align="center" height="79" bgcolor="eff3fc">게시판 기능 설정</td>
+      <td height="79" colspan="2"> 
+        <table width="525" border="1" cellpadding="3" cellspacing="0" bordercolorlight="silver" bordercolordark="#FFFFFF">
+          <tr> 
+            <td width="153" align="center" bgcolor="f9f9f9">글쓰기</td>
+            <td width="354">&nbsp;<?echo $write;?></td>
+          </tr>
+          <tr> 
+            <td width="153" align="center" bgcolor="f9f9f9">수정</td>
+            <td width="354">&nbsp;<?echo $modify;?></td>
+          </tr>
+          <tr> 
+            <td width="153" align="center" bgcolor="f9f9f9">답변</td>
+            <td width="354">&nbsp;<?echo $reply;?></td>
+          </tr>
+          <tr> 
+            <td width="153" align="center" bgcolor="f9f9f9">삭제</td>
+            <td width="354">&nbsp;<?echo $delete;?></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr> 
+      <td width="156" align="center" bgcolor="eff3fc">게시판 제목 이미지</td>
+      <td colspan="2">&nbsp; <?echo $title_image;?></td>
+    </tr>
+    <tr> 
+      <td width="156" align="center" bgcolor="eff3fc">게시판 꼬리 이미지</td>
+      <td colspan="2">&nbsp; <?echo $tail_image;?></td>
+    </tr>
+    <tr> 
+      <td colspan="3" align="center"> 
+			<a href="result_subbs_list.html"><img src="../but/but_list.gif" align="absmiddle" border="0"></a>&nbsp;
+			<a href="form_subbs_modify.html?bbscode_idx=<?echo $bbscode_idx;?>"><img src="../but/but_mod.gif" align="absmiddle" border="0"></a>&nbsp;
+			<a href="javascript:del(<?echo $bbscode_idx;?>);"><img src="../but/del.gif" align="absmiddle" border="0"></a>&nbsp;
+      </td>
+    </tr>
+  </table>
+</center>
+</form>
+</body>
+</html>

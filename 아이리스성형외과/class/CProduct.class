@@ -1,0 +1,803 @@
+<?
+	class CProduct
+	{
+		var $db;
+		var $save_image;
+		var $origin_image;
+		var $PAGE;
+
+		function CProduct()
+		{
+			global $db;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+		}
+
+		function ListProductAll($site_code)
+		{
+			if(!$site_code)
+				return false;
+
+			$query="SELECT * FROM card_name WHERE site_code='".$site_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+		
+		function getDomesticCard($site_code)
+		{
+			if(!$site_code)
+				return false;
+
+			$query="SELECT * FROM charge_manager WHERE site_code='".$site_code."' AND seperator='kor'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getForeignCard($site_code)
+		{
+			if(!$site_code)
+				return false;
+
+			$query="SELECT * FROM charge_manager WHERE site_code='".$site_code."' AND seperator='for'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function UpdateCharge($data)
+		{
+			if(!$data)
+				return false;
+
+			while(list($key, $value)=each($data))
+			{
+				$cols[]="".$key."=".$value."";
+			}
+
+			$column=implode(",", $cols);
+
+			$query="UPDATE card_charge SET ".$column." WHERE card_name='".$data["card_name"]."' AND site_code='".$data["site_code"]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getCardCode($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="SELECT card_name FROM charge_manager WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			$card_name=$this->db->getResult($result, 0, 0);
+
+			return $card_name;
+		}
+
+		function parseData($data)
+		{
+			if(!$data)
+				return false;
+
+			$start_pos=1;
+
+			foreach($data as $key => $value)
+			{
+				$value_column=explode("_", $key);
+				$col[$value_column[0]."_".$value_column[1]]=$value;
+
+				if($start_pos%4==0)
+				{
+					$col["card_code"]=$this->getCardCode($value_column[2]);
+					$col["site_code"]=$data["site_code"];
+
+					$result=$this->InputData($col);
+				}
+				
+				$start_pos++;
+			}
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function InputData($data)
+		{
+			if(!$data)
+				return false;
+
+			foreach($data as $key => $value)
+			{
+				if($key=="site_code" || $key=="card_code")
+					$cols[]="".$key."='".$value."'";
+				else
+					$cols[]="".$key."=".$value."";
+			}
+
+			$column=implode(",", $cols);
+
+			$query="UPDATE card_charge SET ".$column.", signdate=now() WHERE card_code='".$data["card_code"]."' AND site_code='".$data["site_code"]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getCardChargeAll($site_code, $card_code)
+		{
+			if(!$site_code || !$card_code)
+				return false;
+
+			$query="SELECT * FROM card_charge WHERE site_code='".$site_code."' AND card_code='".$card_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getCardCharge($site_code, $card_code, $column)
+		{
+			if(!$site_code || !$card_code || !$column)
+				return false;
+
+			$query="SELECT ".$column." FROM card_charge WHERE card_code='".$card_code."' AND site_code='".$site_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function InputPin($data)
+		{
+			if(!$data)
+				return false;
+
+			foreach($data as $key => $value)
+			{
+				$cols[]=$key;
+				
+				if($key!="card_price")
+					$rows[]="'".$value."'";
+				else
+					$rows[]="".$value."";
+			}
+
+			$column=implode(",", $cols);
+			$tuple=implode(",", $rows);
+
+			$query="INSERT INTO card_stock (".$column.") VALUES (".$tuple.");";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getCardName($card_code)
+		{
+			if(!$card_code)
+				return false;
+
+			$query="SELECT card_name FROM card_name WHERE CID='".$card_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			$card_name=$this->db->getResult($result, 0, 0);
+
+			return $card_name;
+		}
+
+		function updatePin($data)
+		{
+			if(!$data)
+				return false;
+
+			foreach($data as $key => $value)
+			{
+				$cols[]="".$key."='".$value."'";
+			}
+
+			$column=implode(",", $cols);
+
+			$query="UPDATE card_stock SET ".$column." WHERE no=".$data["no"]."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function updateDel($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="DELETE FROM card_stock WHERE no=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getCardInfo($no)
+		{
+			if(!$no)
+				return false;
+
+			$query="DELETE FROM card_stock WHERE no=".$no."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getStock()
+		{
+			$query="SELECT count(*) as Count, card_name, card_price FROM card_stock GROUP BY card_name";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getCardAll()
+		{
+			$query="SELECT * FROM card_name ORDER BY no DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getPoint($site_code)
+		{
+			if(!$site_code)
+				return false;
+
+			$query="SELECT * FROM point_adapt WHERE site_code='".$site_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}	
+			
+			return $recordSet;
+		}
+
+		function getCardInfoByCode($card_code)
+		{
+			if(!$card_code)
+				return false;
+			
+			$parse_card=explode("_", $card_code);
+
+			$query="SELECT * FROM card_name WHERE CID='".$parse_card[0]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getCardImage($card_code)
+		{
+			if(!$card_code)
+				return false;
+
+			$query="SELECT card_img FROM card_name WHERE CID='".$card_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getStockByCart($order_no)
+		{
+			if(!$order_no)
+				return false;
+
+			$query="SELECT * FROM order_info WHERE order_no='".$order_no."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getCardInStock($card_name, $price, $qtty)
+		{
+			if(!$card_name || !$price || !$qtty)
+				return false;
+
+			$query="SELECT * FROM card_stock WHERE card_name='".$card_name."' AND card_price=".$price." AND sold_flag='N' AND site_code='".SITE_CODE."' LIMIT ".$qtty."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getCardImage($card_name)
+		{
+			if(!$card_name)
+				return false;
+
+			$query="SELECT card_img FROM card_name WHERE card_name='".$card_name."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function updateOutPin($data)
+		{
+			if(!$data)
+				return false;
+
+			foreach($data as $key => $value)
+			{
+				if($key=="card_pin")
+					continue;
+
+				$sql[]="".$key."='".$value."'";
+			}
+
+			$sql_string=implode(",", $sql);
+			$query="UPDATE card_stock SET ".$sql_string.", out_date=now(), sold_flag='Y' WHERE card_pin='".$data["card_pin"]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function minusCallBonus($user, $bonus)
+		{
+			if(!$user || !$bonus)
+				return false;
+
+			$query="UPDATE user_bonus SET addbonus=addbonus-".$bonus.", bonus=bonus-".$bonus.", usebonus=usebonus+".$bonus." WHERE user_id='".$user."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getOrderSpec($user)
+		{
+			if(!$user)
+				return false;
+
+			$query="SELECT * FROM order_info WHERE user_id='".$user."' ORDER BY num DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getMainCard($site_code, $seperator, $pattern_type)
+		{
+			if(!$site_code || !$seperator || !$pattern_type)
+				return false;
+
+			$query="SELECT * FROM charge_manager WHERE site_code='".$site_code."' AND seperator='".$seperator."' AND isview='1'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$pattern=$this->isPattern($resultSet["card_name"], $resultSet["site_code"]);
+				
+				if($pattern==$pattern_type)
+					$recordSet[]=$resultSet;
+
+				if($pattern_type=="ALL")
+					$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function isPattern($card_name, $site_code)
+		{
+			if(!$site_code || !$card_name)
+				return false;
+
+			$query="SELECT pattern FROM card_name WHERE CID='".$card_name."' AND site_code='".$site_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getService($site_code, $card_name)
+		{
+			if(!$site_code || !$card_name)
+				return false;
+
+			$parse_string=explode("_", $card_name);
+
+			$query="SELECT service FROM card_name WHERE site_code='".$site_code."' AND CID='".$parse_string[0]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getQuality($site_code, $card_name)
+		{
+			if(!$site_code || !$card_name)
+				return false;
+
+			$parse_string=explode("_", $card_name);
+
+			$query="SELECT quality FROM card_name WHERE site_code='".$site_code."' AND CID='".$parse_string[0]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function ListAllMainStay($site_code)
+		{
+			if(!$site_code)
+				return false;
+
+			$query="SELECT * FROM mainstay WHERE site_code='".$site_code."' ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+			
+			return $recordSet;
+		}
+
+		function ListAllMainStayAll()
+		{
+			
+			$query="SELECT * FROM mainstay ORDER BY idx DESC";
+
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+			
+			return $recordSet;
+		}
+
+		function getMinMainStay($site_code)
+		{
+			if(!$site_code)
+				return false;
+
+			$query="SELECT pay FROM mainstay WHERE site_code='".$site_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function geSunbulCardActiveDomestic($seperator, $site_code)
+		{
+			if(!$seperator || !$site_code)
+				return false;
+
+			$query="SELECT * FROM charge_manager WHERE seperator='".$seperator."' AND site_code='".$site_code."' AND isview='1'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$card_name=explode("_", $resultSet["card_name"]);
+
+				$is_pattern=$this->isPattern($card_name[0], $resultSet["site_code"]);
+				
+				if($is_pattern=="nopay")
+					$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getCardSpect($site_code, $card_name)
+		{
+			if(!$site_code || !$card_name)
+				return false;
+
+			$parse_string=explode("_", $card_name);
+
+			$query="SELECT card_spec FROM card_name WHERE site_code='".$site_code."' AND CID='".$parse_string[0]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getPayCard($site_code, $card_name, $call_type)
+		{
+			if(!$site_code || !$card_name || !$call_type)
+				return false;
+
+			$query="SELECT ".$call_type." FROM card_charge WHERE site_code='".$site_code."' AND card_code='".$card_name."'";
+
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getMinValueCard($seperator, $site_code, $call_type)
+		{
+			if(!$seperator || !$site_code || !$call_type)
+				return false;
+
+			$query="SELECT min(ch.".$call_type.") FROM charge_manager cm, card_charge ch WHERE cm.seperator='".$seperator."' AND cm.isview='1' AND cm.site_code='".$site_code."' AND cm.card_name=ch.card_code AND ch.pattern='nopay' AND ch.".$call_type."<>0";
+
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getMinValueCardMainStay($site_code, $order_pay)
+		{
+			if(!$site_code || !$order_pay)
+				return false;
+
+			$query="SELECT min(".$order_pay.") FROM mainstay WHERE site_code='".$site_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getCardChargeAdmin($site_code, $card_name)
+		{
+			if(!$site_code || !$card_name)
+				return false;
+
+			$query="SELECT * FROM card_charge WHERE site_code='".$site_code."' AND card_code='".$card_name."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+
+		}
+
+		function insertMainStay($data)
+		{
+			if(!$data)
+				return false;
+			
+			foreach($data as $key => $value)
+			{
+				$cols[]=$key;
+
+				if($key=="kor_pay" || $key=="for_pay")
+					$rows[]="".$value."";
+				else
+					$rows[]="'".$value."'";
+			}
+
+			$column=implode(",", $cols);
+			$tuple=implode(",", $rows);
+
+			$query="INSERT INTO mainstay (".$column.", signdate) VALUES (".$tuple.", now());";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function updateMainStay($data)
+		{
+			if(!$data)
+				return false;
+
+			foreach($data as $key => $value)
+			{
+				if($key=="idx")
+				{
+					continue;
+				}
+				else
+				{
+					if($key=="kor_idx" || $key=="for_idx")
+						$cols[]="".$key."=".$value."";
+					else
+						$cols[]="".$key."='".$value."'";
+				}
+			}
+
+			$column=implode(",", $cols);
+
+			$query="UPDATE mainstay SET ".$column." WHERE idx=".$data["idx"]."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getMainStay($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="SELECT * FROM mainstay WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}	
+
+			return $recordSet;
+		}
+
+		function delmainstay($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="DELETE FROM mainstay WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getChargeTimeCard($card_code)
+		{
+			if(!$card_code)
+				return false;
+
+			$query="SELECT description FROM card_name WHERE CID='".$card_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getTagColumn($site_code, $column, $card_code)
+		{
+			if(!$site_code || !$column || !$card_code)
+				return false;
+
+			$query="SELECT * FROM tag WHERE site_code='".$site_code."' AND card_code='".$card_code."' AND adapt_value='".$column."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getHtmlName($site_code, $card_code)
+		{
+			if(!$site_code || !$card_code)
+				return false;
+
+			$parse_card_code=explode("_", $card_code);
+
+			$query="SELECT card_html FROM card_name WHERE site_code='".$site_code."' AND CID='".$parse_card_code[0]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getPropertyCard($from_nation, $send_call_type, $take_call_type, $quality, $handle, $site_code)
+		{
+			$card_query="SELECT card_name FROM charge_manager WHERE seperator='".$from_nation."' AND isview='1' AND site_code='".$site_code."'";
+			$result=$this->db->ExecuteDML($card_query);
+		
+			$want_value=$send_call_type."".$take_call_type."_value";
+
+			$init=0;
+	
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				if($init==0)
+					$cards_list[]="'".$resultSet["card_name"]."'";
+				else
+					$cards_list[]=",'".$resultSet["card_name"]."'";
+			}
+
+			$cards=implode(",", $cards_list);
+
+			$want_query="SELECT min(".$want_value.") FROM card_charge WHERE card_code IN (".$cards.") AND pattern='nopay' AND ".$want_value."<>0";
+
+			$want_result=$this->db->ExecuteDML($want_query);
+
+			$min_value=$this->db->getResult($want_result, 0, 0);
+
+			$c_query="SELECT card_code FROM card_charge WHERE ".$want_value."=".$min_value." AND pattern='nopay' AND site_code='".$site_code."'";
+			$c_result=$this->db->ExecuteDML($c_query);
+			$card_code=$this->db->getResult($c_result, 0, 0);
+			
+			$data["want_value"]=$min_value;
+			$data["card_code"]=$card_code;
+
+			return $data;
+		}
+
+		function getCardBySite($site)
+		{
+			if(!$site)
+				return false;
+
+			$query="SELECT * FROM card_name WHERE site_code='".$site_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+	}	
+?>

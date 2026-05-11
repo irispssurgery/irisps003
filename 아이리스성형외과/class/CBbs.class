@@ -1,0 +1,582 @@
+<?
+	class CBbs
+	{
+		var $db;
+		var $save_data;
+		var $origin_data;
+		var $site;
+
+		function CBbs()
+		{
+			global $db;
+			global $site;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+			$this->site=$site;
+		}
+
+		function Insert($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+			
+			if(isset($data["bbs_save_data"]) && isset($data["bbs_origin_data"]))
+			{
+				$this->save_data = time();
+				$this->origin_data = $data["bbs_save_data"];
+
+				if(!$this->FileUpload(BBS_DATA))
+					return false;
+
+				$data["bbs_save_data"] = $this->save_data;
+			}
+
+			$query = "SELECT max(bbs_idx)+1 FROM bbs WHERE bbscode_code='".$data["bbscode_code"]."'";
+			$result = $this->db->ExecuteDML($query);
+
+			$bbs_id = $this->db->getResult($result, 0, 0);
+
+			$this->db->freeResult($result);
+
+			if(!$bbs_id)
+				$bbs_id=1;
+
+			while(list($key, $value) = each($data))
+			{
+				$kf[]= $key;
+				$vf[]="'".$value."'";
+			}	
+		
+			$k = implode(",", $kf);
+			$v = implode(",", $vf);
+
+			$query = "INSERT INTO bbs (".$k.", bbs_id, bbs_hit) VALUES (".$v.", ".$bbs_id.", 1);";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function View($code, $idx)
+		{
+			if(!isset($code) || !isset($idx))
+				return false;
+
+			$query = "SELECT * FROM bbs WHERE bbscode_code='".$code."' AND bbs_idx=".$idx;
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		function View1($code, $idx)
+		{
+			if(!isset($code) || !isset($idx))
+				return false;
+
+			$query = "SELECT * FROM bbs WHERE bbscode_code='".$code."' AND bbs_idx=".$idx;
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		function Reply($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+		
+			if($data["bbs_save_data"] && $data["bbs_origin_data"])
+			{
+
+				$this->save_data = time();
+				$this->origin_data = $data["bbs_save_data"];
+
+				if(!$this->FileUpload(BBS_DATA))
+					return false;
+
+				$data["bbs_save_data"] = $this->save_data;
+			}
+
+			$query = "SELECT bbs_id, bbs_depth FROM bbs WHERE bbscode_code='".$data["bbscode_code"]."' AND bbs_idx=".$data["bbs_idx"];
+			$result = $this->db->ExecuteDML($query);
+
+			$bbs_id = $this->db->getResult($result, 0 ,0);
+			$bbs_depth = $this->db->getResult($result, 0 ,1);
+
+			$depth_size = strlen($bbs_depth)+1;
+
+			$query = "SELECT count(*) FROM bbs WHERE bbscode_code='".$data["bbscode_code"]."' AND bbs_id=".$bbs_id." AND LENGTH(bbs_depth)=".$depth_size."";
+			$result = $this->db->ExecuteDML($query);
+
+			$depth = $this->db->getResult($result, 0, 0);
+
+			if(count($depth) >= 27)
+				return false;
+	
+			$bbs_depth = $bbs_depth."".chr(ord($bbs_depth)+$depth);
+			
+			while(list($key, $value) = each($data))
+			{	
+				if($key == "bbs_idx")
+					continue;
+
+				$kf[] = $key;
+				$vf[] = "'".$value."'";
+			}
+
+			$k = implode(",", $kf);
+			$v = implode(",", $vf);
+
+			$query = "INSERT INTO bbs (".$k.", bbs_depth, bbs_id, bbs_hit) VALUES (".$v.", '".$bbs_depth."', ".$bbs_id.", 1);";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function Modify($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+
+			if($data["bbs_save_data"] && $data["bbs_origin_data"])
+			{
+				$query = "SELECT bbs_save_data FROM bbs WHERE bbscode_code='".$data["bbscode_code"]."' AND bbs_idx=".$data["bbs_idx"];
+				$result = $this->db->ExecuteDML($query);
+
+				$save_data = $this->db->getResult($result, 0, 0);
+
+				$this->db->freeResult($result);
+
+				if(file_exists(BBS_DATA."/".$save_data))
+					unlink(BBS_DATA."/".$save_data);
+
+				$this->save_data = time();
+				$this->origin_data = $data["bbs_save_data"];
+
+				if(!$this->FileUpload(BBS_DATA))
+					return false;
+
+				$data["bbs_save_data"] = $this->save_data;
+			}
+
+			while(list($key, $value) = each($data))
+			{
+				if($key == "bbs_idx" || $key == "bbscode_code")
+					continue;
+
+				$field[] = "".$key." = '".$value."'";
+			}
+
+			$f = implode(",", $field);
+			
+			$query = "UPDATE bbs SET ".$f." WHERE bbscode_code='".$data["bbscode_code"]."' AND bbs_idx=".$data["bbs_idx"];
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function Modify1($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+
+			if($data["bbs_save_data"] && $data["bbs_origin_data"])
+			{
+				$query = "SELECT bbs_save_data FROM bbs WHERE bbscode_code='".$data["bbscode_code"]."' AND bbs_idx=".$data["bbs_idx"];
+				$result = $this->db->ExecuteDML($query);
+
+				$save_data = $this->db->getResult($result, 0, 0);
+
+				$this->db->freeResult($result);
+
+				if(isset($save_data))
+					unlink(BBS_DATA."/".$save_data);
+
+				$this->save_data = time();
+				$this->origin_data = $data["bbs_save_data"];
+
+				if(!$this->FileUpload(BBS_DATA))
+					return false;
+
+				$data["bbs_save_data"] = $this->save_data;
+			}
+
+			while(list($key, $value) = each($data))
+			{
+				if($key == "bbs_idx" || $key == "bbscode_code")
+					continue;
+
+				$field[] = "".$key." = '".$value."'";
+			}
+
+			$f = implode(",", $field);
+			
+			$query = "UPDATE bbs SET ".$f." WHERE bbscode_code='".$data["bbscode_code"]."' AND bbs_idx=".$data["bbs_idx"];
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function DeleteBbs($bbscode_code, $bbs_idx, $is_file)
+		{
+			if(!$bbscode_code || !$bbs_idx)
+				return false;
+
+			if($is_file == "Y")
+			{
+				$query = "SELECT bbs_save_data FROM bbs WHERE bbscode_code='".$bbscode_code."' AND bbs_idx=".$bbs_idx;
+				$result = $this->db->ExecuteDML($query);
+
+				$bbs_save_data = $this->db->getResult($result, 0, 0);
+
+				if($bbs_save_data)
+					unlink(BBS_DATA."/".$bbs_save_data);
+			}
+
+			$query = "DELETE FROM bbs WHERE bbscode_code='".$bbscode_code."' AND bbs_idx=".$bbs_idx."";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+		
+		function DeleteBbsAll($bbscode_code, $data)
+		{
+
+			if(!$data || !is_array($data))
+				return false;
+			
+			$idx = implode(",", $data);
+			$query = "SELECT bbs_save_data FROM bbs WHERE bbscode_code='".$bbscode_code."' AND bbs_idx IN (".$idx.");";
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				if($recordSet["bbs_save_data"])
+					unlink(BBS_DATA."/".$recordSet["bbs_save_data"]);
+			}
+
+			$query = "DELETE FROM bbs WHERE bbscode_code='".$bbscode_code."' AND bbs_idx IN (".$idx.");";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function InfoBbs($code)
+		{	
+			if(!isset($code))
+				return false;
+
+			$query = "SELECT * FROM bbs_code WHERE bbscode_code='".$code."'";
+			$result = $this->db->ExecuteDML($query);
+
+			$info = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$info[]=$recordSet;
+			}		
+
+			return $info;
+		}
+		
+		function InfoBbs1($code)
+		{	
+			if(!isset($code))
+				return false;
+
+			$query = "SELECT * FROM bbs_code WHERE bbscode_code='".$code."'";
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$info[]=$recordSet;
+			}		
+
+			return $info;
+		}	
+
+		function listBbsAll($code, $search_word, $search_key)
+		{
+			if(!isset($code))
+				return false;
+
+			if($search_word && $search_key)
+				$SQL = "AND ".$search_key." LIKE '%".$search_word."%'";
+
+			$query = "SELECT * FROM bbs WHERE bbscode_code='".$code."' AND is_notice='N' ".$SQL." ORDER BY bbs_id DESC, bbs_depth ASC";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		function listBbs($code, $search_word, $search_key)
+		{
+			global $PAGE;
+
+			if(!isset($code))
+				return false;
+
+			if(!$PAGE)
+				$PAGE=1;
+
+			$this->PAGE=$PAGE;
+			$GET_RECORD=LIST_BY_PAGE;
+			$START_RECORD=($PAGE-1) * $GET_RECORD;
+
+			if($search_word && $search_key)
+				$SQL = "AND ".$search_key." LIKE '%".$search_word."%'";
+
+			$query = "SELECT * FROM bbs WHERE bbscode_code='".$code."' AND is_notice='N' ".$SQL." ORDER BY bbs_id DESC, bbs_depth ASC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		function TodayBbsList($bbscode_code)
+		{
+			if(!$bbscode_code)
+				return false;
+
+			$query = "SELECT * FROM bbs WHERE bbscode_code='".$bbscode_code."' AND bbs_signdate='".date("Y-m-d")."' ORDER BY bbs_idx DESC LIMIT ".BBS_COUNT_LIST."";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;	
+			}
+
+			return $list;
+		}
+
+		function TodayPdsList($bbscode_code)
+		{
+			if(!$bbscode_code)
+				return false;
+
+			$query = "SELECT * FROM bbs WHERE bbscode_code='".$bbscode_code."' AND bbs_signdate='".date("Y-m-d")."' ORDER BY bbs_idx DESC LIMIT ".PDS_COUNT_LIST."";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;	
+			}
+
+			return $list;
+		}
+
+		function getTotalCount($code, $search_word, $search_key)
+		{
+			if(!isset($code))
+				return false;
+
+			if($search_word && $search_key)
+				$SQL = "AND ".$search_key." LIKE '%".$search_word."%'";
+
+			$query = "SELECT count(*) FROM bbs WHERE bbscode_code='".$code."' ".$SQL."";
+			$result = $this->db->ExecuteDML($query);
+
+			$total_count = $this->db->getResult($result, 0, 0);
+
+			return $total_count;
+		}
+
+		function IncreaseHit($bbscode_code, $bbs_idx)
+		{
+			if(!isset($bbscode_code) || !isset($bbs_idx))
+				return false;
+
+			$query = "UPDATE bbs SET bbs_hit = bbs_hit + 3 WHERE bbscode_code='".$bbscode_code."' AND bbs_idx=".$bbs_idx;
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function getID($bbscode_code, $bbs_idx)
+		{
+			if(!isset($bbscode_code) || !isset($bbs_idx))
+				return false;
+
+			$query = "SELECT bbs_userid FROM bbs WHERE bbscode_code='".$bbscode_code."' AND bbs_idx=".$bbs_idx;
+			$result = $this->db->ExecuteDML($query);
+
+			$id = $this->db->getResult($result, 0, 0);
+
+			return $id;
+		}
+
+		function FileUpload($save_path)
+		{
+			if(!$save_path)
+				return false;
+	
+			if(copy($this->origin_data, BBS_DATA."/".$this->save_data))
+			{
+				unlink($this->origin_data);
+				return true;
+			}
+			else
+			{
+				unlink($this->origin_data);
+				return false;
+			}
+		}
+
+		function getPasswd($bbs_idx)
+		{
+			if(!$bbs_idx)
+				return false;
+
+			$query = "SELECT bbs_passwd FROM bbs WHERE bbs_idx = ".$bbs_idx;
+			$result = $this->db->ExecuteDML($query);
+
+			$bbs_passwd = $this->db->getResult($result, 0, 0);
+
+			$this->db->freeResult($result);
+
+			return $bbs_passwd;
+		}
+
+		function bbsDelete($bbscode_code, $bbs_idx, $is_file)
+		{
+			if(!$bbscode_code || !$bbs_idx)
+				return false;
+
+			if($is_file == "Y")
+			{
+				$query = "SELECT bbs_save_data FROM bbs WHERE bbscode_code='".$bbscode_code."' AND bbs_idx=".$bbs_idx;
+				$result = $this->db->ExecuteDML($query);
+
+				$bbs_save_data = $this->db->getResult($result, 0, 0);
+
+				if($bbs_save_data)
+					unlink(BBS_DATA."/".$bbs_save_data);
+			}
+			
+			$query = "DELETE FROM bbs WHERE bbscode_code='".$bbscode_code."' AND bbs_idx=".$bbs_idx."";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+
+		}
+
+		function getWriteName($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="SELECT bbs_name FROM bbs WHERE bbs_idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			$bbs_name=$this->db->getResult($result, 0, 0);
+
+			return $bbs_name;
+		}
+
+		function getNoticeBbs($code)
+		{
+			if(!$code)
+				return false;
+
+			$query="SELECT * FROM bbs WHERE bbscode_code='".$code."' AND is_notice='Y' ORDER BY bbs_idx DESC LIMIT 3";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getBbsByCount($code, $count)
+		{
+			if(!$code || !$count)
+				return false;
+
+			$query="SELECT * FROM bbs WHERE bbscode_code='".$code."' ORDER BY bbs_idx DESC LIMIT ".$count."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getSiteNameByCode($site_code)
+		{
+			$site_name=$this->site->getSiteName($site_code);
+
+			return $site_name;
+		}
+
+
+		function _CBbs($inst)
+		{
+			$this->db->_CDatabase();
+			unset($inst);
+		}
+
+		function listBbsAllGallery($code, $search_word, $search_key)
+		{
+			global $PAGE;
+
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			if(!isset($code))
+				return false;
+
+			if($search_word && $search_key)
+				$SQL = "AND ".$search_key." LIKE '%".$search_word."%'";
+
+			$GET_RECORD=9;
+			$START_RECORD=($this->PAGE-1) * $GET_RECORD;
+
+			$query = "SELECT * FROM bbs WHERE bbscode_code='".$code."' AND is_notice='N' ".$SQL." ORDER BY bbs_id DESC, bbs_depth ASC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+	}
+?>

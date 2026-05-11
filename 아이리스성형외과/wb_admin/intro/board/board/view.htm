@@ -1,0 +1,506 @@
+<?
+ob_start();
+session_start();
+session_cache_limiter('private');
+
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+extract($HTTP_SESSION_VARS);
+extract($HTTP_COOKIE_VARS);
+
+include "../../../../config/dbconn.php3"; 
+include "../../../../config/function.php3"; 
+
+include "../../../auth_admin.php3";
+$inst->Connect();
+
+include "./board_function.php3";
+
+$query="select id,ref,step,name,passwd,email,title,content,vod_link,date1,ip,hit,tabcheck,filename1 from ezboard where db='$db' and no='$no'";
+
+$row=$inst->ExecFetch($query);
+
+if ($row){
+	$id=$row[id];
+	$ref=$row[ref];
+	$step=$row[step];
+	$name=$row[name];
+	$email=$row[email];
+	$title=$row[title];
+	$content=$row[content];
+	$ip=$row[ip];
+	$hit=$row[hit];
+	$filename1=$row[filename1];
+	$vod_link=$row[vod_link];
+	$date1=$row[date1];	
+}
+
+
+$filenames=strtolower($filename);
+$file = explode(".", $filenames);
+$disk=uploadicon($file[1]);
+
+$name=stripslashes($name);
+$title=stripslashes($title);
+$content=stripslashes($content);
+
+$content=nl2br($content);
+
+if($tabcheck == "NO"){
+	$content=htmlspecialchars($content);
+}
+
+$hit++;
+$query = "update ezboard set hit='$hit' where id=$id and ref=$ref and step=$step";
+$inst->Execute($query);
+?>
+<html>
+<head>
+<title><?=$head_title;?></title>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../../css/css.css" type="text/css">
+<script language="JavaScript">
+<!--
+function Board(BOARD,db,no,go_it) { 
+	location.href="view.htm?db=" + db + "&no=" + no + "&go_it=" + go_it;
+}
+function List(BOARD,db,no,go_it) { 
+	location.href="list.htm?db=" + db + "&no=" + no + "&go_it=" + go_it;
+}
+function Write(BOARD,db,no,go_it) { 
+	location.href="write.htm?db=" + db + "&no=" + no + "&go_it=" + go_it;
+}
+function Reply(BOARD,db,no,go_it) { 
+	location.href="reply.htm?db=" + db + "&no=" + no + "&go_it=" + go_it;
+}
+function Modify(BOARD,db,no,go_it) { 
+	location.href="modify.htm?db=" + db + "&no=" + no + "&go_it=" + go_it;
+}
+function Delete(BOARD,db,no,go_it) { 
+	location.href="delete_ok.php3?db=" + db + "&no=" + no + "&go_it=" + go_it;
+}
+//-->
+</script>
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='../image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 홈페이지관리 &gt; 게시판관리 </td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" height="400" valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="../image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+<!-- left menu -------------------------------------------------------------------------------------->
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                             <?
+								include "../left.htm";
+								
+							 ?>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+<!-- left menu -------------------------------------------------------------------------------------->
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="670" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td><img src="../image/bar02.gif" width="670" height="40"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td> 
+                              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td> 
+                                    <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                                      <tr> 
+                                        <td  height="4" bgcolor="#6493B3"></td>
+                                      </tr>
+                                      <tr> 
+                                        <td height="30" bgcolor="#DEEFFA" align="center"> 
+                                          <b>게시판 관리자 모드 </b></td>
+                                      </tr>
+                                      <tr> 
+                                        <td height="1" bgcolor="#93AEBF"></td>
+                                      </tr>
+                                      <tr> 
+                                        <td height="2" bgcolor="#C5D3DC"></td>
+                                      </tr>
+                                      <tr> 
+                                        <td height="30" align="center"><? echo $boardname; ?> 내용</td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td> 
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                      <tr> 
+                                        <td> 
+                                          <table border="0" width="670" cellspacing="0" cellpadding="0">
+                                            <tr> 
+                                              <td  height="4" bgcolor="#94B5CA"></td>
+                                            </tr>
+                                            <tr> 
+                                              <td height="30" bgcolor="#C3E2F6"> 
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                  <tr> 
+                                                    <td width="80" align="center" height="30"><b>제목</b></td>
+                                                    <td width="1" bgcolor="#94B5CA"></td>
+                                                    <td style="padding-left:5px"><b><? echo "$title"; ?></b></td>
+                                                  </tr>
+                                                </table>
+                                              </td>
+                                            </tr>
+                                            <tr> 
+                                              <td height="3" bgcolor="#B3C6D2"></td>
+                                            </tr>
+                                            <tr> 
+                                              <td height="1"></td>
+                                            </tr>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <tr> 
+                                        <td> 
+                                          <table border="0" width="670" cellspacing="0" cellpadding="0">
+                                            <tr> 
+                                              <td width="80" align="center"  bgcolor="F8F8F8" height="30" >글쓴이</td>
+                                              <td width="1" bgcolor="#DFDFDF"></td>
+                                              <td bgcolor="F8F8F8" style="padding-left:5px"> 
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                  <tr> 
+                                                    <td height="30"><?=$name;?></td>
+                                                    <td bgcolor="#DFDFDF" width="1"></td>
+                                                    <td align="center" width="80">조회</td>
+                                                    <td bgcolor="#DFDFDF" width="1"></td>
+                                                    <td align="center" width="100"><?=$hit;?></td>
+                                                  </tr>
+                                                </table>
+                                              </td>
+                                            </tr>
+                                            <tr> 
+                                              <td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+                                            </tr>
+                                            <tr> 
+                                              <td align="center" height="30">등록일</td>
+                                              <td bgcolor="#DFDFDF"></td>
+                                              <td  style="padding-left:5px"> 
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                  <tr> 
+                                                    <td height="30"><?=$date1;?> 
+                                                    </td>
+                                                    <td bgcolor="#DFDFDF" width="1"></td>
+                                                    <td align="center" width="80">IP</td>
+                                                    <td bgcolor="#DFDFDF" width="1"></td>
+                                                    <td width="100" align="center"><?=$ip;?></td>
+                                                  </tr>
+                                                </table>
+                                              </td>
+                                            </tr>
+                                            <tr> 
+                                              <td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+                                            </tr>
+                                            <tr> 
+                                              <td align="center"  bgcolor="F8F8F8" height="30">내용</td>
+                                              <td bgcolor="#DFDFDF"></td>
+                                              <td bgcolor="F8F8F8" style="padding-left:5px; padding-right:5px; padding-top:10px; padding-bottom:10px"><?=$content;?><br><br>
+											  <? if($vod_link){?><embed src="<?=$vod_link?>"><?}?>
+											  </td>
+                                            </tr>
+                                            <tr> 
+                                              <td colspan="3" background="../image/table_line_b.gif" height="2"></td>
+                                            </tr>
+                                            <tr> 
+                                              <td align="center" height="30">첨부파일</td>
+                                              <td bgcolor="#DFDFDF"></td>
+                                              <td style="padding-left:5px" >
+												<?
+												if ($filename1){
+													$filenames1=strtolower($filename1);
+													$file1 = explode(".", $filenames1);
+													$disk1=uploadicon($file1[1]);
+													echo ("
+														<img src='../icon/$disk1' border=0 width='16' height='16' title='$filesize1' align='absbottom'>&nbsp;<a href='../../../../up_board/$db/$filename1' target='_blank' title='$filesize1'>$filename1</a>
+													");
+												}
+												if ($filename2){
+													$filenames2=strtolower($filename2);
+													$file2 = explode(".", $filenames2);
+													$disk2=uploadicon($file2[1]);
+													echo ("
+														<img src='../icon/$disk2' border=0 width='16' height='16' title='$filesize2' align='absbottom'>&nbsp;<a href='../../../../up_board/$db/$filename2' target='_blank' title='$filesize2'>$filename2</a>
+													");
+												}
+												?>
+											  </td>
+                                            </tr>
+                                            <tr bgcolor="#B3C6D2"> 
+                                              <td colspan="3" height="2"></td>
+                                            </tr>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <tr> 
+                                        <td height="40" align="center">
+										 <?
+											echo ("
+											<a href=\"javascript:Reply('Reply','$db','$no','$go_it')\">[답변]</a>&nbsp; 
+											<a href=\"javascript:Modify('Modify','$db','$no','$go_it')\">[수정]</a>&nbsp; 
+											<a href=\"javascript:Delete('Delete','$db','$no','$go_it')\" OnClick=\"return confirm('정말 삭제하시겠습니까?')\">[삭제]</a>&nbsp; 
+											<a href=\"javascript:List('List','$db','$no','$go_it')\">[목록]</a>&nbsp; 
+											<a href=\"javascript:Write('Write','$db','$no','$go_it')\">[쓰기]</a>
+											");
+										  ?>
+										</td>
+                                      </tr>
+                                      <tr> 
+                                        <td> 
+                                          <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                                            <tr> 
+                                              <td height="1" bgcolor="#93AEBF"></td>
+                                            </tr>
+                                            <tr> 
+                                              <td height="2" bgcolor="#C5D3DC"></td>
+                                            </tr>
+                                            <tr> 
+                                              <td height="30" align="center" bgcolor="#DEEFFA"> 
+                                                &lt;&lt; <?=$title;?> 에 관련된 글입니다. &gt;&gt;</td>
+                                            </tr>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td> 
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                      <tr> 
+                                        <td> 
+                                          <table border="0" width="670" cellspacing="0" cellpadding="0">
+                                            <tr> 
+                                              <td  height="4" bgcolor="#94B5CA"></td>
+                                            </tr>
+                                            <tr> 
+                                              <td height="30" bgcolor="#C3E2F6"> 
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                  <tr> 
+                                                    <td width="40" align="center" height="30"><b>NO</b></td>
+                                                    <td width="1" bgcolor="#94B5CA"></td>
+                                                    <td align="center"><b>제목</b></td>
+                                                    <td bgcolor="#94B5CA" width="1"></td>
+                                                    <td width="90" align="center"><b>글쓴이</b></td>
+                                                    <td bgcolor="#94B5CA" width="1"></td>
+                                                    <td align="center" width="80"><b>등록일</b></td>
+                                                    <td bgcolor="#94B5CA" width="1"></td>
+                                                    <td align="center" width="40"><b>조회</b></td>
+                                                  </tr>
+                                                </table>
+                                              </td>
+                                            </tr>
+                                            <tr> 
+                                              <td height="3" bgcolor="#B3C6D2"></td>
+                                            </tr>
+                                            <tr> 
+                                              <td height="1"></td>
+                                            </tr>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <tr> 
+                                        <td> 
+                                          <table border="0" width="670" cellspacing="0" cellpadding="0">
+											<?
+											$query="select no from ezboard where db='$db' and id='$id'";
+											$num=$inst->ExecNumRows($query);
+
+											$query="select no,id,ref,step,name,passwd,email,title,date1,ip,hit,tabcheck,filename1,filesize1,filename2,filesize2,filelist from ezboard where db='$db' and id=$id order by id desc,step";
+
+											$result=$inst->Execute($query);
+
+											$i=1;
+											while($row=$inst->ExecFetchArray($result)){
+												$no=$row[no];
+												$id=$row[id];
+												$ref=$row[ref];
+												$step=$row[step];
+												$name=$row[name];
+												$email=$row[email];
+												$title=$row[title];
+												$title_color=$row[title_color];
+												$font_size=$row[font_size];
+												$hit=$row[hit];
+												$date1=$row[date1];
+												$list_top=$row[list_top];
+												$list_del=trim($row[list_del]);
+												$day=explode(" ",$date1);
+												
+												$title=stripslashes($title);
+												$title=han_cut($title,$title_length);
+
+												if ($list_del=='yes') {
+													$color='#CE4806'; 
+												}else{
+													$color=''; 
+												}
+												
+												if ($ref!='0') {
+													$disabled='disabled'; 
+												}else{
+													$disabled=''; 
+												}
+
+												if (($i % 2) == 1) {$bgcolor = "#F8F8F8";}
+												else {$bgcolor = "#FFFFFF";} 
+
+											?>
+                                            <tr> 
+                                              <td width="40" align="center"  bgcolor="<?=$bgcolor;?>" height="30" ><?=$num;?></td>
+                                              <td width="1" bgcolor="#DFDFDF"></td>
+                                              <td bgcolor="<?=$bgcolor;?>" style="padding-left:5px">
+												<?
+											   for($i=0;$i<=$ref;$i++)
+											   {
+												  echo "&nbsp;";
+											   }
+											   if($ref>0){
+													echo "&nbsp;";
+													echo "<img src=../image/re.gif border=0>";
+												}
+
+												echo ("
+													<a href=\"javascript:Board('$boardname','$db','$no','$go_it')\">
+													<font color='$color'>$title</font></a>
+												");
+												if ($new_use!='no'){
+													$today_time_new_use_time = New_Use($new_use,$date1,$new_time);
+
+													$today_time = $today_time_new_use_time[0];
+													$new_use_time = $today_time_new_use_time[1];
+													if ($today_time <= $new_use_time) {
+														echo ("<img src=../image/new.gif border='0'>");
+													}
+												}
+												?>
+												</td>
+                                              <td width="1" bgcolor="#DFDFDF"></td>
+                                              <td align="center" bgcolor="<?=$bgcolor;?>" width="90"><?=$name;?></td>
+                                              <td width="1" bgcolor="#DFDFDF"></td>
+                                              <td width="80" align="center" bgcolor="<?=$bgcolor;?>"><?=$day[0];?></td>
+                                              <td width="1" bgcolor="#DFDFDF"></td>
+                                              <td align="center" bgcolor="<?=$bgcolor;?>" width="40"><?=$hit;?></td>
+                                            </tr>
+                                            <tr> 
+                                              <td colspan="9" height="2" background="../image/table_line_b.gif"></td>
+                                            </tr>
+										<?
+												$i++;
+												$num--;
+											}
+										?>
+                                           <tr bgcolor="#B3C6D2"> 
+                                              <td colspan="9" height="2"></td>
+                                            </tr>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td height="8"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>

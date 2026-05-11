@@ -1,0 +1,152 @@
+<?
+	class CAdmin
+	{
+		var $db;
+
+		function CAdmin()
+		{
+			global $db;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+		}
+
+		function CAdminSet($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+
+			while(list($key, $value) =each($data))
+			{
+				$kf[] = $key;
+				$vf[] = "'".$value."'";
+			}
+
+			$k = implode(",", $kf);
+			$v = implode(",", $vf);
+
+			$query = "INSERT INTO admin (".$k.", signdate) VALUES (".$v.", current_date)";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function CCompanySet($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+
+			while(list($key, $value) =each($data))
+			{
+				$kf[] = $key;
+				$vf[] = "'".$value."'";
+			}
+
+			$k = implode(",", $kf);
+			$v = implode(",", $vf);
+
+			$query = "INSERT INTO company (".$k.", signdate) VALUES (".$v.", current_date)";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+
+		function listAdmin()
+		{
+			$query="SELECT * FROM admin ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function listCompany()
+		{
+			$query="SELECT * FROM company ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function delAdmin($admin_id)
+		{
+			if(!$admin_id)
+				return false;
+
+			$query="DELETE FROM admin WHERE admin_id='".$admin_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function delCompany($admin_id)
+		{
+			if(!$admin_id)
+				return false;
+
+			$query="DELETE FROM company WHERE user_id='".$admin_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+		
+		function delAdminByIdx($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="DELETE FROM admin WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function isAdmined($admin_id)
+		{
+			if(!$admin_id)
+				return false;
+
+			$query="SELECT count(*) FROM admin WHERE admin_id='".$admin_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			$is_admin=$this->db->getResult($result, 0, 0);
+
+			return $is_admin;
+		}
+
+
+		function isAdmin($admin_id, $admin_pwd)
+		{
+			if(!$admin_id || !$admin_pwd)
+				return false;
+
+			$query="SELECT count(*) FROM admin WHERE admin_id='".$admin_id."' AND admin_pwd='".$admin_pwd."'";
+			$result=mysql_query($query);
+
+			$is_admin=$this->db->getResult($result, 0, 0);
+
+			return $is_admin;
+		}
+	}
+?>

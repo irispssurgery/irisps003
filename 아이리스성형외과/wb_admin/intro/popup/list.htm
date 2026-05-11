@@ -1,0 +1,304 @@
+<?
+ob_start();
+session_start();
+session_cache_limiter('private');
+
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+extract($HTTP_SESSION_VARS);
+extract($HTTP_COOKIE_VARS);
+
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+include "../../auth_admin.php3";
+$inst->Connect();
+?>
+<html>
+<head>
+<title><?echo $head_title;?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='../../image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 운영관리 &gt; 팝업창 설정</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="../../image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                              <table width="90%" border="0" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td style="padding-top:10px; padding-bottom:10px" background="../../image/left_bg.gif"> 
+                                    <!-- 왠쪽 메뉴 시작-->
+									 <?
+										include "../manage_menu.htm";
+									 ?>
+                                    <!-- 왠쪽 메뉴 끝-->
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="720" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td><img src="image/bar10.gif"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>
+<!------------------------------------------------------->
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="text">
+						<form name='form' method='post' action='list.htm?mode=search' onSubmit='return content_check(this)'>  
+						  <tr> 
+							<td align="center" valign="top">
+							  <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" class="text">
+							  <tr> 
+								<td  height="4" bgcolor="#94B5CA" colspan="10"></td>
+							  </tr>
+							   <tr align="center" bgcolor='#C3E2F6'> 
+								 <td align="center" width="40" height="30"><b>NO.</b></td>
+                                 <td width="1" bgcolor="#94B5CA"></td>
+								 <td align="center" width=""><b>제&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;목</b></td>
+                                 <td width="1" bgcolor="#94B5CA"></td>
+								 <td align="center" width="80"><b>작성일</b></td>
+                                 <td width="1" bgcolor="#94B5CA"></td>
+								 <td align="center" width="50"><b>Open</b></td>
+                                 <td width="1" bgcolor="#94B5CA"></td>
+								 <td align="center" width="95"><b>수정 / 삭제</b></td>
+							  </tr>
+							  <tr> 
+								<td height="3" bgcolor="#B3C6D2" colspan="10"></td>
+							  </tr>
+							  <tr> 
+								<td height="1" colspan="10"></td>
+							  </tr>
+							<?
+								$db_table="main_open_win";
+								
+								if($mode!='search'){
+									$query="select no from $db_table";
+								}else{
+									$query="select no from $db_table where $menu1 like '%$search%'";
+								}
+								$total=$inst->ExecNumRows($query);
+								
+								$pagecount='10'; 
+								$block='10'; 
+								
+								$pages=$total/$pagecount;
+								$totalpage=ceil($pages);
+								
+								if($page<=0){
+									$page=1;
+								}
+								$pg=$page;
+								$num=$total-(($page-1)*$pagecount);
+								$query_limit = ($pg-1)*$pagecount;
+								
+								
+								if($mode!='search'){
+									$query="select * from $db_table ORDER BY no desc limit $query_limit,$pagecount";
+								}else{
+									$query="select * from $db_table where $menu1 like '%$search%' ORDER BY no desc limit $query_limit,$pagecount";
+								}
+								$result=$inst->Execute($query);
+
+								$j=1; 
+								while($row=$inst->ExecFetchArray($result)){
+									$noo=$row[no];
+									$title=$row[title];
+									$content=$row[content];
+									$open=$row[open];
+									$date1=$row[date1];
+									$new='1';
+									$day=explode(" ",$date1);
+									$title1=han_cut($title,40);
+									$title_color=$row[title_color];
+									$font_size=$row[font_size];
+									$content=$row[content];
+									$pic1=$row[filename];
+				
+									if (($j % 2) == 1) {$bgcolor = "#FFFFFF";}
+									else {$bgcolor = "#F4F4F4";} 
+							?>
+								<tr height="26"> 
+								  <td width='40' align='center' bgcolor="<?=$bgcolor;?>" ><?=$num?></td>
+								  <td width='1' bgcolor='#DFDFDF'></td>
+								  <td width='' align='left' bgcolor="<?=$bgcolor;?>" ><a href='view.htm?no=<?=$noo?>' title='$title'><font color='<?=$title_color?>' size='<?=$font_size?>'><?=$title?></font></a>
+								  <td width='1' bgcolor='#DFDFDF'></td>
+							<?
+								$year=date(Y);
+								$month=date(m);
+								$today=date(d);  
+
+								$today_time = mktime(0,0,0,$month,$today,$year); 
+								$write_day=explode("-",$date1);
+								$write_time = mktime(0,0,0,$write_day[1],$write_day[2],$write_day[0]); 
+								$new_use_time = $write_time + 86400 * ($new_time-1);
+								if ($today_time <= $new_use_time) {
+									echo ("<img src=../../image/new.gif border='0'>");
+								}
+							?>
+								  </td>
+								  <td width='80' align='center' bgcolor="<?=$bgcolor;?>" ><?=$day[0]?></td>
+								  <td width='1' bgcolor='#DFDFDF'></td>
+								  <td width='50' align='center' bgcolor="<?=$bgcolor;?>" ><?=$open?></td>
+								  <td width='1' bgcolor='#DFDFDF'></td>
+								  <td width='95' align='center' bgcolor="<?=$bgcolor;?>" >
+									  <a href='./modify.htm?no=<?=$noo?>'><img src='../../image/but02.gif' border='0' title='수정'></a>  <a href='./delete.htm?no=<?=$noo?>&pic1=<?=$pic1?>' OnClick="return confirm('정말 삭제하시겠습니까?')"><img src='../../image/but01.gif' border='0' title='삭제'></a>
+								  </td>
+								</tr>
+								<tr> 
+								  <td colspan='13' height='2' background='../../image/table_line_b.gif'></td>
+								</tr>
+							<?	
+								$num--;
+								$j++;
+							}
+							?>  
+                                <tr> 
+                                  <td height="2" colspan="13"></td>
+                                </tr>
+                                <tr bgcolor="#B3C6D2"> 
+                                  <td height="2" colspan="13"></td>
+                                </tr>	
+								<tr>
+								  <td>&nbsp;</td>
+								</tr>								
+								<tr bgcolor='#FFFFFF'> 
+								  <td colspan='10' height='20' align='center' >
+								    <a href='write.htm'><img src="image/but10.gif" border="0"></a>
+								  </td>
+							    </tr>
+							  </table>
+							  <table width="100%" border="1" cellspacing="0" cellpadding="5" align="center" class="text" bgcolor="#CCCCCC" bordercolordark="#FFFFFF">
+							    <tr bgcolor='#FFFFFF'> 
+								  <td align='center' valign='bottom' colspan='2'>
+								  <?
+										// == Page Start ======================================//
+												
+										$block='10';
+										$widthpage=floor(($page-1)/$block)+1;
+										$start = ($widthpage-1) * $block+1;
+										$end = $widthpage*$block;
+										if ($totalpage < $end) $end = $totalpage;
+
+										if ($widthpage>1)
+										{
+											 $prev=$start - 1;
+											 echo "<a href='./list.htm?page=$prev'>[이전] ◀ </a>";
+										}else{
+											 echo "<font color='gray'>[이전] ◀ </font>";
+										}
+												
+										for($start; $start<=$end; $start++)
+										{
+											if ($page == $start) echo "<font color=red> ".$start." </font>";
+											else
+												echo "<a href = './list.htm?page=$start'> ".$start." </a>";
+										}
+												
+										if ($totalpage > $end) {
+											$next=$end+1;
+											echo "<a href='./list.htm?page=$next'> ▶ [다음]</a>";
+										}else{
+											echo "<font color='gray'> ▶ [다음]</font>";
+										}
+																														
+										// == End Page =============================//
+									?>						
+								  </td>
+							    </tr>
+							  </form>
+							  </table>
+							</td>
+						  </tr>
+						</table>
+<!-------------------------------------------------------->
+					  
+					  </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

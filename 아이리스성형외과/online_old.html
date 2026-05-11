@@ -1,0 +1,258 @@
+<?
+include "top.html";
+?><head>
+<link href="css/iris.css" rel="stylesheet" type="text/css">
+<!-- 메인start --> 
+<style type="text/css">
+<!--
+td {  font-family: "굴림체"; font-size: 9pt}
+-->
+</style>
+<Script language="javascript">
+
+function checkForm()
+{
+	var form=document.register;
+
+	if(!form.hope_time.value)
+	{
+		alert("진료 희망 시간을 입력하여 주십시요.");
+		form.hope_time.focus();
+
+		return false;
+	}
+
+	if(!form.book_name.value)
+	{
+		alert("예약자 이름을 입력하여 주십시요.");
+		form.book_name.focus();
+		return false;
+	}
+	
+	if(!form.book_phone.value)
+	{
+		alert("휴대폰번호를 입력하여 주십시요.");
+		form.book_phone.focus();
+		return false;
+	}
+
+	if(!form.book_email.value)
+	{
+		alert("이메일을 입력하여 주십시요.");
+		form.book_email.focus();
+		return false;
+	}
+
+	if(!form.book_content.value)
+	{
+		alert("진레 내용을 간략히 입력하여 주십시요.");
+		form.book_content.focus();
+		return false;
+	}
+}
+
+</Script>
+</head>
+
+ 
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td height="688" bgcolor="BCAFC3" valign="top" width="864"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="26"><img src="images/x.gif" width="26" height="5"></td>
+          <td width="1" bgcolor="#4F4233"><img src="images/x.gif" width="1" height="5"></td>
+          <td bgcolor="4E4256" height="105" valign="top"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td bgcolor="#000000" width="187" height="105"><img src="images/x.gif" width="187" height="135"></td>
+              </tr>
+              <tr> 
+                <td width="187" valign="top" background="images/left_bg_05.gif" bgcolor="4E4256" height="400"> 
+                  <?
+include "left_menu_05.html";
+?>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td width="1" bgcolor="#4F4233"><img src="images/x.gif" width="1" height="5"></td>
+          <td height="688" valign="top"> 
+            <?
+include "sub_baner_05.html";
+?>
+            <table width="647" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td colspan="2" height="7"></td>
+              </tr>
+            </table>
+            <table width="634" border="0" cellspacing="1" cellpadding="5" align="center" bgcolor="EEEEEE">
+              <tr> 
+                <td bgcolor="BCAFC3" > 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td bgcolor="EEEEEE" align="center"> 
+                        <table width="610" border="0" cellspacing="0" cellpadding="0" align="center">
+                          <tr> 
+                            <td height="19" colspan="2"></td>
+                          </tr>
+                          <tr> 
+                            <td colspan="2"><img src="images/online_title_01.gif" width="610" height="41"></td>
+                          </tr>
+                          <tr> 
+                            <td height="19" colspan="2"></td>
+                          </tr>
+                        </table>
+                        <table width="561" border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td height="66" background="images/online_text_01.gif">&nbsp;</td>
+                          </tr>
+                        </table>
+                        <table cellspacing=0 cellpadding=0 width=574 border=0>
+                          <tbody> 
+                          <tr valign=top align=middle> 
+                            <td colspan=4 bgcolor="C7C7C7" height="1"></td>
+                          </tr>
+                          <tr valign=top align=middle> 
+                            <td colspan=4 height=70 valign="top" align="center">&nbsp; 
+                              <link href="css/kh.css" type=text/css 
+rel=stylesheet>
+                              <style type=text/css><!--.style1 {color: #FF6633;font-weight: bold;}--></style>
+                              <form name="register" action="./proc_book_write.php" method="post" onsubmit="return checkForm();">
+                                <table bordercolor=white cellspacing=2 bordercolordark=#dfdfdf cellpadding=5 width=490 
+align=center bordercolorlight=#d9d9d9 border=1>
+                                  <tr bgcolor="BCAFC3" align="center"> 
+                                    <td colspan="2" height="25"><font color="#FFFFFF"><b>예약접수</b></font></td>
+                                  </tr>
+                                  <tr bgcolor="#FFFFFF"> 
+                                    <td width="149" height="25" bgcolor="#F7F7F7"><img src="images/icon_01.gif" width="6" height="6" align="absmiddle"> 
+                                      진료예약 희망날짜 </td>
+                                    <td width="334" height="25"> 
+                                      <select name="hope_year">
+                                        <option value="2005" selected>2005</option>
+                                        <option value="2006">2006</option>
+                                        <option value="2007">2007</option>
+                                        <option value="2008">2008</option>
+                                        <option value="2009">2009</option>
+                                      </select>
+                                      년 
+                                      <select name="hope_month">
+                                        <option value="1" selected>1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                      </select>
+                                      월 
+                                      <select name="hope_day">
+                                        <option value="1" selected>1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
+                                        <option value="28">28</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="31">31</option>
+                                      </select>
+                                      일 </td>
+                                  </tr>
+                                  <tr bgcolor="#FFFFFF"> 
+                                    <td width="149" height="25" bgcolor="#F7F7F7"><img src="images/icon_01.gif" width="6" height="6" align="absmiddle"> 
+                                      진료희망 시간</td>
+                                    <td width="334" height="25"> 
+                                      <input type="text" name="hope_time">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="#FFFFFF"> 
+                                    <td width="149" height="25" bgcolor="#F7F7F7"><img src="images/icon_01.gif" width="6" height="6" align="absmiddle"> 
+                                      예약자 이름 </td>
+                                    <td width="334" height="25"> 
+                                      <input type="text" name="book_name">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="#FFFFFF"> 
+                                    <td width="149" height="25" bgcolor="#F7F7F7"><img src="images/icon_01.gif" width="6" height="6" align="absmiddle"> 
+                                      휴대폰 번호 </td>
+                                    <td width="334" height="25"> 
+                                      <input type="text" name="book_phone">
+                                      (예, 010-xxx-xxxx) <br>
+                                      접수사항 알림 서비스</td>
+                                  </tr>
+                                  <tr bgcolor="#FFFFFF"> 
+                                    <td width="149" height="25" bgcolor="#F7F7F7"><img src="images/icon_01.gif" width="6" height="6" align="absmiddle"> 
+                                      이메일주소</td>
+                                    <td width="334" height="25"> 
+                                      <input type="text" name="book_email" size="30">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="#FFFFFF"> 
+                                    <td width="149" height="25" bgcolor="#F7F7F7" valign="top"><img src="images/x.gif" width="26" height="3"><br>
+                                      <img src="images/icon_01.gif" width="6" height="6" align="absmiddle"> 
+                                      증세 및 목적</td>
+                                    <td width="334" height="25"> 
+                                      <textarea name="book_content" cols="45" rows="10"></textarea>
+                                    </td>
+                                  </tr>
+                                </table>
+                                <br>
+                                <input type="image" src="customer_img/bbtn_OK.gif" name="image">
+                              </form>
+                              <br>
+                              <br>
+                            </td>
+                          </tr>
+                          </tbody> 
+                        </table>
+                        <br>
+                        <br>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+            <img src="images/x.gif" width="26" height="9"></td>
+        </tr>
+      </table>
+    </td>
+    <td background="images/main_right_bg_05.gif" valign="top"> 
+      <?
+include "right_baner.html";
+?>
+    </td>
+  </tr>
+</table>
+<?
+include "down.html";
+?>
+<!-- 메인end -->

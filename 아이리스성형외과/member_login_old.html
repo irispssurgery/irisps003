@@ -1,0 +1,146 @@
+<?
+include "top.html";
+?>
+<link href="css/iris.css" rel="stylesheet" type="text/css">
+<!-- 메인start -->
+<script language="JavaScript">
+<!--
+function MM_openBrWindow(theURL,winName,features) { //v2.0
+  window.open(theURL,winName,features);
+}
+
+function checkForm()
+{
+	var form=document.member_login;
+
+	if(!form.user_id1.value)
+	{
+		alert("아이디를 입력하여 주십시요.");
+		form.user_id1.focus();
+		
+		return false;
+	}
+
+	if(!form.user_pwd1.value)
+	{
+		alert("비밀번호를 입력하여 주십시요.");
+		form.user_pwd1.focus();
+
+		return false;
+	}
+}
+
+//-->
+</script>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td height="688" bgcolor="DCCB94" valign="top" width="864"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="26"><img src="images/x.gif" width="26" height="5"></td>
+          <td width="1" bgcolor="#4F4233"><img src="images/x.gif" width="1" height="5"></td>
+          <td bgcolor="#5F543A" height="105" valign="top"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td bgcolor="#000000" width="187" height="105"><img src="images/x.gif" width="187" height="135"></td>
+              </tr>
+              <tr> 
+                <td width="187" valign="top" background="images/left_bg.gif" bgcolor="#5F543A" height="400"> 
+                  <?
+include "left_menu.html";
+?>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td width="1" bgcolor="#4F4233"><img src="images/x.gif" width="1" height="5"></td>
+          <td height="688" valign="top"> 
+            <?
+include "sub_baner_02.html";
+?>
+            <table width="647" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td colspan="2" height="7"></td>
+              </tr>
+            </table>
+            <table width="634" border="0" cellspacing="1" cellpadding="5" align="center" bgcolor="EEEEEE">
+              <tr> 
+                <td bgcolor="DCCB94" > 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td bgcolor="EEEEEE"> 
+                        <table width="610" border="0" cellspacing="0" cellpadding="0" align="center">
+                          <tr> 
+                            <td height="19" colspan="2"></td>
+                          </tr>
+                          <tr> 
+                            <td colspan="2"><img src="images/member_title_01.gif" width="610" height="41"></td>
+                          </tr>
+                          <tr> 
+                            <td height="19" colspan="2"></td>
+                          </tr>
+                        </table>
+                        <table width="575" border="0" cellspacing="0" cellpadding="0" align="center">
+                          <tr> 
+                            <td valign="top" height="337" background="images/member_bg.gif"> 
+                              <table width="500" border="0" cellspacing="0" cellpadding="0" align="center">
+                                <tr> 
+                                  <td height="102">&nbsp;</td>
+                                </tr>
+                                <tr> 
+                                  <td> 
+								  <form name="member_login" method="post" action="proc_login.php" onsubmit="return checkForm();">
+                                    <table border="0" cellspacing="0" cellpadding="0" align="center">
+                                      <tr> 
+                                        <td width="83"><img src="images/member_id.gif" width="83" height="18"></td>
+                                        <td> 
+                                          <input id=user_id style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" size=15 name=user_id1>
+                                        </td>
+                                        <td rowspan="2" width="72" align="right"> 
+                                          <input tabindex=7 type=image height=58 width=55 src="images/member_enter.gif" name="image">
+                                        </td>
+                                      </tr>
+                                      <tr> 
+                                        <td><img src="images/member_pw.gif" width="83" height="18"></td>
+                                        <td> 
+                                          <input id=user_id style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" type=password size=15 value="" name=user_pwd1>
+                                        </td>
+                                      </tr>
+                                    </table>
+									</form>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td>&nbsp;</td>
+                                </tr>
+                                <tr> 
+                                  <td align="center"><a href="member_passwd.html?mode=forgot_passwd"><img src="images/member_idpw.gif" width="133" height="23" border="0" onClick="MM_openBrWindow('idpw_popup.html','','width=370,height=200')"></a> 
+                                    <a href="member_join.html"><img src="images/member_join.gif" width="133" height="23" border="0"></a></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                        <br>
+                        <br>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td background="images/main_right_bg.gif" valign="top">
+<?
+include "right_baner.html";
+?>	 
+      </td>
+  </tr>
+</table>
+<?
+include "down.html";
+?>
+<!-- 메인end -->

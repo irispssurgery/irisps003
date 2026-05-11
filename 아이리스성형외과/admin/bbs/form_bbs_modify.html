@@ -1,0 +1,218 @@
+<? 
+
+	if(!$mode)
+
+		include "./result_bbs_modify.php";
+
+	else
+
+		include "./admin/bbs/result_bbs_modify.php";
+
+?>
+
+<html>
+
+<head>
+
+<title>Untitled Document</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+
+<style type="text/css">
+
+<!--
+
+table {  font-family: "굴림체"; font-size: 9pt}
+
+-->
+
+</style>
+
+<Script language="javascript">
+
+function checkForm(form)
+
+{
+
+	if(!form.bbs_email.value)
+
+	{
+
+		alert("이메일을 입력하지 않았습니다.");
+
+		form.bbs_email.focus();
+
+
+
+		return;
+
+	}
+
+
+
+	if(!form.bbs_title.value)
+
+	{
+
+		alert("제목을 입력하지 않았습니다.");
+
+		form.bbs_title.focus();
+
+
+
+		return;
+
+	}
+
+
+
+	if(!form.bbs_content.value)
+
+	{
+
+		alert("내용을 입력하지 않았습니다.");
+
+		form.bbs_content.focus();
+
+
+
+		return;
+
+	}
+
+	/*
+
+	if(!form.bbs_passwd.value)
+
+	{
+
+		alert("비밀번호를 입력하지 않았습니다.");
+
+		form.bbs_passwd.focus();
+
+
+
+		return;
+
+	}
+
+	*/
+
+<?
+
+	if(!$mode)
+
+	{
+
+?>
+
+	form.action="proc_bbs_modify.html";
+
+<?
+
+	}else{
+
+?>
+
+	form.action="./admin/bbs/proc_bbs_modify.html";
+
+<?
+
+}
+
+?>
+
+	form.submit();
+
+}
+
+
+
+function init()
+
+{
+
+	document.forms[0].is_file.checked=true;
+
+	document.forms[0].bbs_data.disabled=true;
+
+}
+
+
+
+function chan()
+
+{
+
+	var form = document.forms[0];
+
+
+
+	if(!form.is_file.checked==true)
+
+	{
+
+		document.forms[0].bbs_data.disabled=false;
+
+	}
+
+	else
+
+	{
+
+		document.forms[0].bbs_data.disabled=true;
+
+	}
+
+}
+
+</Script>
+
+</head>
+
+
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="eeeeee">
+
+<form name="bbs_modify" method="post" action="" enctype="multipart/form-data">
+
+<center>
+
+    <table border="0" height="350" bordercolor="<?echo $list_border_color;?>" cellpadding="3" cellspacing="0" bordercolorlight='silver' bordercolordark='white'>
+      <?echo $board_write;?>
+      <tr> 
+
+      <td colspan="2" align="center">
+
+	  <input type="hidden" name="bbsadmin" value="<?echo $bbsadmin;?>">
+
+	  <input type="hidden" name="bbs_idx" value="<?echo $bbs_idx;?>">
+
+	  <input type="hidden" name="bbscode_code" value="<?echo $bbscode_code;?>">
+
+	  <input type="hidden" name="is_uploaded_file" value="<?echo $is_uploaded_file;?>">
+
+	  <input type="hidden" name="bbs_userid" value="<?echo $user;?>">
+
+	  <input type="hidden" name="LOCATION" value="<?echo $LOCATION;?>">
+
+	  <input type="hidden" name="mode" value="<?echo $mode;?>">
+
+	  <input type="hidden" name="site_code" value="<?echo $site_code;?>">
+
+	  <?echo $button;?>
+
+	  </td>
+
+    </tr>
+
+  </table>
+
+</center>
+
+</form>
+
+</body>
+
+</html>
+

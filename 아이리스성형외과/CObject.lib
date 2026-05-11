@@ -1,0 +1,41 @@
+<?
+//	session_start();
+
+	$path=getenv("DOCUMENT_ROOT");
+
+	include $path."/class/CDatabase.class";
+	include $path."/class/CAdmin.class";
+	include $path."/class/CPaging.class";
+	include $path."/class/CBbs.class";
+	include $path."/class/CBbscode.class";
+	include $path."/class/CMember.class";
+	include $path."/class/CError.class";
+	include $path."/class/CSite.class";
+	include $path."/class/CMainmenu.class";
+	include $path."/class/CSubmenu.class";
+	include $path."/class/CBanner.class";
+	include $path."/class/CDiscusslist.class";
+	include $path."/class/CDis.class";
+	include $path."/class/CKeyword.class";
+	include $path."/class/CLog.class";
+	include $path."/class/CBook.class";
+	include $path."/constant/db_config.def";
+	include $path."/constant/common.def";
+	include $path."/constant/default.cnt";
+	include $path."/function/common.func";
+
+	$db = new CDatabase($dbName, $host, $id, $passwd);
+	$ins_admin= new CAdmin();
+	$member = new CMember();
+	$error= new CError();
+	$site = new CSite();
+	$main_menu=new CMainmenu();
+	$sub_menu=new CSubmenu();
+	$bbs=new CBbs();
+	$main_banner=new CBanner();
+	$discusslist=new CDiscusslist();
+	$dis=new CDis();
+	$keyword=new CKeyword();
+	$log=new CLog();
+	$register=new CBook();
+?>

@@ -1,0 +1,115 @@
+<?
+ob_start();
+session_start();
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+
+include "fsboard/lib/lib.php";
+?>
+<html>
+<head>
+<title>:+:아이리스성형외과:+:</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link href="css/iris.css" rel="stylesheet" type="text/css">
+<script language="JavaScript">
+<!--
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_findObj(n, d) { //v4.0
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && document.getElementById) x=document.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+//-->
+</script>
+<script language="JavaScript">
+<!--
+function MM_reloadPage(init) {  //reloads the window if Nav4 resized
+  if (init==true) with (navigator) {if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+    document.MM_pgW=innerWidth; document.MM_pgH=innerHeight; onresize=MM_reloadPage; }}
+  else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) location.reload();
+}
+MM_reloadPage(true);
+// -->
+</script>
+<script language="JavaScript"> 
+<!-- 
+function bluring(){ 
+if(event.srcElement.tagName=="A"||event.srcElement.tagName=="IMG") document.body.focus(); 
+} 
+document.onfocusin=bluring; 
+// --> 
+</script>
+</head>
+
+<body bgcolor="#000000" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="MM_preloadImages('images/top_but_home_over.gif','images/top_but_login_over.gif','images/top_but_join_over.gif','images/top_but_contact_over.gif','images/top_but_sitemap_over.gif','images/top_but_logout_over.gif','images/top_but_mypage_over.gif')">
+<script>
+function premier(n) {
+    for(var i = 1; i < 3; i++) {
+        obj = document.getElementById('premier'+i);
+        img = document.getElementById('premier_button'+i);
+        if ( n == i ) {
+            obj.style.display = "block";
+			img.height = 29;
+            img.src = "images/aca_btn"+i+"_over.gif";    
+        } else {
+            obj.style.display = "none";
+			img.height = 29;
+            img.src = "images/aca_btn"+i+".gif";
+        }
+    }
+}
+</script>
+<div id="Layer1" style="position:absolute; left:26px; top:0px; width:189px; z-index:1; visibility: visible"> 
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr> 
+      <td width="1" bgcolor="#4F4233"></td>
+      <td bgcolor="#000000" height="198" width="187"><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" width="187" height="198">
+          <param name=movie value="swf/logo.swf">
+          <param name=quality value=high>
+          <embed src="swf/logo.swf" quality=high pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="187" height="198">
+          </embed> 
+        </object></td>
+      <td width="1" bgcolor="#4F4233"></td>
+    </tr>
+  </table>
+</div>
+<?
+	if(!$HTTP_SESSION_VARS["user_id"])
+	{
+?>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td height="55" bgcolor="#27220F" width="834" align="right"><a href="main.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image1','','images/top_but_home_over.gif',1)"><img name="Image1" border="0" src="images/top_but_home.gif" width="47" height="35"></a><a href="member_login.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image2','','images/top_but_login_over.gif',1)"><img name="Image2" border="0" src="images/top_but_login.gif" width="47" height="35"></a><a href="member_agreement.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image3','','images/top_but_join_over.gif',1)"><img name="Image3" border="0" src="images/top_but_join.gif" width="43" height="35"></a><a href="contact.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image4','','images/top_but_contact_over.gif',1)"><img name="Image4" border="0" src="images/top_but_contact.gif" width="72" height="35"></a><a href="sitemap.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image5','','images/top_but_sitemap_over.gif',1)"><img name="Image5" border="0" src="images/top_but_sitemap.gif" width="59" height="35"></a></td>
+    <td height="55" bgcolor="#27220F">&nbsp;</td>
+  </tr>
+</table>
+<?
+	}
+	else
+	{
+?>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td height="55" bgcolor="#27220F" width="834" align="right"><a href="main.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image11','','images/top_but_home_over.gif',1)"><img name="Image11" border="0" src="images/top_but_home.gif" width="47" height="35"></a><a href="./proc_logout.php" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image10','','images/top_but_logout_over.gif',1)"><img name="Image10" border="0" src="images/top_but_logout.gif" width="54" height="35"></a><a href="mypage.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image12','','images/top_but_mypage_over.gif',1)"><img name="Image12" border="0" src="images/top_but_mypage.gif" width="58" height="35"></a><a href="contact.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image41','','images/top_but_contact_over.gif',1)"><img name="Image41" border="0" src="images/top_but_contact.gif" width="72" height="35"></a><a href="sitemap.html" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image51','','images/top_but_sitemap_over.gif',1)"><img name="Image51" border="0" src="images/top_but_sitemap.gif" width="59" height="35"></a></td>
+    <td height="55" bgcolor="#27220F">&nbsp;</td>
+  </tr>
+</table>
+<?
+	}
+?>

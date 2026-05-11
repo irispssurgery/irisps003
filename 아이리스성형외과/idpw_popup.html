@@ -1,0 +1,116 @@
+<?
+	include "./CObject.lib";
+
+	if($user_name && $email)
+	{
+		$user_result=$member->getAccount($user_name, $email);
+
+		if(count($user_result)<=0)
+		{
+			$account_result.="<table width=\"98%\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">\n";
+			$account_result.="  <tr> \n";
+			$account_result.="    <td align=\"center\" bgcolor=\"#F4F2E1\">등록된 정보가 존재하지 않습니다.\n";
+			$account_result.="    </td>\n";
+			$account_result.="  </tr>\n";
+			$account_result.="</table>\n";
+		}
+		else
+		{
+			$account_result.="<table width=\"98%\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">\n";
+			$account_result.="  <tr> \n";
+			$account_result.="    <td align=\"center\" bgcolor=\"#F4F2E1\"> \n";
+			$account_result.="      <p>아이디:".$user_result[0]["user_id"]."<br>\n";
+			$account_result.="        비밀번호:".$user_result[0]["user_pwd"]."</p>\n";
+			$account_result.="    </td>\n";
+			$account_result.="  </tr>\n";
+			$account_result.="</table>\n";
+		}
+	}
+	else
+	{
+		$account_result.="<table width=\"98%\" border=\"0\" cellspacing=\"1\" cellpadding=\"3\">\n";
+		$account_result.="  <tr> \n";
+		$account_result.="    <td align=\"center\" bgcolor=\"#F4F2E1\">등록된 정보가 존재하지 않습니다.\n";
+		$account_result.="    </td>\n";
+		$account_result.="  </tr>\n";
+		$account_result.="</table>\n";
+	}
+?>
+<link href="css/iris.css" rel="stylesheet" type="text/css">
+<Script language="javascript">
+
+function checkForm()
+{
+	var form=document.form1;
+
+	if(!form.user_name.value)
+	{
+		alert("이름를 입력하여 주십시요.");
+		form.user_name.focus();
+
+		return false;
+	}
+
+	if(!form.email.value)
+	{
+		alert("이메일을 입력하여 주십시요.");
+		form.email.focus();
+
+		return false;
+	}
+}
+
+function adapt(user_id)
+{
+	opener.document.member.user_id_member.value=user_id;
+	self.close();
+}
+
+</Script>
+<body bgcolor="#FFFFFF" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<form name="form1" method="post" action="./idpw_popup.html" onsubmit="return checkForm();">
+  <table width="370" border="0" cellpadding="1" cellspacing="0" bordercolorlight="#CCCCCC" bordercolordark="#FFFFFF" height="200">
+    <tr align="center"> 
+      <td height="23" colspan="2"><img src="images/idpw_title.gif" width="370" height="23"></td>
+    </tr>
+    <tr align="center"> 
+      <td valign="top" colspan="2" bgcolor="D2CCAF"> <img src="images/x.gif" width="26" height="5"><br>
+        <table width="330" border="0" cellspacing="0" cellpadding="0">
+          <tr> 
+            <td>아이디/패스워드 분실시 아래의 내용을 작성하여주십시오.</td>
+          </tr>
+          <tr> 
+            <td> 
+              <table border="0" cellspacing="0" cellpadding="0" align="center">
+                <tr> 
+                  <td width="83">이름(실명)</td>
+                  <td> 
+                    <input id=user_id style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" size=15 name=user_name>
+                  </td>
+                  <td rowspan="2" width="72" align="right">
+                    <input tabindex=7 type=image height=58 width=55 src="images/member_enter.gif" name="image">
+                  </td>
+                </tr>
+                <tr> 
+                  <td>이메일 주소</td>
+                  <td> 
+                    <input id=user_id style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" type=text size=15 name=email>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>  
+        <img src="images/x.gif" width="26" height="5"> 
+        <?echo $account_result;?>
+        
+      </td>
+    </tr>
+    <tr align="center"> 
+      <td height="23" colspan="2"><a href="javascript:self.close();"><IMG 
+                                height=23 
+                                src="images/close.gif" 
+                                width=370 align=absMiddle border=0></a></td>
+    </tr>
+  </table>
+</form>

@@ -1,0 +1,86 @@
+<html>
+<head>
+<title>아이리스 관리자페이지</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<Script language="javascript">
+
+function checkForm()
+{
+	var form=document.admin_login;
+
+	if(!form.admin_id.value)
+	{
+		alert("아이디를 입력하여 주십시요.");
+		form.admin_id.focus();
+		
+		return false;
+	}
+
+	if(!form.admin_pwd.value)
+	{
+		alert("비밀번호를 입력하여 주십시요.");
+		form.admin_pwd.focus();
+
+		return false;
+	}
+}
+
+</Script>
+</head>
+
+<body bgcolor="#EEEEEE" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<form name="admin_login" method="post" action="./proc_login.php" onsubmit="return checkForm();">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td height="186" valign="bottom" align="center"> <img src="images/login_img_01.jpg" width="663" height="73"></td>
+  </tr>
+  <tr>
+    <td height="243" bgcolor="E7E5D7">
+      <table width="663" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td height="243" bgcolor="#FFFFFF" width="310"><img src="images/login_img_03.jpg" width="310" height="244"></td>
+          <td height="243"> 
+            <table border="0" cellspacing="0" cellpadding="0" background="images/login_img_04.jpg" height="244">
+              <tr> 
+                <td height="91" width="337">&nbsp;</td>
+                <td height="91" rowspan="2"><img src="images/login_img_05.jpg" width="16" height="244"></td>
+              </tr>
+              <tr> 
+                <td> 
+				
+                  <table border="0" cellspacing="0" cellpadding="0" align="center">
+                    <tr> 
+                      <td width="83"><img src="images/id.jpg" width="83" height="18"></td>
+                      <td> 
+                        <input id="user_id1" style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" size=15 name=admin_id>
+                      </td>
+                      <td rowspan="2" width="72" align="right"> 
+                        <input tabindex=7 type=image height=58 width=58 src="images/login.jpg" name="image">
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td><img src="images/pw.jpg" width="83" height="18"></td>
+                      <td> 
+                        <input id=user_id1 style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" type=password size=15 name=admin_pwd>
+                      </td>
+                    </tr>
+                  </table>
+				  
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table width="631" border="0" cellspacing="0" cellpadding="0" align="center">
+  <tr> 
+    <td height="67" bgcolor="#FFFFFF">&nbsp;</td>
+  </tr>
+</table>
+<div align="center"><img src="images/login_img_02.jpg" width="663" height="48"></div>
+</form>
+</body>
+</html>

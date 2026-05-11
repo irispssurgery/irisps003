@@ -1,0 +1,53 @@
+<?
+	include getenv("DOCUMENT_ROOT")."/admin/bbs/result_gallery_list.php";
+?>
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<Script language="javascript">
+
+function checkForm(form1)
+{
+	var form=document.bbs_list;
+
+	if(!form.search_word.value)
+	{
+		alert("검색어를 입력하시길 바랍니다.");
+		form.search_word.focus();
+
+		return false;
+	}
+	
+	form.submit();
+}
+
+</Script>
+</head>
+
+<body bgcolor="#FFFFFF">
+<p align="center">
+<form name="bbs_list" method="post">
+<?echo $gallery_list;?>
+<table width="200" border="0">
+<tr> 
+      <td height="15" align="center">&nbsp;
+		<select name="search_key">
+			<option value="bbs_name">이 름</option>
+			<option value="bbs_title">제 목</option>
+			<option value="bbs_content">내 용</option>
+		</select>&nbsp;
+		<input type="text" name="search_word" class="border">&nbsp;
+		<input type="image" src="./board_img/gongji_search.gif" align="absmiddle" value=" 찾 기 " onclick="return checkForm(document.forms[0]);">
+	  </td>
+    </tr>
+  <tr> 
+    <td align="center"><?echo $page->showPaging();?></td>
+  </tr>
+  <tr> 
+    <td align="center"><?echo $write_button;?></td>
+  </tr>
+</table>
+</form>
+</body>
+</html>

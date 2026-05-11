@@ -1,0 +1,325 @@
+<?
+ob_start();
+session_start();
+session_cache_limiter('private');
+
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+extract($HTTP_SESSION_VARS);
+extract($HTTP_COOKIE_VARS);
+
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+include "../../auth_admin.php3";
+
+$inst->Connect();
+
+$table="main_board_category";
+
+if ($mode=='write_ok'){
+	$query="select category_no from $table where db='$db' order by category_no desc";
+
+	$row=$inst->ExecFetch($query);
+	$category_no=$row[category_no];
+	if($row != 0){
+		$category_no+=1;
+	}else{
+		$category_no=1;
+	}
+
+	$query="insert into $table (db,category_no,category_name) values('$db','$category_no','$category_name')";
+	$inst->Execute($query); 
+	$mode = 'list';
+}
+if ($mode=='modify_ok'){
+	$query="update $table set category_name='$category_name' where db='$db' and category_no='$category_no'";
+	$inst->Execute($query); 
+	$mode = 'list';
+}
+
+if ($mode=='delete_ok'){
+	$query="delete from  $table where db='$db' and category_no=$category_no";
+	$inst->Execute($query); 
+	$mode = 'list';
+}
+?>
+<html>
+<head>
+<title><?=$head_title;?></title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 홈페이지관리 &gt; 게시판관리 &gt; 게시판설정</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" height="400" valign="top">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+<!-- left menu -------------------------------------------------------------------------------------->
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                             <?
+								include "left.htm";
+							?>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+<!-- left menu -------------------------------------------------------------------------------------->
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="670" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td><img src="image/bar04.gif" width="670" height="40"></td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+					<?
+					if ($mode=='write'){
+					?>
+		            <!---------------------------------- 등록 --------------------------------------->
+                    <tr>
+                      <td> 
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+				 			<form name='join' method='post' action='category.htm' onSubmit='return checkput(this)'>
+							<input type='hidden' name='mode' value='write_ok'>
+							<input type='hidden' name='db' value='<?=$db?>'>
+                          <tr> 
+                            <td width="80" height="3" bgcolor="#94B5CA"></td>
+                            <td bgcolor="#C3E2F6"></td>
+                            <td bgcolor="#C3E2F6"></td>
+                          </tr>
+                          <tr> 
+                            <td height="30" align="right" style="padding-right:10px" bgcolor="#F4F4F4"><b><font color="">카테고리 이름</font></b></td>
+                            <td style="padding-left:10px">&nbsp; 
+                              <input type='text' name='category_name' size='60' style='background-color:white; border-width:1; border-color:#949494; border-style:solid;'>
+                            </td>
+                            <td height="30" align="right" style="padding-right:10px" bgcolor="#F4F4F4"><input type='image' src="image/but10.gif" width="80" height="20" border="0"></td>
+                          </tr>
+                          <tr> 
+                            <td height="1" bgcolor="#CCCCCC"></td>
+                            <td bgcolor="#CCCCCC"></td>
+                            <td bgcolor="#CCCCCC"></td>
+                          </tr>
+                          <tr> 
+                            <td height="2" bgcolor="#E9E9E9"></td>
+                            <td bgcolor="#E9E9E9"></td>
+                            <td bgcolor="#E9E9E9"></td>
+                          </tr>
+                        </table>
+						</form>
+                      </td>
+                    </tr>
+
+					<!---------------------------------- 등록 끝--------------------------------------->
+					<?
+					}
+					if ($mode=='modify'){
+
+					$query="select category_name from $table where db='$db' and category_no='$category_no'";
+					$row=$inst->ExecFetch($query);
+					if ($row){
+						$category_name=$row[category_name];
+					}
+					?>
+					<!---------------------------------- 수정 --------------------------------------->
+                    <tr>
+                      <td> 
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+				 			<form name='join' method='post' action='category.htm' onSubmit='return checkput(this)'>
+							<input type='hidden' name='mode' value='modify_ok'>
+							<input type='hidden' name='db' value='<?=$db?>'>
+							<input type='hidden' name='category_no' value='<?=$category_no?>'>
+                          <tr> 
+                            <td width="80" height="3" bgcolor="#94B5CA"></td>
+                            <td bgcolor="#C3E2F6"></td>
+                            <td bgcolor="#C3E2F6"></td>
+                          </tr>
+                          <tr> 
+                            <td height="30" align="right" style="padding-right:10px" bgcolor="#F4F4F4"><b><font color="">카테고리 이름</font></b></td>
+                            <td style="padding-left:10px">&nbsp; 
+                              <input type='text' name='category_name' value='<?=$category_name?>' size='60' style='background-color:white; border-width:1; border-color:#949494; border-style:solid;'>
+                            </td>
+                            <td height="30" align="right" style="padding-right:10px" bgcolor="#F4F4F4"><input type='image' src="image/but10.gif" width="80" height="20" border="0"></td>
+                          </tr>
+                          <tr> 
+                            <td height="1" bgcolor="#CCCCCC"></td>
+                            <td bgcolor="#CCCCCC"></td>
+                            <td bgcolor="#CCCCCC"></td>
+                          </tr>
+                          <tr> 
+                            <td height="2" bgcolor="#E9E9E9"></td>
+                            <td bgcolor="#E9E9E9"></td>
+                            <td bgcolor="#E9E9E9"></td>
+                          </tr>
+                        </table>
+						</form>
+                      </td>
+                    </tr>
+              
+                    <? } ?>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td> 
+                              <table border="0" width="670" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td  height="4" bgcolor="#94B5CA"></td>
+                                </tr>
+                                <tr> 
+                                  <td height="30" bgcolor="#C3E2F6">
+
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                      <tr> 
+                                        <td width="40" align="center" height="30"><b><font color="#000000">NO</font></b></td>
+                                        <td width="1" bgcolor="#94B5CA"></td>
+                                        <td align="center"><b><font color="#000000">카테고리 이름</font></b></td>
+                                        <td bgcolor="#94B5CA" width="1"></td>
+                                        <td align="center" width="90"><b><font color="#000000">수정ㅣ삭제</font></b></td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td height="3" bgcolor="#B3C6D2"></td>
+                                </tr>
+                                <tr> 
+                                  <td height="1"></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td> 
+                              <table border="0" width="670" cellspacing="0" cellpadding="0">
+								<?
+								$query="select category_no,category_name from main_board_category where db='$db' ORDER BY category_no ASC";
+								$result=$inst->Execute($query);
+								
+								$i=1;
+								while($row=$inst->ExecFetchArray($result)){
+									$category_no        = $row[category_no];
+									$category_name    = $row[category_name];
+
+									if (($i % 2) == 1) {$bgcolor = "#FFFFFF";}
+									else {$bgcolor = "#F8F8F8";} 
+								?>
+                                <tr> 
+                                  <td width="40" align="center"  bgcolor="<?=$bgcolor;?>" height="30" ><?=$i;?></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="<?=$bgcolor;?>" style="padding-left:5px"><?=$category_name;?></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="<?=$bgcolor;?>" width="90"> 
+                                    <table border="0" cellspacing="0" cellpadding="1">
+                                      <tr> 
+                                        <td><a href='category.htm?db=<?=$db;?>&mode=modify&category_no=<?=$category_no?>'><img src="image/but02.gif" width="40" height="18" border='0'></a></td>
+                                        <td><a href='category.htm?db=<?=$db;?>&mode=delete_ok&category_no=<?=$category_no?>' OnClick="return confirm('정말 삭제하시겠습니까?')"><img src="image/but01.gif" width="40" height="18" border='0'></a></td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="13" height="2" background="image/table_line_b.gif"></td>
+                                </tr>
+								<?
+								$i++;
+								}
+								?>
+                              </table>
+                            </td>
+                          </tr>
+						  <tr> 
+                            <td colspan="7" height="4" bgcolor="#94B5CA"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp; </td>
+                    </tr>
+                    <tr> 
+                      <td align="center"><a href='category.htm?db=<?=$db?>&mode=write'><img src="image/but09.gif" width="80" height="30" border='0'></a></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

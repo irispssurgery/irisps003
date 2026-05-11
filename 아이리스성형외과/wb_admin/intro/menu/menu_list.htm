@@ -1,0 +1,414 @@
+<?
+ob_start(); 
+session_start(); 
+ 
+extract($HTTP_GET_VARS); 
+extract($HTTP_POST_VARS); 
+extract($HTTP_SESSION_VARS); 
+ 
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+
+include "../../auth_admin.php3";
+
+$inst->Connect(); 
+
+$table="km_menu";
+if (!$flag) $flag='D';
+
+if ($action == 'save')
+{
+	$page_access = implode($_POST["page_access"], ",");
+
+	$update_qry  = " update $table set ". 
+			    "  use_chk        = '$use_chk' ". 
+				" , page_access   = '$page_access' ". 
+				" , page_type     = '$page_type' ". 
+				" , boardname     = '$db' ". 
+				" , site_header   = '$site_header' ". 
+				" , site_footer   = '$site_footer' ". 
+		        " where flag='$flag' and seq=$seq and depth=($depth-1)"; 
+	$inst->Execute($update_qry);  
+
+	getLink($PHP_SELF."?flag=".$flag."&seq=".$seq."&depth=".$depth."&pwd=".$pwd."&file=".$file,"메뉴 설정이 저장되었습니다.        ",$history);
+}
+
+$query="select * from $table where flag='$flag' and seq=$seq and depth=($depth-1)";
+$row=$inst->ExecFetch($query);
+if ($row)
+{
+	$menu_name=$row[menu_name]; 
+	$menu_dir=$row[menu_dir]; 
+	$menu_file=$row[menu_file]; 
+	$use_chk=$row[use_chk]; 
+	$page_type=$row[page_type]; 
+	$boardname=$row[boardname]; 
+}
+
+$pwd="../../../".$menu_dir;
+$file=$menu_file;
+$preview="http://".getenv("SERVER_NAME")."/".$menu_dir."sub_page.htm?flag=".$flag."&seq=".$seq."&depth=".$depth;
+
+if ($action == 'edit')
+{
+	$fp = fopen($pwd.$file , "w");
+	fwrite($fp, stripslashes(str_replace("\r\n", "\n", $content)));
+	fclose($fp);
+
+	@chmod($pwd.$file , 0707);
+
+	getLink($PHP_SELF."?flag=".$flag."&seq=".$seq."&depth=".$depth."&pwd=".$pwd."&file=".$file,"HTML 내용이 저장되었습니다.        ",$history);
+}
+if ($action == 'file_delete')
+{
+	@unlink($pwd.$file);
+	getLink($PHP_SELF,$alert,$history);
+}
+if ($action == 'filemake')
+{
+	$savefile  = $pwd.$filename.'.php';
+	
+	if (is_file($savefile))
+	getLink("","이미 존재하는 파일입니다.        ",-1);
+
+	$fp = fopen($savefile , "w");
+	fclose($fp);
+
+	@chmod($savefile , 0707);
+	
+	getLink($PHP_SELF."?pwd=".$pwd."&file=".$filename.'.php',$alert,$history);
+}
+?>
+<html>
+<head>
+<title><?=$head_title;?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+<script type="text/javascript" src="/js/util.js"></script>
+<script language="JavaScript" src="/easy_editor/easyEditor.js"></script>
+<SCRIPT language=JavaScript>
+<!--
+
+function toggle(value){
+	if(value=='1') tr1.style.display = '';
+	else tr1.style.display = 'none';
+
+	if(value=='2') tr2.style.display = '';
+	else tr2.style.display = 'none';
+}
+
+var bRemberIndex = 0;
+
+function OnSelect() {
+	var f = document.theForm;
+
+	if ( f.page_type.selectedIndex == 1 || f.page_type.value == "" ) {
+		if ( bRemberIndex ) {
+			f.db.value = "";
+		}
+	toggle(2);
+	f.db.focus();
+	f.page_type.selectedIndex = 1;
+	} else {
+		bRemberIndex = 1;
+		f.db.value = f.page_type.value;
+		toggle(1);
+	}
+}
+
+// 카테고리 삭제
+function menu_del( data ) {
+    var choose = confirm( '페이지를 삭제 하시겠습니까?');
+	alert('샘플에서는 현재 설정을 변경 하실수 없습니다.');
+	//if(choose) {	location.href='site_menu_del_ok.php?idx='+data; }
+	//else { return; }
+}
+
+function jsView(d) {
+	if(document.all["view"+d].style.display == "block") document.all["view"+d].style.display = "none"
+	else  document.all["view"+d].style.display = "block"
+}
+
+//경로 복사
+function print_link(str){
+	window.clipboardData.setData("Text", str); 
+	alert("주소가 복사되었습니다.");
+}
+//-->
+</SCRIPT>
+</head>
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0" <? if ($page_type=="board"){ ?> onload="OnSelect();" <? } ?>>
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+
+<? include "../../admin_top.htm"; ?>
+
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='../../image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 메뉴관리</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                              <table width="90%" border="0" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td style="padding-top:10px; padding-bottom:10px" background="../../image/left_bg.gif"> 
+                                    <!-- 왠쪽 메뉴 시작-->
+                             <?
+								include "./menu_left.htm";
+							 ?>
+
+                                    <!-- 왠쪽 메뉴 끝-->
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:20px">
+                  <table width="750" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="image/title01.jpg" width="300" height="25"></td>
+                          </tr>
+                          <tr> 
+                            <td bgcolor="#D4D4D4" height="1"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                   <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="750" border="0" cellspacing="0" cellpadding="0">
+						<form name="theForm" action='<?=$PHP_SELF?>' method='post' onsubmit="return saveCheck(this)">
+						<input type="hidden" name=action value="save">
+						<input type="hidden" name="pwd" value='<?=$pwd?>'>
+						<input type="hidden" name="flag" value='<?=$flag?>'>
+						<input type="hidden" name="seq" value='<?=$seq?>'>
+						<input type="hidden" name="depth" value='<?=$depth?>'>					
+                          <tr> 
+                            <td> 
+                              <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td  height="3" bgcolor="425EA0"></td>
+                                </tr>
+                                <tr> 
+                                  <td bgcolor="f7f7f7"> 
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                      <tr height="28"> 
+                                        <td width="170" align="center"><b><font color="#000000">메뉴 이름</font></b></td>
+                                        <td width="1" bgcolor="#999999"></td>
+                                        <td width="60" align="center"><b><font color="#000000">사용유무</font></b></td>
+                                        <td width="1" bgcolor="#999999"></td>
+                                        <td width="" align="center"><b><font color="#000000">링크</font></b></td>
+                                        <td width="1" bgcolor="#999999"></td>
+                                        <td width="50" align="center"><b><font color="#000000">조회</font></b></td>
+                                        <td width="1" bgcolor="#999999"></td>
+                                        <td width="100" align="center"><b><font color="#000000">관리</font></b></td>
+                                        <td width="1" bgcolor="#999999"></td>
+                                        <td width="90" align="center"><b><font color="#000000">메뉴등록</font></b></td>
+                                      </tr>
+									  <tr> 
+									    <td height="1" bgcolor="dadada" colspan="9"></td>
+									  </tr>
+									  <tr> 
+									    <td height="2" bgcolor="#E9E9E9" colspan="9"></td>
+									  </tr>
+					<?
+						$query="select seq,sort,reply,depth,flag,menu_dir,menu_name,use_chk,cnt from km_menu where depth='1' order by sort ASC, seq ASC, depth ASC";
+						$result=$inst->Execute($query);
+
+						while($row=$inst->ExecFetchArray($result)){
+							if ($row[use_chk] <> "no") {
+								$use_chk_img="part_use.gif";
+							}else{
+								$use_chk_img="part_nouse.gif";
+							}
+
+							$sub_page="/".$row[menu_dir]."sub_page.htm?page_idx=".$row[seq];
+					?>
+									  <tr height="25" bgcolor="#ffffff"> 
+										<td width="" align="left" style="padding-left:5px"><font color="#CE7272"><b><?=$row[menu_name]?></b></font></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width="" align="center"><IMG alt=사용 src="../../image/<?=$use_chk_img?>" align=absMiddle border=0></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width=""  align="left">
+										  <A href="javascript:print_link('<?=$sub_page?>')"><img src="../../image/bt_copy.gif" align=absMiddle border="0"></a><?=$sub_page?></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width="50"  align="center"><?=$row[cnt]?></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width=""  align="center">
+										  <A href="menu_view.htm?flag=<?=$row[flag]?>&seq=<?=$row[seq]?>&depth=<?=$row[depth]+1?>"><IMG src="../../image/bEdit.gif" border=0></A>
+										  <A href="javascript:menu_del('1')"><IMG src="../../image/bDel.gif" border=0></A></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width="90" align="center"><A href="#"><IMG alt=1차서브메뉴등록 src="../../image/bt_category_add.gif" align=absMiddle border=0></A></td>
+									  </tr>
+									  <tr> 
+									    <td colspan="9" height="2" background="../../image/table_line_b.gif"></td>
+									  </tr>
+						<?
+							$sub_query="select seq,sort,reply,depth,flag,menu_dir,menu_name,use_chk,cnt from km_menu where reply='$row[seq]' and depth='2' order by sort ASC, seq ASC, depth ASC";
+							$sub_result=$inst->Execute($sub_query);
+
+							while($sub_row=$inst->ExecFetchArray($sub_result)){
+								if ($sub_row[use_chk] <> "no") {
+									$use_chk_img="part_use.gif";
+								}else{
+									$use_chk_img="part_nouse.gif";
+								}
+	
+								$sub_page="/".$sub_row[menu_dir]."sub_page.htm?page_idx=".$sub_row[seq];
+						?>
+									  <tr height="25" bgcolor="#ffffff"> 
+										<td width="" align="left" style="padding-left:20px">- <?=$sub_row[menu_name]?></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width="" align="center"><IMG alt=사용 src="../../image/<?=$use_chk_img?>" align=absMiddle border=0></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width=""  align="left">
+										  <A href="javascript:print_link('<?=$sub_page?>')"><img src="../../image/bt_copy.gif" align=absMiddle border="0"></a><?=$sub_page?></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width="50"  align="center"><?=$sub_row[cnt]?></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width=""  align="center">
+										  <A href="menu_view.htm?flag=<?=$sub_row[flag]?>&seq=<?=$sub_row[seq]?>&depth=<?=$sub_row[depth]+1?>"><IMG src="../../image/bEdit.gif" border=0></A>
+										  <A href="javascript:menu_del('1')"><IMG src="../../image/bDel.gif" border=0></A></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width="90" align="center"><A href="#"><IMG alt=1차서브메뉴등록 src="../../image/bt_category_add.gif" align=absMiddle border=0></A></td>
+									  </tr>
+									  <tr> 
+									    <td colspan="9" height="2" background="../../image/table_line_b.gif"></td>
+									  </tr>
+							<?
+								$sub2_query="select seq,sort,reply,depth,flag,menu_dir,menu_name,use_chk,cnt from km_menu where reply='$sub_row[seq]' and depth='3' order by sort ASC, seq ASC, depth ASC";
+								$sub2_result=$inst->Execute($sub2_query);
+
+								while($sub2_row=$inst->ExecFetchArray($sub2_result)){
+									if ($sub2_row[use_chk] <> "no") {
+										$use_chk_img="part_use.gif";
+									}else{
+										$use_chk_img="part_nouse.gif";
+									}
+									
+									$sub_page="/".$sub2_row[menu_dir]."sub_page.htm?page_idx=".$sub2_row[seq];
+							?>
+									  <tr height="25" bgcolor="#ffffff"> 
+										<td width="" align="left" style="padding-left:40px">- <?=$sub2_row[menu_name]?></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width="" align="center"><IMG alt=사용 src="../../image/<?=$use_chk_img?>" align=absMiddle border=0></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width=""  align="left">
+										  <A href="javascript:print_link('<?=$sub_page?>')"><img src="../../image/bt_copy.gif" align=absMiddle border="0"></a><?=$sub_page?></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width="50"  align="cneter"><?=$sub2_row[cnt]?></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width=""  align="center">
+										  <A href="menu_view.htm?flag=<?=$sub2_row[flag]?>&seq=<?=$sub2_row[seq]?>&depth=<?=$sub2_row[depth]+1?>"><IMG src="../../image/bEdit.gif" border=0></A>
+										  <A href="javascript:menu_del('1')"><IMG src="../../image/bDel.gif" border=0></A></td>
+										<td width="1" bgcolor="#DFDFDF"></td>
+										<td width="90" align="center">&nbsp;</td>
+									  </tr>
+									  <tr> 
+									    <td colspan="9" height="2" background="../../image/table_line_b.gif"></td>
+									  </tr>
+					<? 
+								}
+							}
+						} 
+					?>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" bgcolor="#B3C6D2"></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+
+						</table>
+
+					  </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

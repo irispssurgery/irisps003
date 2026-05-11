@@ -1,0 +1,3 @@
+				<div id="join1"><img src="image/join_t1.gif" alt="거제백병원 홈페이지에 회원가입하시겠습니까? 거제백병원은 내국인과 외국인으로 나뉘어서 회원가입절차가 이루어집니다.회원가입을 하시면 보다 편리한 서비스를 제공받으실 수 있습니다." /><br />
+				<a href="<?=$_SERVER["PHP_SELF"]?>?mode=agree&chk=korean"><img src="image/joinbtn_1.gif" alt="내국인 회원가입" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="<?=$_SERVER["PHP_SELF"]?>?mode=agree&chk=foreign"><img src="image/joinbtn_2.gif" alt="외국인 회원가입" /></a></p>
+				</div>

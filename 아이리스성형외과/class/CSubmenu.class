@@ -1,0 +1,196 @@
+<?
+	class CSubmenu
+	{
+		var $db;
+		var $save_data;
+		var $origin_data;
+
+		function CSubmenu()
+		{
+			global $db;
+
+			if(!is_object($db) || !isset($db))
+				return -1;
+
+			$this->db=$db;
+		}
+
+		function mInsert($data)
+		{
+			if(!$data)
+				return false;
+
+			if(isset($data["save_data"]) && isset($data["origin_data"]))
+			{
+				$this->save_data = time();
+				$this->origin_data = $data["save_data"];
+
+				if(!$this->FileUpload(BANNER_DATA))
+					return false;
+
+				$data["save_data"] = $this->save_data;
+			}
+
+			while(list($key, $value)=each($data))
+			{
+				$col[]=$key;
+				$row[]="'".$value."'";
+			}
+
+			$cols=implode(",", $col);
+			$tuple=implode(",", $row);
+
+			$query="INSERT INTO sub_menu (".$cols.", sm_signdate) VALUES (".$tuple.", now());";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function mListAll($mm_code)
+		{
+			if(!$mm_code)
+				return false;
+
+			$query="SELECT * FROM sub_menu WHERE mm_code='".$mm_code."' ORDER BY sm_idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mDeleteByIdx($sm_idx)
+		{
+			if(!$sm_idx)
+				return false;
+
+			$query="DELETE FROM sub_menu WHERE sm_idx=".$sm_idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getInfoMenu($sm_idx)
+		{
+			if(!$sm_idx)
+				return false;
+
+			$query="SELECT * FROM sub_menu WHERE sm_idx=".$sm_idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mUpdateMenu($code, $name, $sm_idx, $htmlname, $data)
+		{
+			if(!$code || !$name || !$sm_idx || !$data)
+				return false;
+
+			################################기존의 있던 배너는 삭제#############################
+			$query="SELECT * FROM sub_menu WHERE sm_idx=".$sm_idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				if($resultSet["save_data"])
+					unlink(BANNER_DATA."/".$resultSet["save_data"]);
+			}
+
+			####################################################################################
+
+			if(isset($data["save_data"]) && isset($data["origin_data"]))
+			{
+				$this->save_data = time();
+				$this->origin_data = $data["save_data"];
+
+				if(!$this->FileUpload(BANNER_DATA))
+					return false;
+
+				$data["save_data"] = $this->save_data;
+			}
+
+			$query="UPDATE sub_menu SET sm_code='".$code."', sm_name='".$name."', htmlname='".$htmlname."', origin_data='".$data["origin_data"]."', save_data='".$data["save_data"]."' WHERE sm_idx=".$sm_idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getMainMenuName($mm_code)
+		{
+			if(!$mm_code)
+				return false;
+
+			$query="SELECT mm_name FROM main_menu WHERE mm_code='".$mm_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getSubMenuName($sm_code)
+		{
+			if(!$sm_code)
+				return false;
+
+			$query="SELECT sm_name FROM sub_menu WHERE sm_code='".$sm_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getBannerImage($mm_code, $sm_code)
+		{
+			if(!$mm_code || !$sm_code)
+				return false;
+
+			$query="SELECT save_data FROM sub_menu WHERE mm_code='".$mm_code."' AND sm_code='".$sm_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getMenuName($mm_code, $sm_code)
+		{
+			if(!$mm_code || !$sm_code)
+				return false;
+
+			$query="SELECT sm_name FROM sub_menu WHERE mm_code='".$mm_code."' AND sm_code='".$sm_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function FileUpload($save_path)
+		{
+			if(!$save_path)
+				return false;
+	
+			if(copy($this->origin_data, BANNER_DATA."/".$this->save_data))
+			{
+				unlink($this->origin_data);
+				return true;
+			}
+			else
+			{
+				unlink($this->origin_data);
+				return false;
+			}
+		}
+	}
+?>

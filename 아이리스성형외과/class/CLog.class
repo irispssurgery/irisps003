@@ -1,0 +1,37 @@
+<?
+	class CLog
+	{
+		var $db;
+
+		function CLog()
+		{
+			global $db;
+
+			if(!$db && !isset($db))
+				return -1;
+
+			$this->db=$db;
+		}
+
+		function mGetTotalVisit()
+		{
+			$query="SELECT count(*) FROM log";
+			$result=$this->db->ExecuteDML($query);
+
+			$total_count=$this->db->getResult($result, 0, 0);
+
+			return $total_count;
+		}
+
+		function mTodayVisit()
+		{
+			$ymd=date("Ymd");
+			$query="SELECT count(*) FROM log WHERE substring(v_date, 1, 8)=".$ymd."";
+			$result=$this->db->ExecuteDML($query);
+
+			$count=$this->db->getResult($result, 0, 0);
+
+			return $count;
+		}
+	}
+?>

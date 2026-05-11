@@ -1,0 +1,180 @@
+<!-- upper_eyelid.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>상안검 성형술 | 아이리스 성형외과</title>
+    <!-- base.html에서 사용하던 CSS 링크를 그대로 가져와야 디자인이 유지됩니다 -->
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+        /* [표준.html에서 가져온 기본 스타일] */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', sans-serif;
+        }
+        body {
+            background-color: #fff;
+            color: #333;
+            line-height: 1.7;
+        }
+        /* [표준.html 헤더 스타일 적용] */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 10%;
+            border-bottom: 1px solid #eee;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+        }
+        .logo {
+            display: flex; 
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+            color: #c5a880;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #333333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        nav ul li a:hover {
+            color: #d4a373;
+        }
+
+        /* [eye_surgery.html 전용 콘텐츠 스타일] */
+        .page-content {
+            padding-top: 120px; 
+            min-height: 80vh;
+        }
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        .hero-section {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        .hero-section h1 {
+            font-size: 42px;
+            color: #222;
+            margin-bottom: 20px;
+        }
+        /* ... (이하 기존 스타일 유지) ... */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        .info-card {
+            background: #f9f9f9;
+            padding: 40px;
+            border-radius: 15px;
+            border-left: 5px solid #d4a373;
+        }
+        .info-card h3 {
+            font-size: 24px;
+            color: #d4a373;
+            margin-bottom: 15px;
+        }
+        .info-card p {
+            color: #555;
+            font-size: 1.05rem;
+        }
+        .highlight-box {
+            background: #fdf8f2;
+            padding: 40px;
+            border-radius: 15px;
+            margin-top: 40px;
+            border: 1px solid #eee;
+        }
+             /* 푸터 */
+  footer {
+      background: #333;
+      color: #fff;
+      padding: 40px 10%;
+      text-align: center;
+    }
+
+    .footer-info {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- base.html의 헤더 구조를 그대로 복사/붙여넣기 -->
+    <header>
+        <!-- 이미지가 없는 경우의 표준 구조 -->
+<a href="index.html" class="logo" style="display: flex; align-items: center;"><img src="image/iris-logo.gif" alt="Logo" style="height: 45px; margin-right: 10px;">아이리스 성형외과</a>
+<nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="doctor.html">의료진</a></li>
+                <li><a href="eye.html">진료안내</a></li>
+                <li><a href="contact.html">오시는길</a></li>
+            </ul>
+        </nav>
+    </header>
+
+<div id="wrapper">
+    <!-- [Main Content: eye_surgery 전용 콘텐츠] -->
+    <main class="page-content">
+        <div class="content-wrapper">
+            
+            <!-- Hero Section: 페이지 제목 및 서문 -->
+            <section class="hero-section">
+                <h1>상안검 성형술 (Upper Blepharoplasty)</h1>
+                <p style="font-size: 1.2rem; color: #666; max-width: 800px; margin: 0 auto;">
+                  상안검 성형술은 처진 눈꺼풀 피부를 절제하고 눈매를 교정하여, 
+                중장년층의 기능적 불편함(시야 가림)을 해결하고 미용적인 개선을 동시에 이루는 수술입니다.  
+                    아이리스 성형외과는 개인의 해부학적 구조를 고려한 <strong>맞춤형 리프팅 솔루션</strong>을 제공합니다.
+                </p>
+            </section>
+
+
+
+        <section style="margin-top: 40px;">
+            <h2 style="border-left: 5px solid #d4a373; padding-left: 15px;">수술 특징</h2>
+            <ul style="line-height: 2;">
+                <li>처진 피부 제거를 통한 시야 확보</li>
+                <li>눈매 교정을 통한 또렷한 인상</li>
+                <li>빠른 회복과 자연스러운 결과</li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- base.html의 푸터 구조를 그대로 복사/붙여넣기 -->
+    <!-- [푸터 영역] -->
+        <footer>
+<div class="footer-content">
+        <p>&copy; 2005 IRIS PLASTIC SURGERY. All Rights Reserved.</p>
+        <div class="footer-info">
+            주소: 부산광역시 부산진구 서면 문회로2 3층 | 대표전화: 051-809-0021<br>
+            진료시간: 평일 10:00 - 18:00 | 토요일 10:00 - 13:00
+        </div>
+</footer>
+
+    </div>
+
+</body>
+</html>

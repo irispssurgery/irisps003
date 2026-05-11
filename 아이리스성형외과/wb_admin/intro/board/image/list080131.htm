@@ -1,0 +1,520 @@
+<?
+ob_start();
+session_start();
+session_cache_limiter('private');
+
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+extract($HTTP_SESSION_VARS);
+extract($HTTP_COOKIE_VARS);
+
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+include "../../auth_admin.php3";
+$inst->Connect();
+
+
+//게시판 내용 비우기 , 첨부물 삭제하기
+if ($action == "empty_table") 
+{
+	exec_Empty_Table("../../../up_board",$table,$inst);
+}
+
+
+
+// DUMP  작업
+if ($action == 'table_dump')
+{
+
+
+	//필요 변수 ...
+	$MYSQL_DB = "webroin";
+
+	$db_dump="123all321";
+	if ($db_dump=="all") {
+		$SQL = "";	
+	}else{
+		$SQL = "where db='$table'"; // ezboard에서는 $SQL 요놈이 있어야지 되네..
+	}
+
+
+	//$db_dump all 이 아니다.
+	//$dump_type 은 all 이다.
+
+
+
+	if ($db_dump == 'all') {
+		header("Content-disposition: filename=${MYSQL_DB}_bakup.sql");
+	}
+	else {
+		header("Content-disposition: filename=ezboard.sql");
+	}
+
+	header("Content-type: application/octetstream");
+	header("Pragma: no-cache");
+	header("Expires: 0");
+
+	if (eregi("Win",$HTTP_USER_AGENT)) {
+		$ctrn = "\r\n";
+	} else {
+		$ctrn = "\n";
+	}
+	@set_time_limit(600);
+
+	if ($db_dump == 'all') {
+		$i = 0;
+		$tables = mysql_list_tables($MYSQL_DB);
+
+		$num_tables = mysql_num_rows($tables);
+
+		while ($i < $num_tables) {
+			$table = mysql_tablename($tables, $i);
+
+			print "#---------------------------------------------------------$ctrn";
+			print "# 호스트: localhost 선택한 디비 : $MYSQL_DB$ctrn";
+			print "# 테이블 네임 : $table$ctrn";
+			print "# --------------------------------------------------------$ctrn$ctrn";
+			print get_table_def($MYSQL_DB, $table, $ctrn).";$ctrn";
+
+			print "$ctrn$ctrn";
+			print "#---------------------------------------------------------$ctrn";
+			print "# $table INSERT DATA$ctrn";
+			print "# --------------------------------------------------------$ctrn$ctrn";
+			get_table_content($MYSQL_DB, $table, "my_handler",urldecode(stripslashes($SQL)));
+
+			$i++;
+		}
+	}
+	else {
+
+		print "#---------------------------------------------------------$ctrn";
+		print "# 호스트: localhost 선택한 디비 : $MYSQL_DB$ctrn";
+		print "# 테이블 네임 : ezboard$ctrn";
+		print "# --------------------------------------------------------$ctrn$ctrn";
+		print get_table_def($MYSQL_DB, $table, $ctrn).";$ctrn";
+		if ( $dump_type == 'dump_all') {
+			print "$ctrn$ctrn";
+			print "#---------------------------------------------------------$ctrn";
+			print "# ezboard INSERT DATA$ctrn";
+			print "# --------------------------------------------------------$ctrn$ctrn";
+			get_table_content($MYSQL_DB, $table, "my_handler",urldecode(stripslashes($SQL)));
+		}
+	}
+	exit;
+
+}
+
+function get_table_content($db, $table,$my_handler,$SQL)
+{
+	$result = mysql_db_query($db, "SELECT * FROM ezboard $SQL");
+	$i = 0;
+	while ($row = mysql_fetch_row($result))
+	{
+		set_time_limit(60);
+		$schema_insert = "INSERT INTO ezboard VALUES(";
+		for ($j=0; $j<mysql_num_fields($result);$j++)
+		{
+			if (!isset($row[$j]))
+			{
+				$schema_insert .= " NULL,";
+			}
+			elseif ($row[$j] != "")
+			{
+				$schema_insert .= " '".addslashes($row[$j])."',";
+			}
+			else 
+			{
+				$schema_insert .= " '',";
+			}
+		}
+		$schema_insert = ereg_replace(",$", "", $schema_insert);
+		$schema_insert .= ")";
+		$my_handler(trim($schema_insert));
+		$i++;
+	}
+	return (true);
+}
+
+
+function my_handler($sql_insert)
+{
+	global $asfile,$ctrn;
+	echo "$sql_insert;$ctrn";
+}
+
+
+function get_table_def($db, $table, $ctrn)
+{
+	global $drop;
+	$schema_create = "";
+	if(!empty($drop)){
+		$schema_create .= "DROP TABLE IF EXISTS ezboard;$ctrn"; // 요놈 이상하다
+	}
+	$schema_create .= "CREATE TABLE ezboard ($ctrn";
+
+	$result = mysql_db_query($db, "SHOW FIELDS FROM ezboard");
+	while ($row = mysql_fetch_array($result))
+	{
+		$schema_create .= "   $row[Field] $row[Type]";
+		if (!empty($row["Default"]))
+		{
+			$schema_create .= " DEFAULT '$row[Default]'";
+		}
+		if ($row["Null"] != "YES")
+		{
+			$schema_create .= " NOT NULL";
+		}
+		if ($row["Extra"] != "")
+		{
+			$schema_create .= " $row[Extra]";
+		}
+		$schema_create .= ",$ctrn";
+	}
+	$schema_create = ereg_replace(",".$ctrn."$", "", $schema_create);
+	$result = mysql_db_query($db, "SHOW KEYS FROM ezboard");
+	while ($row = mysql_fetch_array($result)){
+		$kname=$row['Key_name'];
+		if (($kname != "PRIMARY") && ($row['Non_unique'] == 0)) $kname="UNIQUE|$kname";
+		if(!is_array($index[$kname])){
+			$index[$kname] = array();
+		}
+		$index[$kname][] = $row['Column_name'];
+	}
+	while(list($x, $columns) = @each($index)){
+		$schema_create .= ",$ctrn";
+		if($x == "PRIMARY"){
+			$schema_create .= "   PRIMARY KEY (" . implode($columns, ", ") . ")";
+		}
+		else if (substr($x,0,6) == "UNIQUE") {
+			$schema_create .= "   UNIQUE ".substr($x,7)." (" . implode($columns, ", ") . ")";
+		}
+		else {
+			$schema_create .= "   KEY $x (" . implode($columns, ", ") . ")";
+		}
+	}
+	$schema_create .= "$ctrn)";
+
+	return (stripslashes($schema_create));
+} 
+
+?>
+<html>
+<head>
+<title><?=$head_title;?></title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+<script language="JavaScript">
+<!--
+function open_window(name, url, left, top, width, height, toolbar, menubar, statusbar, scrollbar, resizable)
+{
+  toolbar_str = toolbar ? 'yes' : 'no';
+  menubar_str = menubar ? 'yes' : 'no';
+  statusbar_str = statusbar ? 'yes' : 'no';
+  scrollbar_str = scrollbar ? 'yes' : 'no';
+  resizable_str = resizable ? 'yes' : 'no';
+  window.open(url, name, 'left='+left+',top='+top+',width='+width+',height='+height+',toolbar='+toolbar_str+',menubar='+menubar_str+',status='+statusbar_str+',scrollbars='+scrollbar_str+',resizable='+resizable_str);
+}
+//-->
+</script>
+<script language="JavaScript">
+<!--
+function Show(val,elem){
+	if(!val){
+		document.getElementById('tooltip').style.display = "none";
+	}else{
+		var detail = "<table border=0 cellspacing=1 cellpadding=3 bgcolor=#F0F0F0>" + val + "</table>";
+		document.getElementById('tooltip').innerHTML = detail;
+		if(!elem){
+			document.getElementById('tooltip').style.pixelLeft = event.clientX + document.body.scrollLeft - 40;
+			document.getElementById('tooltip').style.pixelTop = event.clientY + document.body.scrollTop + 10;
+		}else{
+			var layerX = 0;
+			var layerY = 0;
+			while(elem){
+				layerX += elem.offsetLeft;
+				layerY += elem.offsetTop;
+				elem = elem.offsetParent;
+			}
+			document.getElementById('tooltip').style.pixelLeft = layerX - 3;
+			document.getElementById('tooltip').style.pixelTop = layerY + 22;
+		}
+		document.getElementById('tooltip').style.display = "block";
+	}
+}
+function Hide(){
+	document.getElementById('tooltip').style.display = "none";
+}
+
+//-->
+</script>
+
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 홈페이지관리 &gt; 게시판관리 &gt; 게시판설정</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" height="400" valign="top">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+<!-- left menu -------------------------------------------------------------------------------------->
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                             <?
+								include "left.htm";
+							 ?>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+<!-- left menu -------------------------------------------------------------------------------------->
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="750" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td><img src="image/bar04.gif" width="720" height="40"></td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td> 
+                              <table border="0" width="720" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td  height="4" bgcolor="#94B5CA"></td>
+                                </tr>
+                                <tr> 
+                                  <td height="30" bgcolor="#C3E2F6">
+
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                      <tr> 
+                                        <td width="40" align="center" height="30"><b><font color="#000000">NO</font></b></td>
+                                        <td width="1" bgcolor="#94B5CA"></td>
+                                        <td align="center"><b><font color="#000000">게시판명</font></b></td>
+                                        <td bgcolor="#94B5CA" width="1"></td>
+
+                                        <td width="65" align="center"><b><font color="#000000">게시글</font></b></td>
+                                        <td bgcolor="#94B5CA" width="1"></td>
+                                        <td align="center" width="60"><b><font color="#000000">코멘트</font></b></td>
+                                        <td bgcolor="#94B5CA" width="1"></td>
+                                        <td align="center" width="50"><b><font color="#000000">파일</font></b></td>
+                                        <td bgcolor="#94B5CA" width="1"></td>
+                                        <td align="center" width="50"><b><font color="#000000">SIZE</font></b></td>
+                                        <td bgcolor="#94B5CA" width="1"></td>
+                                        <td align="center" width="180"><b><font color="#000000">수정ㅣ삭제 | 비움 | 백업</font></b></td>
+
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td height="3" bgcolor="#B3C6D2"></td>
+                                </tr>
+                                <tr> 
+                                  <td height="1"></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td> 
+							  <div id="tooltip" style="background:#C2D5B7;padding:3px;border:solid 2px #FFFFFF;position:absolute;display:none;z-index:1;"></div>
+
+                              <table border="0" width="720" cellspacing="0" cellpadding="0">
+								<?
+									$tyear      = date("Y");
+									$tmonth     = date("m");
+									$tday       = date("d");
+									$today      = $tyear.$tmonth.$tday;
+
+									$query="select * from main_board_cfg ORDER BY boardname ASC";
+
+									$result=$inst->Execute($query);
+									$tot_db  = 1;
+									$t_date1 = date("Y-m-d A g:i");
+									$tt_date1= explode(" ",$t_date1);
+									$i=1;
+
+									while($row=$inst->ExecFetchArray($result)){
+									$db            = $row[db];
+									$passwd        = $row[passwd];
+									$date1         = $row[date1];
+									$boardname     = $row[boardname];
+									$board_type    = $row[board_type];
+									$admin_user_id = $row[admin_id];
+									$category      = $row[category];
+									$use_mig_db    = $row[use_mig_db];
+									
+									$date1=explode(" ",$date1);
+									
+									//오늘 등록한수
+									$c_query     = "select count(no) from $db where date1 = '$tt_date1[0]'";
+									$today_count = $inst->ExecValue($c_query); 
+									if (!$today_count) $today_count='0';
+
+									if (($i % 2) == 1) {$bgcolor = "#FFFFFF";}
+									else {$bgcolor = "#F8F8F8";} 
+
+									//전체 게시물수
+									$total_query="select count(no) from ezboard where db='$db'";// and list_del!='yes'"; 
+									$total_db=$inst->ExecFetch_Var($total_query); 
+
+									$board_Var = "../../../km_board/admin_board.htm?db=".$db;
+									$base_var = " ".
+
+										"<tr bgcolor=#EDF0F1 align=center>".
+										"<td></td>".
+										"<td>관리자ID</td>".
+										"<td>비밀번호</td>".
+										"<td>등록일</td>".
+										"<td></td>".
+										"</tr>".
+										"<tr bgcolor=white align=center>".
+										"<td bgcolor=efefef><b></b></td>".
+										"<td>".$admin_user_id."</td>".
+										"<td>".$passwd."</td>".
+										"<td>".$date1[0]."</td>".
+										"<td></td>".
+										"</tr>";
+
+
+								?>
+
+                                <tr> 
+                                  <td width="40" align="center"  bgcolor="<?=$bgcolor;?>" height="30" id='TR_<?=$i?>' onMouseOver="Show('<?=$base_var?>',TR_<?=$i?>)" onMouseOut="Hide();"><?=$i;?></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="<?=$bgcolor;?>" style="padding-left:5px" title='테이블명 : <?=$db;?>'><a href="javascript:open_window('down','../../../up_board/file/fmanager.php?pwd=../<?=$db;?>/&query=down&type=dir', 0, 10, 700, 670, 0, 0, 0, 1, 1)">[DOWN]</a> 
+								  
+									<a href="javascript:open_window('max_class','<?=$board_Var?>', 0, 10, 700, 670, 0, 0, 0, 1, 1)"><?=$boardname;?></a><font color='#CE4806'>[<?=$ttt_count;?>]</font>
+								  </td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="<?=$bgcolor;?>" width="65"><?=number_format($total_db)?></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+
+                                  <td width="60" align="center" bgcolor="<?=$bgcolor;?>">0</td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+
+                                  <td width="50" align="center" bgcolor="<?=$bgcolor;?>"><?=number_format(getUpFileNum($db))?></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+
+                                  <td width="50" align="center" bgcolor="<?=$bgcolor;?>"><?=getSizeFormat(getUpFileSize($db),1)?></td>
+                                  </td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="<?=$bgcolor;?>" width="180"> 
+                                    <table border="0" cellspacing="0" cellpadding="1">
+                                      <tr> 
+                                        <td><a href='modify.htm?db=<?=$db;?>'><img src="image/but02.gif" width="40" height="18" border='0'></a></td>
+                                        <td><a href='./delete_ok.php3?db_table=<?=$db;?>' OnClick="return confirm('정말 삭제하시겠습니까?')"><img src="image/but01.gif" width="40" height="18" border='0'></a></td>
+										<td><a href='list.htm?action=empty_table&table=<?=$db?>' OnClick="return confirm('\n테이블을 비우시면 복구가 불가능합니다.               \n\n정말로 비우시겠습니까?\n')"><img src="image/but02.gif" width="40" height="18" border='0'></a></td>
+
+										<td><a href='list.htm?action=table_dump&table=<?=$db?>&dump_type=dump_all&p=1'><img src="image/but02.gif" width="40" height="18" border='0'></a></td>
+
+										
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="13" height="2" background="image/table_line_b.gif"></td>
+                                </tr>
+
+
+
+								<?
+								$i++;
+								}
+								?>
+                              </table>
+                            </td>
+                          </tr>
+						  <tr> 
+                            <td colspan="7" height="4" bgcolor="#94B5CA"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp; </td>
+                    </tr>
+                    <tr> 
+                      <td align="center"><a href='write.htm'><img src="image/but04.gif" width="80" height="30" border='0'></a></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

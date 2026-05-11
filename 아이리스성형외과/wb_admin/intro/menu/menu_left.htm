@@ -1,0 +1,108 @@
+<?
+
+$table = 'km_menu';
+
+//$sum = sql_one_one($table,'sum(file_size)',"where user_id='$_SESSION[cookie_id]'");
+?>
+<html>
+<head>
+<link rel="StyleSheet" href="dtree.css" type="text/css"/>
+<script type="text/javascript" src="dtree.js"></script>
+<STYLE type=text/css>BODY {
+        OVERFLOW-X: hidden; OVERFLOW: scroll
+}
+body
+{scrollbar-face-color:#ffffff;scrollbar-shadow-color:#dddddd;
+scrollbar-highlight-color:#FFffff; scrollbar-3dlight-color:#dddddd;
+scrollbar-darkshadow-color:#FFffff; scrollbar-track-color: #ffffff;
+scrollbar-arrow-color:#000000;}
+td{font-size:12px}
+</STYLE>
+<script>
+function showmenu(mouse)
+{
+ return false;
+}
+document.onmousedown = showmenu; 
+document.oncontextmenu = showmenu;
+</script>
+
+<script language="JavaScript">
+<!--
+function go_mkdir(){
+	seq = f_check.seq.value;
+	depth = f_check.depth.value;
+	window.open('folder_mkdir.htm?seq='+seq+'&depth='+depth,'folder','left=100,top=100,width=300,height=100');
+	//parent.document.all['mouse_menu_1'].style.visibility='hidden';
+}
+function go_modify(){
+	seq = f_check.seq.value;
+	depth = f_check.depth.value;
+	window.open('folder_modify.htm?seq='+seq+'&depth='+depth,'folder','left=100,top=100,width=300,height=100');
+	//parent.document.all['mouse_menu_1'].style.visibility='hidden';
+}
+function vod(code, program_code, no) {
+	filename=program_code;
+
+	window.location.href="vod.htm?code="+code+"&filename="+filename;
+}
+
+function mFull() {
+	document.WMPlay.DisplaySize = 3;
+}
+//-->
+</script>
+</head>
+<body leftmargin=0 topmargin=0> 
+<form name='f_value' style='margin:0px' style='margin:0px'>
+<input type='hidden' name='seq' value=''>
+<input type='hidden' name='depth' value=''>
+<input type='hidden' name='flag' value=''>
+<input type='hidden' name='mouse_value' value=''>
+</form>
+<form name='f_check' style='margin:0px'>
+<input type='hidden' name='depth' value='<?=(!$depth) ? '1':$depth;?>'>
+<input type='hidden' name='seq' value='<?=(!$seq) ? '0':$seq;?>'>
+</form>
+
+<table width="165" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+	<td height=23 align=center>
+		<? if($depth < 4){ ?>
+		<a href="javascript:go_mkdir()" onfocus='this.blur()'><b><font color=blue><img src="../../image/menu_mk.gif" width="48" height="21" border='0'></a>
+		<? }Else{?>
+		<a href="javascript:alert('2차 서브메뉴까지 생성할 수 있습니다.')" onfocus='this.blur()'><b><font color=blue><img src="../../image/menu_mk.gif" width="48" height="21" border='0'></a>
+		<? } ?>
+		<? if($seq!=0){ ?>
+		<a href="javascript:go_modify()" onfocus='this.blur()'><b><font color=blue><img src="../../image/menu_mv.gif" width="48" height="21" border='0'></a>
+		<? }Else{ ?>
+		<a href="javascript:alert('수정할 메뉴가 없습니다')" onfocus='this.blur()'><b><font color=blue><img src="../../image/menu_mv.gif" width="48" height="21" border='0'></a>
+		<? } ?>
+		<a href="folder_rmdir.php?flag=<?=$flag?>&seq=<?=$seq?>"><b><font color=blue><img src="../../image/menu_rm.gif" width="48" height="21" border='0'></a>
+	</td>
+  </tr>
+</table>
+<div class="dtree" style="overflow-x:auto;overflow-y:auto;width:150px;height:360px">
+	<p>&nbsp;&nbsp;<a href="javascript: d.openAll();">전체 열기</a> | <a href="javascript: d.closeAll();">전체 닫기</a></p>
+	<script type="text/javascript">
+		<!--
+		d = new dTree('d');
+		d.add(0,-1,'메뉴 관리','menu_list.htm?seq=0&depth=1');
+		<?
+		$query="select seq,reply,depth,flag,menu_name from $table where flag='D' order by sort ASC, seq ASC, depth ASC";
+		//$query="select seq,reply,depth,flag,menu_name from $table order by seq ASC, sort ASC, depth ASC";
+		$result=$inst->Execute($query);
+		$j=1;
+
+		while($row=$inst->ExecFetchArray($result)){
+		?>
+		d.add('<?=$row[seq]?>','<?=$row[reply]?>','<?=$row[menu_name]?>','menu_view.htm?flag=<?=$row[flag]?>&seq=<?=$row[seq]?>&depth=<?=$row[depth]+1?>','aa.jpg');
+		<?
+		$j++;
+		}?>
+		document.write(d);
+		//-->
+	</script>
+</div>
+</body>
+</html>

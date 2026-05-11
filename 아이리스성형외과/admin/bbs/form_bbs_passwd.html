@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<style type="text/css">
+<!--
+table {  font-family: "굴림체"; font-size: 9pt}
+.box {  font-family: "굴림체"; font-size: 12px; text-decoration: none; border: #000000; border-style: solid; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px}
+-->
+</style>
+<Script language="javascript">
+
+function checkForm()
+{
+	var form = document.form1;
+
+	if(!form.bbs_passwd.value)
+	{
+		alert("비밀번호를 입력하지 않았습니다.");
+		form.bbs_passwd.focus();
+
+		return false;
+	}
+
+	form.action="/bbs/proc_bbs_passwd.html";
+//	form.submit();
+}
+
+function kill()
+{
+	self.close();
+}
+
+function focus()
+{
+	document.form1.bbs_passwd.focus();
+}
+</Script>
+</head>
+
+<body bgcolor="#FFFFFF" onload="focus();">
+<form name="form1" method="post" onsubmit="return checkForm();">
+  <table width="350" border="1" cellspacing="0" cellpadding="3" bordercolorlight='silver' bordercolordark='white'>
+    <tr align="center"> 
+      <td bgcolor="f2f2f2" height="22"><b>:: 비밀번호 입력 ::</b></td>
+    </tr>
+    <tr align="center"> 
+      <td>
+        <input type="password" name="bbs_passwd" class='box'>
+      </td>
+    </tr>
+    <tr align="center"> 
+      <td bgcolor="f9f9f9"> 
+        <input type="hidden" name="bbscode_code" value="<?echo $bbscode_code;?>">
+	    <input type="hidden" name="mode" value="<?echo $mode;?>">
+	    <input type="hidden" name="is_uploaded_file" value="<?echo $is_uploaded_file;?>">
+	    <input type="hidden" name="bbs_idx" value="<?echo $idx;?>">
+        <input type="image" src="./but/but_ok.gif" border='0' name="Button" value="  확인  ">
+        <!--<input type="image" src="./but/but_can.gif" border='0' name="Submit2" value="  닫기  " onclick="kill();" width="51" height="18">-->
+		<a href="javascript:self.close();"><img src="./but/but_can.gif" border="0"></a>
+      </td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>

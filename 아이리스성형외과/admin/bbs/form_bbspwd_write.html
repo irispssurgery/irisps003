@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<style type="text/css">
+<!--
+table {  font-family: "굴림체"; font-size: 9pt}
+-->
+</style>
+<Script language="javascript">
+function checkForm(form)
+{
+	if(!form.bbscode_id.value)
+	{
+		alert("아이디를 입력하지 않았습니다.");
+		form.bbscode_id.focus();
+
+		return;
+	}
+
+	if(!form.bbscode_passwd.value)
+	{
+		alert("비밀번호를 입력하지 않았습니다.");
+		form.bbscode_passwd.focus();
+
+		return;
+	}
+
+	form.action="proc_bbspwd_write.html";
+	form.submit();
+}
+</Script>
+</head>
+
+<body bgcolor="#FFFFFF">
+<form name="form1" method="post" action="">
+  <table width="449" border="1" height="178">
+    <tr align="center"> 
+      <td colspan="2">아이디와 비밀번호 입력</td>
+    </tr>
+    <tr> 
+      <td width="129" align="center">아이디</td>
+      <td width="304">&nbsp;
+        <input type="text" name="bbscode_id">
+      </td>
+    </tr>
+    <tr> 
+      <td width="129" align="center">비밀번호</td>
+      <td width="304">&nbsp;
+        <input type="password" name="bbscode_passwd">
+      </td>
+    </tr>
+    <tr align="center"> 
+      <td colspan="2">
+	  <input type="hidden" name="bbscode_code" value="<?echo $bbscode_code;?>">
+	  <input type="hidden" name="bbscode_idx" value="<?echo $bbscode_idx;?>">
+	  <a href="javascript:checkForm(document.forms[0]);">[확인]</a>
+	  <a href="javascript:self.close();">[취소]</a></td>
+    </tr>
+  </table>
+</form>
+<p>&nbsp;</p>
+</body>
+</html>

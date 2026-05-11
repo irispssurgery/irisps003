@@ -1,0 +1,259 @@
+<?
+	class CCardcart
+	{
+		var $db;
+		var $product;
+		var $PAGE;
+
+		function CCardcart()
+		{
+			global $db;
+			global $product;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+			$this->product=$product;
+		}
+		
+		function InputCart($data)
+		{
+			if(!$data)
+				return false;
+
+			$product_info=$this->product->getCardInfoByCode($data["card_name"]);
+
+			$data["product_name"]=$product_info[0]["card_name"];
+			$data["image"]=$product_info[0]["card_img"];
+			
+			foreach($data as $key => $value)
+			{
+				$cols[]=$key;
+
+				if($key=="price" || $key=="qtty")
+					$rows[]="".$value."";
+				else
+					$rows[]="'".$value."'";
+			}
+			
+			$column=implode(",", $cols);
+			$tuple=implode(",", $rows);
+
+			$query="INSERT INTO cart_tmp (".$column.", cart_date) VALUES (".$tuple.", now());";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function ListCart($cart_id)
+		{
+			if(!$cart_id)
+				return false;
+
+			$query="SELECT * FROM cart_tmp WHERE cart_id='".$cart_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function delCartByIdx($no)
+		{
+			if(!$no)
+				return false;
+			
+			$query="DELETE FROM cart_tmp WHERE num=".$no."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function doubleCartCheckN($data)
+		{
+			if(!$data)
+				return false;
+
+			$query="SELECT count(*) FROM cart_tmp WHERE cart_id='".$data["cart_id"]."' AND card_name='".$data["card_name"]."' AND price=".$data["price"]."";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function doubleCartCheckR($data)
+		{
+			if(!$data)
+				return false;
+
+			$query="SELECT count(*) FROM cart_tmp WHERE cart_id='".$data["cart_id"]."' AND card_name='".$data["card_name"]."' AND price=".$data["price"]." AND state='".$data["state"]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function changeCount($idx, $count)
+		{
+			if(!$idx || !$count)
+				return false;
+
+			$query="UPDATE cart_tmp SET qtty=".$count." WHERE num=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getAccountPay($cart_id)
+		{
+			if(!$cart_id)
+				return false;
+
+			$query="SELECT qtty, price FROM cart_tmp WHERE cart_id='".$cart_id."'";
+			$result=$this->db->ExecuteDML($query);
+			
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function InputOrder($data)
+		{
+			if(!$data)
+				return false;
+
+			foreach($data as $key => $value)
+			{
+				$cols[]=$key;
+				$rows[]="'".$value."'";
+			}
+
+			$column=implode(",", $cols);
+			$tuple=implode(",", $rows);
+			
+			$query="INSERT INTO order_info (".$column.", order_date) VALUES (".$tuple.", now());";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getOrderNo()
+		{
+			$query="SELECT max(order_no) FROM order_info";
+			$result=$this->db->ExecuteDML($query);
+
+			$order_no=$this->db->getResult($result, 0, 0);
+
+			if(!$order_no)
+				$order_no=1000000000;
+			else
+				$order_no++;
+
+			return $order_no;
+		}
+
+		function getInfoCart($cart_number)
+		{
+			if(!$cart_number)
+				return false;
+
+			$query="SELECT * FROM cart_tmp WHERE cart_id='".$cart_number."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function cancelOrder($cart_id)
+		{
+			if(!$cart_id)
+				return false;
+
+			$query="DELETE FROM cart_tmp WHERE cart_id='".$cart_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			$query="DELETE FROM order_info WHERE cart_id='".$cart_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function bankInput($bank_name, $bank_sender, $CartNumber)
+		{
+			if(!$bank_name || !$bank_sender || !$CartNumber)
+				return false;
+
+			$query="UPDATE order_info SET bank_name='".$bank_name."', bank_sender='".$bank_sender."' WHERE cart_id='".$CartNumber."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function processOrder($order_no, $pin)
+		{
+			if(!$order_no)
+				return false;
+
+			$query="UPDATE order_info SET order_status='1', pin='".$pin."' WHERE order_no='".$order_no."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function delCart($cart_id)
+		{
+			if(!$cart_id)
+				return false;
+
+			$query="DELETE FROM cart_tmp WHERE cart_id='".$cart_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getTmpGuest()
+		{
+			$query="SELECT count(*) FROM order_info";
+			$result=$this->db->ExecuteDML($query);
+
+			$order_number=$this->db->getResult($result, 0, 0);
+			$order_next_number=$order_number+1;
+			$tmp_id="guest".$order_next_number;
+
+			return $tmp_id;
+		}
+}
+?>

@@ -1,0 +1,7 @@
+<?
+	#데이타베이스
+	$dbName="sikbmw95";
+	$host="localhost";
+	$id="sikbmw95";
+	$passwd="iris2005";
+?>

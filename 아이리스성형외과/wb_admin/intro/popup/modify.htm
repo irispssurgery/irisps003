@@ -1,0 +1,512 @@
+<?
+ob_start();
+session_start();
+session_cache_limiter('private');
+
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+extract($HTTP_SESSION_VARS);
+extract($HTTP_COOKIE_VARS);
+
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+include "../../auth_admin.php3";
+$inst->Connect();
+
+$this_year=date('Y');
+?>
+<html>
+<head>
+<title><?echo $head_title;?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="/css/css.css" type="text/css">
+
+<script src="/js/calendar.js"></script>
+<script language="JavaScript" src="/easy_editor/easyEditor.js"></script>
+
+<script language="javascript">
+<!--
+
+function Bobod_Check(form){
+{
+	var content = ed.getHtml(); //대체한 textarea에 작성한HTML값 전달
+	if(content=="")
+	{
+		alert("내용을 적어주세요!");
+		ed.focus();
+		return false;
+	}
+
+	return true;
+}
+
+		function num_only()
+		{
+			if(((event.keyCode<48) || (event.keyCode>57)) && (event.keyCode != 46)) {
+				event.returnValue=false;
+			}
+		}
+		function trim(str)
+		{
+			return str.replace(/(^\s*)|(\s*$)/g, "");
+		}
+		return true;
+}
+//-->
+</script>
+
+
+<script language='javascript'> 
+<!-- 
+
+function checkpost() 
+{
+	w=window.open('color.htm','zip','width=690,height=410,scrollbars=yes,left=300,top=150');
+	w.focus();
+}
+
+
+//이미지,텍스트 구분
+function op_chk(res,no) {
+	var res;
+	location.href="modify.htm?res=" + res + "&no=" + no; 
+} 	   
+//-->
+</script>
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0" onLoad='MakeColorInputField();'>
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='../image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 운영관리 &gt; 팝업창 설정</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="../image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                              <table width="90%" border="0" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td style="padding-top:10px; padding-bottom:10px" background="../image/left_bg.gif"> 
+                                    <!-- 왠쪽 메뉴 시작-->
+									 <?
+										include "../manage_menu.htm";
+									 ?>
+                                    <!-- 왠쪽 메뉴 끝-->
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="720" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td><img src="image/bar10.gif"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+<?
+$db_table="main_open_win";
+
+$query="select * from $db_table where no='$no'";
+$row=$inst->ExecFetch($query);
+
+if ($row){
+	$no         = $row[no];
+	$title      = $row[title];
+	$open       = $row[open];
+	$content    = $row[content];
+	$filename   = $row[filename];
+    $top        = $row[top];
+	$left1      = $row[left1];
+	$width      = $row[width];
+	$height     = $row[height];
+	$start_date = $row[start_date];
+	$end_date   = $row[end_date];
+	$date1      = $row[date1];
+	$image_use  = $row[image_use];
+	$popup_zone = $row[popup_zone];	
+
+	$title=stripslashes($title);
+	
+  //  $content=str_replace(" ","&nbsp;",$content); 
+  //  $content=nl2br($content);
+}
+
+//sdisabled  : text일 경우 가로 세로 크기가 필요 없음.
+// res : 1(이미지),2(text),3(flash),4(동영상)
+if (!$res) { $res=$image_use; }
+
+switch (trim($res))
+{            
+	case "1" :
+		$Arr_checked = array ("checked","","","");
+		$res_name = "이미지";
+        break;
+	case "2" :
+		$Arr_checked = array ("","checked","","");
+		$res_name = "첨부파일";
+        break;
+	case "3" :
+		$Arr_checked = array ("","","checked","");
+		$res_name = "첨부파일";
+        break;
+	case "4" :
+		$Arr_checked = array ("","","","checked");
+		$res_name = "첨부파일";
+        break;
+	default :
+		$Arr_checked = array ("","checked","","");
+		$res_name = "첨부파일";
+}
+
+?>
+                    <tr> 
+                      <td>
+						<!------------------------------------------------------->
+						<table width="720" border="0" cellspacing="0" cellpadding="0" align="center" class="text" bordercolordark="#FFFFFF">	 
+
+						<form name='bo_write' method='post' action='modify_ok.php3' ENCTYPE='multipart/form-data' onsubmit="return Bobod_Check(document.bo_write);">
+						<input type='hidden' name='no' value='<?=$no?>'>
+						<input type='hidden' name='page' value='<?=$page?>'>
+						<tr>
+							<td  height="4" bgcolor="#6493B3" colspan="3"></td>
+						</tr>
+						<tr> 
+						  <td height="30" bgcolor="#DEEFFA" align="center" colspan="3"><b>팝업창 설정</b></td>
+						</tr>
+						<tr> 
+						  <td height="1" bgcolor="#93AEBF" colspan="3"></td>
+						</tr>
+						<tr> 
+						  <td height="2" bgcolor="#C5D3DC" colspan="3"></td>
+						</tr>
+						<tr height="30" bgcolor='#FFFFFF'>  
+							<td width='100' bgcolor="F8F8F8"><b><center>새창 띄우기</center></b></td>
+							<td width="1" bgcolor="#DFDFDF"></td>
+							<td width="">&nbsp;
+								<input type="radio" name="open" value='On' <?=Convert_radio_select("radio",$open,"On")?>> &nbsp;On &nbsp; &nbsp; 
+								<input type="radio" name="open" value='Off' <?=Convert_radio_select("radio",$open,"Off")?>> &nbsp;Off 
+							</td>		 
+						</tr>	 
+						<tr> 
+							<td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+						</tr>
+						<tr height="30" bgcolor='#FFFFFF'>  
+							<td width='100' bgcolor="F8F8F8"><b><center>제목</center></b></td> 
+							<td width="1" bgcolor="#DFDFDF"></td>
+							<td width="">
+								&nbsp;<input type='text' name='title' value='<?=$title?>' size=50 style="border-width:1pt; border-color:#949494; border-style:solid;">
+								&nbsp;<colorpicker name='color3'></colorpicker>
+								<select name="font_size" style='font-size:08pt; background-color:#FFFFFF; border:1 solid black;' class="form1">
+									<option value="2">크기</option>
+									<option value="2">2(px)</option>
+									<option value="4">4</option>
+									<option value="7">7</option>
+									<option value="9">9</option>
+									<option value="9">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+									<option value="13">13</option>
+									<option value="14">14</option>
+								  </select>
+							</td>		 
+						</tr>
+						<tr> 
+							<td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+						</tr>
+						<tr height="30" align="center" bgcolor='#FFFFFF'> 
+							<td width="100" height="22" bgcolor="F8F8F8"><b><center>새창 형식</center></b></td>
+							<td width="1" bgcolor="#DFDFDF"></td>
+							<td width="" align='left'>&nbsp; 
+				 <input type="radio"  name="res" value="1" onClick="op_chk('1','<?=$no?>')" <?=$Arr_checked[0];?>> 이미지 형식 
+				 <input type="radio" name="res"  value="2"  onClick="op_chk('2','<?=$no?>')" <?=$Arr_checked[1];?>> TEXT 형식
+				 <input type="radio"  name="res" value="3" onClick="op_chk('3','<?=$no?>')" <?=$Arr_checked[2];?>> FLASH 형식 
+				 <input type="radio" name="res"  value="4"  onClick="op_chk('4','<?=$no?>')" <?=$Arr_checked[3];?>> 동영상 형식							</td>
+						</tr>
+						<tr> 
+						    <td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+						</tr>
+<? if ($res=="2"){?>
+						<tr height="30" bgcolor='#FFFFFF'>  
+							<td width='100' bgcolor="F8F8F8"><b><center>내 용</center></b></td>
+							<td width="1" bgcolor="#DFDFDF"></td>
+							<td width='550'>&nbsp;
+
+								<textarea name="content" id="content" style="word-break:break-all"><?=$content?></textarea>
+								<script>
+									var ed = new easyEditor("content"); //초기화 id속성값
+									ed.init(); //웹에디터 삽입
+								</script>
+
+							</td>		 
+						</tr>
+						<tr> 
+							<td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+						</tr>
+<? } ?>
+						<tr height="30" bgcolor='#FFFFFF'>  
+							<td width='100' bgcolor="F8F8F8"><b><center><?=$res_name;?></center></b></td> 
+							<td width="1" bgcolor="#DFDFDF"></td>
+							<td width="">&nbsp;<INPUT TYPE='hidden' name='MAX_FILE_SIZE2' value='5242880'>
+								<input type='file' name='userfile' size='50' style="border-width:1pt; border-color:#949494; border-style:solid;">&nbsp;
+							</td>		 
+						</tr>
+						<tr> 
+							<td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+						</tr>
+<? if ($res=="1"){?>
+						<tr height="30" bgcolor='#FFFFFF'>  
+							<td width='100' bgcolor="F8F8F8"><b><center></center></b></td> 
+							<td width="1" bgcolor="#DFDFDF"></td>
+							<td width="">&nbsp;
+								<font color=green>♤</font> 이미지 미리보기 <font color=green>♤</font>&nbsp;[ 이미지 사이즈 : 85 X 110 ]<br>&nbsp;<img src='' name='imgbox' align='top' onError="this.style.display='none';"> 		
+							</td>		 
+						</tr>
+						<tr> 
+							<td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+						</tr>
+				    	<tr align="center" bgcolor='#FFFFFF'> 
+							<td width="100" height="22" bgcolor="F8F8F8"><b><center>URL</center></b></td>
+							<td width="1" bgcolor="#DFDFDF"></td>
+							<td width='514' align='left'>&nbsp; <input type='text' name='url' value='http://' size=40 style="border-width:1pt; border-color:#949494; border-style:solid;"></td>
+						</tr>
+						<tr> 
+						  <td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+						</tr>
+						 <tr align="center" bgcolor='#FFFFFF'> 
+									<td width="100" height="22" bgcolor="F8F8F8"><b><center>TARGET</center></b></td>
+												<td width="1" bgcolor="#DFDFDF"></td>
+									<td width='514' align='left'>&nbsp; 
+														  <select name="target" style='font-size:08pt; background-color:#FFFFFF; border:1 solid black;' class="form1">
+															<option value="self">기존창</option>
+															<option value="blank">새창</option>
+
+									</td>
+								   
+						</tr>
+						<tr> 
+						  <td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+						</tr>
+
+<?}?>
+						<tr height="30" bgcolor='#FFFFFF'>  
+							<td width='100' bgcolor="F8F8F8"><b><center>새창 위치</center></b></td>
+							<td width="1" bgcolor="#DFDFDF"></td>
+							<td width="">
+								&nbsp;<input type='text' name='top' size='5' style="border-width:1pt; border-color:#949494; border-style:solid;">Left&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								&nbsp;<input type='text' name='left1' size='5' style="border-width:1pt; border-color:#949494; border-style:solid;">Top&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								&nbsp;<input type='text' name='width' value='450' size='5' style="border-width:1pt; border-color:#949494; border-style:solid;" <?=$sdisabled;?>>Width&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								&nbsp;<input type='text' name='height'  value='426' size='5' style="border-width:1pt; border-color:#949494; border-style:solid;" <?=$sdisabled;?>>Height&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							</td>		 
+						</tr>
+						<tr> 
+							<td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+						</tr>
+						<tr height="30" bgcolor='#FFFFFF'>  
+							<td width='100' bgcolor="F8F8F8"><b><center>팝업존사용</center></b></td> 
+							<td width="1" bgcolor="#DFDFDF"></td>
+							<td width="">
+														  <select name="popup_zone" style='font-size:08pt; background-color:#FFFFFF; border:1 solid black;' class="form1">
+															<option value="On" <?=Convert_radio_select("select",$popup_zone,"On")?>>사용</option>
+															<option value="Off" <?=Convert_radio_select("select",$popup_zone,"Off")?>>사용중지</option>
+															</select>&nbsp;
+							</td>		 
+						</tr>
+						<tr> 
+							<td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+						</tr>
+						<tr height="30" bgcolor='#FFFFFF'>  
+							<td width='100' bgcolor="F8F8F8"><b><center>팝업존이미지</center></b></td> 
+							<td width="1" bgcolor="#DFDFDF"></td>
+							<td width="">
+							<INPUT TYPE='hidden' name='MAX_FILE_SIZE2' value='5242880'>
+								<input type='file' name='userfile2' size='50' style="border-width:1pt; border-color:#949494; border-style:solid;">
+							</td>		 
+						</tr>
+						<tr> 
+							<td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+						</tr>
+						<tr height="30" bgcolor='#FFFFFF'>  
+							<td width='100' bgcolor="F8F8F8"><b><center>게재 기간</center></b></td> 
+							<td width="1" bgcolor="#DFDFDF"></td>
+							<td width="">
+
+<input type="text" name="start_date" value="<?=$start_date?>" class="form1"  style="width:90px;" id="fc_1172999527" onClick="displayCalendar(this);" title="YYYY-MM-DD"><a href="javascript:displayCalendarFor('fc_1172999527');"> <img src="../image/calendar.jpg" border="0" align="absmiddle"></a> 부터 
+<input type="text" name="end_date" value="<?=$end_date?>" class="form1"  style="width:90px;" id="fc_1172999528" onClick="displayCalendar(this);" title="YYYY-MM-DD"><a href="javascript:displayCalendarFor('fc_1172999528');"> <img src="../image/calendar.jpg" border="0" align="absmiddle"></a> 까지
+
+<!--
+								&nbsp;<input type='text' name='sd_1' size='5' style="border-width:1pt; border-color:#949494; border-style:solid;" value='<? echo $this_year; ?>'>년&nbsp
+							<SELECT NAME='sd_2'> 
+
+							<? 
+								$timeinfo = getdate(time());
+								
+								$t_sd_2=$timeinfo['mon'];
+								for($i=1;$i<13;$i++){ 
+									if ($i == $t_sd_2) {
+										echo ("
+											<OPTION value='$t_sd_2' selected>$t_sd_2</option>
+										");
+									} else {
+										echo ("
+											<OPTION value='$i'>$i</option>
+										");
+									} 
+								}
+							?>
+							</SELECT>월&nbsp;
+
+							<SELECT NAME='sd_3'> 
+							<?
+								$t_sd_3=$timeinfo['mday'];
+								for($j=1;$j<32;$j++){ 
+									if ($j == $t_sd_3) {
+										echo ("
+											<OPTION value='$t_sd_3' selected>$t_sd_3</option>
+								    ");
+									} else {
+										echo ("
+											<OPTION value='$j'>$j</option>
+										");
+									}
+								}
+							?>
+						    </SELECT>일 부터 &nbsp;~
+							&nbsp;<input type='text' name='ed_1' size='5' style="border-width:1pt; border-color:#949494; border-style:solid;" value='<? echo $this_year; ?>'>년&nbsp;
+							<SELECT NAME='ed_2'> 
+							<? 
+								$t_ed_2 = $t_sd_2;
+								for($k=1;$k<13;$k++){ 
+									if ($k == $t_ed_2) {
+										echo ("
+											<OPTION value='$t_ed_2' selected>$t_ed_2</option>
+										");
+									} else {
+										echo ("
+											<OPTION value='$k'>$k</option>
+									    ");
+									} 
+								}
+							?>
+							</SELECT>월&nbsp;
+							<SELECT NAME='ed_3'> 
+							<?
+								$t_ed_3 = $t_sd_3 + 7;
+								for($l=1;$l<32;$l++){ 
+									if ($l == $t_ed_3) {
+									  echo ("
+										  <OPTION value='$t_ed_3' selected>$t_ed_3</option>
+									  ");
+									} else {
+									  echo ("
+										<OPTION value='$l'>$l</option>
+									  ");
+									}
+								}
+							?>
+						    </SELECT>일 까지
+-->
+						  </td>		 
+						</tr>
+						<tr> 
+						  <td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+						</tr>
+						<tr> 
+						  <td colspan="3" height="2" bgcolor="#B3C6D2"></td>
+						</tr>
+						<tr> 
+						  <td colspan="3" height="10"></td>
+						</tr>
+						<tr bgcolor='#ffffff'> 
+							<td colspan='3' align='center'> 
+								<center> 
+								<input type='image' src='../image/but10.gif' border='0'>
+								</center> 
+							</td>		 
+						</tr> 
+						</form> 
+						</table>
+					<!-------------------------------------------------------->
+					  
+					  </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+
+<? $inst->Disconnect(); ?>

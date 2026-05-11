@@ -1,0 +1,381 @@
+<?
+ob_start();
+session_start();
+session_cache_limiter('private');
+
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+extract($HTTP_SESSION_VARS);
+extract($HTTP_COOKIE_VARS);
+
+include "../../../../config/dbconn.php3"; 
+include "../../../../config/function.php3"; 
+
+include "../../../auth_admin.php3";
+$inst->Connect();
+
+include "board_function.php3";
+
+$query="select * from ezboard where db='$db' and no='$no'";
+
+$row=$inst->ExecFetch($query);
+
+if ($row){
+	$no        =$row[no];
+	$id        =$row[id];
+	$ref       =$row[ref];
+	$step      =$row[step];
+	$name      =$row[name];
+	$email     =$row[email];
+	$title     =$row[title];
+	$content   =$row[content];
+	$ip        =$row[ip];
+	$hit       =$row[hit];
+	$down_hit  =$row[down_hit];
+	$filename1 =$row[filename1];
+	$filesize1 =$row[filesize1];
+	$filename2 =$row[filename2];
+	$filesize2 =$row[filesize2];
+	$filelist  =$row[filelist];
+	$date1     =$row[date1];
+	$date2     =$row[date2];
+	$tabcheck  =$row[tabcheck];
+	$list_del  =$row[list_del];
+	$list_top  =$row[list_top];
+
+	if ($list_del=='yes'){
+	    $y_checked= "checked";
+	    $n_checked= "";
+	}else{
+	    $y_checked= "";
+	    $n_checked= "checked";
+	}
+
+	$filelist = substr( $filelist, 0, -1 );
+
+	$name=stripslashes($name);
+	$name=explode(":::",$name);
+	$title=stripslashes($title);
+	$memo=stripslashes($content);
+	
+	$memo = eregi_replace("<br>|<br />","",$memo); 
+
+	if($tabcheck=='no'){
+		$memo=htmlspecialchars($memo);
+		//$content=nl2br($content);
+	}
+}
+
+?>
+<html>
+<head>
+<title><?=$head_title;?></title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../../css/css.css" type="text/css">
+<script language="JavaScript">
+<!--
+// settings
+//ColorPicker.path = 'ColorPicker.swf';
+//ColorPicker.align = 'right'; // ( left, right, middle, top, bottom)
+//ColorPicker.handler = userFunc; // default handler
+
+// user custom handler
+function userFunc(str)
+{
+  document.getElementById("color").value = str;
+  window.status = "선택한 색상은 '" + str + "' 입니다.";
+}
+
+function checkpost() 
+{
+	w=window.open('color.htm','zip','width=690,height=410,scrollbars=yes,left=300,top=150');
+	w.focus();
+}
+
+function content_check(form) {                                          
+		if (edit.name.value == '') {                                    
+				alert('이름을 입력하세요');                             
+				edit.name.focus();                                      
+			   return false;                                           
+		}                                                               
+		else if (edit.title.value == '') {                              
+				alert('제목을 입력하세요');                             
+				edit.title.focus();                                     
+				return false;                                           
+		}                                                               
+		else if (edit.passwd.value == '') {                             
+				alert('비밀번호를 입력하세요 글 수정과 삭제시 필요합니다.');
+			   edit.passwd.focus();  
+				return false;
+		}
+		else if (edit.memo.value == '') {                                 
+				alert('내용을 입력하세요');                             
+				edit.memo.focus();                                        
+				return false;                                           
+		}                 
+}
+
+//-->
+</script> 
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 홈페이지관리 &gt; 게시판관리 </td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" height="400" valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="../image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+<!-- left menu -------------------------------------------------------------------------------------->
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                             <?
+								include "../left.htm";
+								
+							 ?>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+<!-- left menu -------------------------------------------------------------------------------------->
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="670" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td><img src="../image/bar02.gif" width="670" height="40"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+					<!-- Start -->
+					  <form id='edit' name='edit' method='post' action='reply_ok.php3' enctype='multipart/form-data' onSubmit='return content_check(this)'>
+					  <input type='hidden' name='db' value='<? echo $db; ?>'>
+					  <input type='hidden' name='no' value='<?=$no?>'>
+					  <input type='hidden' name='id' value='<?=$id?>'>
+					  <input type='hidden' name='ref' value='<?=$ref?>'>
+					  <input type='hidden' name='step' value='<?=$step?>'>
+					  <input type='hidden' name='use_xedit' value='<?=$xedit?>'>
+					  <input type='hidden' name='memo' value="">
+					  <input type='hidden' name='use_html' value='<?=$use_html?>'>
+					  <input type='hidden' name='xedit_images' value="">
+					  <input type='hidden' name='filelist' value="">
+					  <input type='hidden' name='go_it' value="<?=$go_it;?>">
+
+					  <table border="0" width="100%" cellspacing="0" cellpadding="0">
+						<tr> 
+						  <td  height="4" bgcolor="#6493B3"></td>
+						</tr>
+						<tr> 
+						  <td height="30" bgcolor="#DEEFFA" align="center"> 
+							<b>게시판 관리자 모드 </b></td>
+						</tr>
+						<tr> 
+						  <td height="1" bgcolor="#93AEBF"></td>
+						</tr>
+						<tr> 
+						  <td height="2" bgcolor="#C5D3DC"></td>
+						</tr>
+						<tr> 
+						  <td height="30" align="center">[ <?=$boardname;?> 글답변하기 ] 
+						  </td>
+						</tr>
+					  </table>
+					</td>
+				  </tr>
+				  <tr> 
+					<td> 
+					  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+						<tr> 
+						  <td> 
+							<table border="0" width="670" cellspacing="0" cellpadding="0">
+							  <tr> 
+								<td  height="1" bgcolor="#94B5CA"></td>
+							  </tr>
+							  <tr> 
+								<td height="3" bgcolor="#C3E2F6"></td>
+							  </tr>
+							  <tr> 
+								<td height="1"></td>
+							  </tr>
+							</table>
+						  </td>
+						</tr>
+						<tr> 
+						  <td> 
+							 <table border="0" width="670" cellspacing="0" cellpadding="0">
+							  <tr> 
+								<td width="80" align="center"  bgcolor="F8F8F8" height="30" ><b>글쓴이</b></td>
+								<td width="1" bgcolor="#DFDFDF"></td>
+								<td bgcolor="F8F8F8" style="padding-left:5px"> 
+								  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+									<tr> 
+									  <td height="30"> 
+										<input type='text' name='name' value='관리자' size='20' class='form1'>
+									  </td>
+									  <td bgcolor="#DFDFDF" width="1"></td>
+									  <td align="center" width="80"><b>비밀번호</b></td>
+									  <td bgcolor="#DFDFDF" width="1"></td>
+									  <td width="120" style="padding-left:5px"> 
+										<input type='password' name='passwd' size='12' class='form1'>
+									  </td>
+									</tr>
+								  </table>
+								</td>
+							  </tr>
+							  <tr> 
+								<td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+							  </tr>
+							  <tr> 
+								<td width="80" align="center" height="30" ><b>E-Mail</b></td>
+								<td width="1" bgcolor="#DFDFDF"></td>
+								<td style="padding-left:5px"> 
+								  <input type='text' name='email' size=60 class=form1>
+								</td>
+							  </tr>
+							  <tr> 
+								<td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+							  </tr>
+							  <tr> 
+								<td align="center" height="30" bgcolor="F8F8F8"><b>제목</b></td>
+								<td bgcolor="#DFDFDF"></td>
+								<td  style="padding-left:5px" bgcolor="F8F8F8"> 
+								  <input type='text' name='title' value='<?=$title;?>' size=50 class=form1>
+								  &nbsp; 
+								  <input type="text" id="color"  name='title_color'  class=form1 size="8">
+								  &nbsp; 
+								  <input type="button" value="색상" name="btnOk" style='border:1px solid black; width:40px; height:18' onClick="checkpost()" >
+								  <select name="font_size" style='font-size:08pt; background-color:#FFFFFF; border:1 solid black;' class="form1">
+									<option value="2">크기</option>
+									<option value="4">4(px)</option>
+									<option value="7">7</option>
+									<option value="9">9</option>
+									<option value="9">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+									<option value="13">13</option>
+									<option value="14">14</option>
+								  </select>
+								</td>
+							  </tr>
+							  <tr> 
+								<td colspan="3" height="2" background="../image/table_line_b.gif"></td>
+							  </tr>
+							  <tr> 
+								<td align="center" height="30"><b>내용</b></td>
+								<td bgcolor="#DFDFDF"></td>
+								<td  style="padding-left:5px; padding-right:5px; padding-top:5px; padding-bottom:5px"> 
+								  <textarea name='memo' cols='92' rows='10' class=form1></textarea>
+								</td>
+							  </tr>
+							  <tr> 
+								<td colspan="3" background="../image/table_line_b.gif" height="2"></td>
+							  </tr>
+							  <tr> 
+								<td align="center" height="60" bgcolor="F8F8F8"><b>첨부파일</b></td>
+								<td bgcolor="#DFDFDF"></td>
+								<td style="padding-left:5px" bgcolor="F8F8F8" > 
+								  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+									<tr> 
+									  <td> 
+										<input type='file' name='file1' size='50' style='font-size:09pt; background-color:#FFFFFF;  height:20' class="form1">
+										<input type='hidden' name='MAX_FILE_SIZE' value='찾아보기...' style='font-size:09pt; background-color:#ffffff; border:1 solid black; height:20'>
+									  </td>
+									</tr>
+								  </table>
+								</td>
+							  </tr>
+							  <tr> 
+								<td colspan="3" height="2" bgcolor="#B3C6D2"></td>
+							  </tr>
+							</table>
+						  </td>
+						</tr>
+						<tr> 
+						  <td height="40" align="center"><input type='submit' name='submit' value=' 답변하기 ' style='font-size:09pt; background-color:#FFFFFF; border:1 solid black; height:20'>
+							<input type='button' name='button' value=' 뒤로가기 ' onclick=history.go(-1); style='font-size:09pt; background-color:#FFFFFF; border:1 solid black; height:20'></td>
+						</tr>
+					  </table>
+					</form>
+				   <!-- End -->
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>

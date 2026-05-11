@@ -1,0 +1,50 @@
+<script language='JavaScript'>
+
+// 플래쉬 배너 랜덤 스크립트
+var how_many_ads = 2;  // 플래쉬 배너 갯수 지정 // 추가시 수정
+var now = new Date()
+var sec = now.getSeconds()
+var adswf = sec % how_many_ads;
+adswf +=1;
+if (adswf==1) {
+banner="swf/0.swf"; //배너 위치(플래쉬 파일)
+width="124"; //가로 크기
+height="397"; //세로 크기
+}
+if (adswf==2) {
+banner="swf/1.swf";
+width="124";
+height="397";
+}
+
+/* 추가시
+if (adswf==추가숫자) {
+banner="../img/경로/플래쉬배너.swf";
+width="가로크기";
+height="세로크기";
+}
+*/
+
+td_align = "center";  // 정렬 (left,center,right)
+document.write(' ');
+document.write('<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"');http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" ');
+document.write('width="'+width+'" height="'+height+'">');
+document.write('');
+document.write('');
+document.write('');
+document.write('');
+/* 매개변수를 더 추가하려면
+document.write('');
+*/
+document.write('<EMBED src="'+banner+'" type="text/html; charset=iso-8859-1" play="true" loop="true" quality="high";>http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">');
+document.write('');
+document.write('</object>');
+document.write(' 
+');
+</script>
+<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0" width="124" height="397">
+              <param name=movie value="http://irisbeauty.net/swf/0.swf">
+              <param name=quality value=high>
+              <embed src="http://irisbeauty.net/swf/0.swf" name=ranimage quality=high pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="124" height="397">
+              </embed> 
+            </object>

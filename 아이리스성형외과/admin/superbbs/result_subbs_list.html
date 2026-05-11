@@ -1,0 +1,88 @@
+<? include "./result_subbs_list.php";?>
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<style type="text/css">
+<!--
+table {  font-family: "굴림체"; font-size: 9pt}
+a {  font-family: "굴림체"; font-size: 12px; text-decoration: none; color: #000000}
+a:hover {  font-family: "굴림체"; font-size: 12px; color: #FF0000; text-decoration: none}
+-->
+</style>
+<Script language="javascript">
+function sAll(mode)
+{
+	var form = document.forms[0];
+	var len = form.elements.length;
+
+	for(i=0; i<len; i++)
+	{
+		form.elements[i].checked=mode;
+	}
+}
+
+function del()
+{
+	var form = document.forms[0];
+	var len = form.elements.length;
+	var sel_count=0;
+
+	for(i=0; i<len; i++)
+	{
+		if(form.elements[i].checked==true)
+			sel_count++;
+	}
+
+	if(sel_count <= 0)
+	{
+		alert("선택을 하지 않았습니다.");
+		return;
+	}
+	else
+	{
+		form.action="proc_subbs_delete.html";
+		form.submit();
+	}
+}
+</Script>
+</head>
+
+<body bgcolor="#FFFFFF">
+<center>
+<form name="form1" method="post" action="">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+  <table width="742" border="1" cellspacing="0" cellpadding="3" bordercolorlight='silver' bordercolordark='white'>
+    <tr align="center" bgcolor="f2f2f2"> 
+      <td width="52" height="19">선택</td>
+	  <td width="67" height="19">순번</td>
+	  <td width="72" height="19">사이트명</td>
+	  <td width="92" height="19">게시판 코드</td>
+      <td width="180" height="19">제목</td>
+      <td width="108" height="19">날짜</td>
+	  <td width="66" height="19">게시물수</td>
+	  <td width="66" height="19">사이트 명</td>
+      <td width="105" height="19">게시판 이동</td>
+    </tr>
+    <?echo $list;?>
+  </table>
+  <p>&nbsp;</p>
+  <table width="742" border="1" cellspacing="0" cellpadding="3" bordercolorlight='silver' bordercolordark='white'>
+    <tr align="center"> 
+      <td bgcolor="f9f9f9"> 
+        <?echo $show_page;?>
+      </td>
+    </tr>
+    <tr align="right"> 
+      <td bgcolor="f2f2f2"> <a href="javascript:sAll(1);"><img src='../but/allsel.gif' border='0' width="62" height="18" align="absmiddle"></a> 
+        <a href="javascript:sAll(0);"><img src='../but/allcan.gif' border='0' width="62" height="18" align="absmiddle"></a> 
+        <a href="javascript:del();"><img src='../but/del.gif' border='0' width="51" height="18" align="absmiddle"></a> 
+        <a href="form_subbs_write.html"><img src='../but/create_bbs.gif' border='0' width="62" height="18" align="absmiddle"></a>&nbsp;</td>
+    </tr>
+  </table>
+</center>
+</form>
+</body>
+</html>

@@ -1,0 +1,601 @@
+<?
+ob_start();
+session_start();
+session_cache_limiter('private');
+
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+extract($HTTP_SESSION_VARS);
+extract($HTTP_COOKIE_VARS);
+
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+include "../../../config/utilpage.htm"; 
+include "../../auth_admin.php3";
+$inst->Connect();
+include "../member/member_config.php";
+
+?>
+<html>
+<head>
+<title><?=$head_title;?></title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+<script language="JavaScript">
+<!--
+	function getfocus(){ 
+      form.table_name.focus(); 
+    } 
+	function content_check(form) {
+		if (form.table_name.value == '') {
+			alert('DB_Name을 입력하세요');
+			form.table_name.focus();
+			return false;
+		}
+		else if (form.passwd.value == '') {
+			alert('비밀번호를 입력하세요 게시판 관리시 필요합니다.');
+			form.passwd.focus();
+			return false;
+		}
+		else if (form.boardname.value == '') {
+			alert('게시판명을 입력하세요');
+			form.boardname.focus();
+			return false;
+		}
+	}
+	
+	function xedit()
+	{	
+		
+		if (form.use_xedit[1].checked==true) 
+		{
+			form.use_html[0].disabled=false;
+			form.use_html[1].disabled=false;
+		} 
+		else 
+		{
+			form.use_html[0].disabled=true;
+			form.use_html[1].disabled=true;
+		}
+
+	}
+//-->
+</script>
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 홈페이지관리 &gt; 게시판관리 &gt; 게시판설정</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" height="400" valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+<!-- left menu -------------------------------------------------------------------------------------->
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                             <?
+								include "left.htm";
+							 ?>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+<!-- left menu -------------------------------------------------------------------------------------->
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="720" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td><img src="image/bar04.gif" width="720" height="40"></td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>
+						<form name='form' method='post' action='write_ok.php3' enctype='multipart/form-data' onSubmit='return content_check(this)'>
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td> 
+                              <table border="0" width="720" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td  height="4" bgcolor="#94B5CA"></td>
+                                </tr>
+                                <tr> 
+                                  <td height="30" bgcolor="#C3E2F6" align="center"> 
+                                    <font color=""><b>게시판 환경설정 </b></font></td>
+                                </tr>
+                                <tr> 
+                                  <td height="3" bgcolor="#B3C6D2"></td>
+                                </tr>
+                                <tr> 
+                                  <td height="1"></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td> 
+                              <table border="0" width="720" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td width="110" align="center"  bgcolor="F8F8F8" height="30" ><b>관리자 
+                                    설정 </b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8" style="padding-left:5px" width="230"> 
+                                    <select name='admin_user_id' class='select_type' style='width:150'>
+									<?
+$query="select tb.code code from grouptb tb,member_conf mc where tb.type=mc.member_mode and tb.group_nick='t'";
+$row=$inst->ExecFetch($query);
+if ($row)
+{
+	$grade_code=$row[code];
+}else{
+	$grade_code=1;
+}
+
+
+									$query="select id,name from member where grade >= $grade_code ORDER BY no desc";
+									$result=$inst->Execute($query);
+									while($row=$inst->ExecFetchArray($result)){
+										$id        = $row[id];
+										$name    = $row[name];
+									?>							 
+											<option value='<?=$id;?>' ><?=$id;?> - <?=$name;?></option>
+									<?
+									}
+									?>
+
+                                    </select>
+                                  </td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="F8F8F8" width="110"><b>게시판 
+                                    종류</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8" style="padding-left:5px"> 
+                                    <select name='board_type' class='select_type'>
+                                      <option value='board'>게 시 판 - 파일첨부 가능</option>
+                                      <option value='gallery'>갤 러 리</option>
+                                      <option value='schedule'>행사일정</option>
+                                      <option value='vod'>VOD</option>
+                                      <option value='disscuss'>도론방 - 파일첨부 가능</option>
+                                    </select>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="image/table_line_b.gif"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="30"><b>Db_Name </b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px"> 
+                                    <input type='text' name='table_name' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center"><b>Passwd</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px"> 
+                                    <input type='text' name='passwd' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="image/table_line_b.gif"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>타이틀이미지</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+                                    <input type='text' name='title_img' value='title.gif' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="F8F8F8"><b>게시판 이름</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8" style="padding-left:5px"> 
+                                    <input type='text' name='boardname' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="30"><b>COOL사용</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px" > 
+                                    <input type='radio' name='cool_use' value='yes' checked>
+                                    YES &nbsp; 
+                                    <input type='radio' name='cool_use' value='no'>
+                                    NO </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center"><b>COOL표시 </b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px"> 
+                                    <input type='text' name='cool_no' value='30' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>New 
+                                    사용</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+                                    <input type='radio' name='new_use' value='yes' checked>
+                                    YES &nbsp; 
+                                    <input type='radio' name='new_use' value='no'>
+                                    NO </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="F8F8F8"><b>New 기간[日] 
+                                    </b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8" style="padding-left:5px"> 
+                                    <input type='text' name='new_time' value='1' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>카테고리 사용</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+									  <input type='radio' name='category' value='yes'>YES &nbsp;
+									  <input type='radio' name='category' value='no' checked>NO &nbsp;
+									</td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="F8F8F8"><b>HTML 사용유무</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8" style="padding-left:5px"> 
+									  <input type='radio' name='html' value='yes'>YES &nbsp;
+									  <input type='radio' name='html' value='no' checked>NO &nbsp;
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>내용갯수</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+                                    <input type='text' name='pagecount' value='10' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="F8F8F8"><b>블록갯수</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8" style="padding-left:5px"> 
+                                    <input type='text' name='block' value='10' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="30"><b>게시판 길이</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px" > 
+                                    <input type='text' name='board_length' value='600' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center"><b>제목 길이</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px"> 
+                                    <input type='text' name='title_length' value='42' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center" height="30"><b>리스트보기</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan='5'> 
+<?
+									$query="select * from grouptb where type='$use_member_type' ORDER BY code";
+									$result=$inst->Execute($query);
+									while($row=$inst->ExecFetchArray($result)){
+										$idx          = $row[idx];
+										$code         = $row[code];
+										$group_name   = $row[group_name];
+										$group_nick   = $row[group_nick];
+
+										$str_selected = Convert_radio_select("radio",$code,"3");
+
+										echo "<input type='checkbox' name='list_access[]' value='$group_nick' onfocus='this.blur()' $str_selected>$group_name&nbsp;&nbsp;&nbsp;";
+									}
+?>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center" height="30"><b>내용보기</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan='5'> 
+<?
+									$query="select * from grouptb where type='$use_member_type' ORDER BY code";
+									$result=$inst->Execute($query);
+									while($row=$inst->ExecFetchArray($result)){
+										$idx          = $row[idx];
+										$code         = $row[code];
+										$group_name   = $row[group_name];
+										$group_nick   = $row[group_nick];
+
+										$str_selected = Convert_radio_select("radio",$code,"3");
+
+										echo "<input type='checkbox' name='list_view[]' value='$group_nick' onfocus='this.blur()' $str_selected>$group_name&nbsp;&nbsp;&nbsp;";
+									}
+?>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center" height="30"><b>글쓰기</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan='5'> 
+<?
+									$query="select * from grouptb where type='$use_member_type' ORDER BY code";
+									$result=$inst->Execute($query);
+									while($row=$inst->ExecFetchArray($result)){
+										$idx          = $row[idx];
+										$code         = $row[code];
+										$group_name   = $row[group_name];
+										$group_nick   = $row[group_nick];
+
+										$str_selected = Convert_radio_select("radio",$code,"3");
+
+										echo "<input type='checkbox' name='list_write[]' value='$group_nick' onfocus='this.blur()' $str_selected>$group_name&nbsp;&nbsp;&nbsp;";
+									}
+?>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center" height="30"><b>답변하기</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan='5'> 
+<?
+									$query="select * from grouptb where type='$use_member_type' ORDER BY code";
+									$result=$inst->Execute($query);
+									while($row=$inst->ExecFetchArray($result)){
+										$idx          = $row[idx];
+										$code         = $row[code];
+										$group_name   = $row[group_name];
+										$group_nick   = $row[group_nick];
+
+										$str_selected = Convert_radio_select("radio",$code,"3");
+
+										echo "<input type='checkbox' name='list_reply[]' value='$group_nick' onfocus='this.blur()' $str_selected>$group_name&nbsp;&nbsp;&nbsp;";
+									}
+?>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+
+                                <tr> 
+                                  <td align="center" height="30"><b>파일첨부</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan='5'> 
+<?
+									$query="select * from grouptb where type='$use_member_type' ORDER BY code";
+									$result=$inst->Execute($query);
+									while($row=$inst->ExecFetchArray($result)){
+										$idx          = $row[idx];
+										$code         = $row[code];
+										$group_name   = $row[group_name];
+										$group_nick   = $row[group_nick];
+
+										$str_selected = Convert_radio_select("radio",$code,"3");
+
+										echo "<input type='checkbox' name='file_attach[]' value='$group_nick' onfocus='this.blur()' $str_selected>$group_name&nbsp;&nbsp;&nbsp;";
+									}
+?>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+
+
+                                <tr> 
+                                  <td align="center" height="30"><b>다운로드</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan='5'> 
+<?
+									$query="select * from grouptb where type='$use_member_type' ORDER BY code";
+									$result=$inst->Execute($query);
+									while($row=$inst->ExecFetchArray($result)){
+										$idx          = $row[idx];
+										$code         = $row[code];
+										$group_name   = $row[group_name];
+										$group_nick   = $row[group_nick];
+
+										$str_selected = Convert_radio_select("radio",$code,"3");
+
+										echo "<input type='checkbox' name='file_download[]' value='$group_nick' onfocus='this.blur()' $str_selected>$group_name&nbsp;&nbsp;&nbsp;";
+									}
+?>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+
+
+                                <tr> 
+                                  <td align="center" height="30"><b>IP 공개 여부</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px" > 
+                                    <input type='radio' name='ip_admit' value='yes' checked>
+                                    공개 &nbsp; 
+                                    <input type='radio' name='ip_admit' value='no'>
+                                    공개하지 않음 </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center"><b>덧글 허용여부</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px"> 
+                                    <input type='radio' name='memo_admit' value='yes'>
+                                    허용 &nbsp; 
+                                    <input type='radio' name='memo_admit' value='no' checked>
+                                    허용하지 않음</td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>공개/비공개</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+                                    <input type='radio' name='use_secret' value='yes'>
+                                    사용 &nbsp; 
+                                    <input type='radio' name='use_secret' value='no' checked>
+                                    사용하지 않음</td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>동영상 Link</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+                                    <input type='radio' name='use_vod' value='yes'>
+                                    사용 &nbsp; 
+                                    <input type='radio' name='use_vod' value='no' checked>
+                                    사용하지 않음</td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+								<tr> 
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>닉 네임</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+                                    <input type='radio' name='use_nick' value='yes'>
+                                    사용 &nbsp; 
+                                    <input type='radio' name='use_nick' value='no' checked>
+                                    사용하지 않음</td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>연락처</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px">
+									<input type='radio' name='use_phone' value='yes'>
+									사용 &nbsp; 
+									<input type='radio' name='use_phone' value='no' checked>
+									사용하지 않음
+									</td>
+								</tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="30"><b>관리자 메일</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan="5"> 
+                                    <input type='text' name='mail_admin' value='' size='44' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                    <input type='radio' name='mail_notice' value='yes'>
+                                    Yes &nbsp; 
+                                    <input type='radio' name='mail_notice' value='no' checked>
+                                    No </td>
+                                </tr>
+                                <tr bgcolor="#B3C6D2"> 
+                                  <td colspan="7" height="2"></td>
+                                </tr>
+                              </table>
+
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp; </td>
+                    </tr>
+                    <tr> 
+                      <td align="center"><input type='image' src="image/but04.gif" width="80" height="30" border="0"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+				  </form>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

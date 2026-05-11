@@ -1,0 +1,158 @@
+<?
+	class CNoticecode
+	{
+		var $db;
+
+		function CNoticecode()
+		{
+			global $db;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+		}
+
+		function Insert($data)
+		{
+			if(!$data || !is_array($data))
+				return false;
+
+			$query = "SELECT max(nc_idx) FROM noticecode";
+			$result = $this->db->ExecuteDML($query);
+
+			$code_idx = $this->db->getResult($result, 0, 0);
+			$this->db->freeResult($result);
+
+			if(!$code_idx)
+				$code_idx=1;
+
+			$nc_code = "NC".$code_idx;
+
+			while(list($key, $value) = each($data))
+			{
+				$kf[] = $key;
+				$vf[] = "'".$value."'";
+			}
+
+			$k = implode(",", $kf);
+			$v = implode(",", $vf);
+
+			$query = "INSERT INTO noticecode (".$k.", nc_code) VALUES (".$v.", '".$nc_code."');";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function DeleteAll($nc_idx)
+		{
+			if(!$nc_idx || !is_array($nc_idx))
+				return false;
+
+			$query = "DELETE FROM noticecode WHERE nc_idx IN(".implode(",", $nc_idx).");";
+			$result = $this->db->ExecuteDML($query);
+			
+			return $result;
+		}
+
+		function View($nc_idx)
+		{
+			if(!$nc_idx)
+				return false;
+
+			$query = "SELECT * FROM noticecode WHERE nc_idx=".$nc_idx;
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$view[] = $recordSet;
+			}
+
+			return $view;
+		}
+
+		function Modify($data)
+		{
+			if(!$data || !is_array($data))
+				return false;
+
+			while(list($key, $value) =each($data))
+			{
+				if($key == "nc_idx")
+					continue;
+
+				$field[] = "".$key." = '".$value."'";
+			}
+
+			$f = implode(",", $field);
+			$query = "UPDATE noticecode SET ".$f." WHERE nc_idx = ".$data["nc_idx"];
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function getInfo($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query = "SELECT * FROM noticecode WHERE nc_idx=".$idx;
+			$result = $this->db->ExecuteDML($query);
+			
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$info[] = $recordSet;
+			}
+
+			return $info;
+		}
+
+		function ListNoticeCodeAll()
+		{
+			$query = "SELECT * FROM noticecode";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		function ListNoticeCode()
+		{
+			global $PAGE;
+
+			if(!$PAGE)
+				$PAGE=1;
+
+			$GET_RECORD = 10;
+			$START_RECORD=($PAGE-1)*$GET_RECORD;
+			
+			$query = "SELECT * FROM noticecode ORDER BY nc_idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		function getTotalCount()
+		{
+			$query = "SELECT count(*) FROM noticecode";
+			$result = $this->db->ExecuteDML($query);
+
+			$total_count = $this->db->getResult($result, 0, 0);
+
+			return $total_count;
+		}
+	}
+?>

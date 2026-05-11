@@ -1,0 +1,38 @@
+<?
+ob_start();
+session_start();
+session_cache_limiter('private');
+
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+extract($HTTP_SESSION_VARS);
+extract($HTTP_COOKIE_VARS);
+
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+include "../../auth_admin.php3";
+$inst->Connect();
+
+?>
+<html>
+<head>
+<title>새창 띄우기 삭제</title>
+</head>
+<body>
+<?php
+$db_table="main_open_win";
+
+//=============메뉴 삭제=======================
+
+$query="delete from $db_table where no='$no'";
+$inst->Execute($query); 
+
+$Up_Folder = $UP_FOLDER_HOME."/popup";
+//Delete_UpFile($Up_Folder,$pic1);
+
+$inst->Disconnect();
+
+echo("<meta http-equiv='refresh' content='0;url=list.htm'>");
+?>
+</body>
+</html>

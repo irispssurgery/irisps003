@@ -1,0 +1,30 @@
+<?php
+ob_start();
+session_start();
+
+//쿠키 강제 만료
+function ExpireCookie($ckname) {
+	@setcookie($ckname,'',mktime(0,0,0,date("m"),date("d"),date("Y")),"/");
+}
+
+//변수 소멸
+unset($MemId);
+unset($MemPasswd);
+unset($MemLevel);
+unset($MemName);
+
+//세션변수 비움
+$_SESSION["MemId"] = "";
+$_SESSION["MemPasswd"] = "";
+$_SESSION["MemLevel"] = "";
+$_SESSION["MemName"] = "";
+
+//자동로그인 쿠키 만료
+ExpireCookie("amid");
+ExpireCookie("pswd");
+
+//세션 파괴
+session_destroy();;
+
+echo "<meta http-equiv='refresh' content='0;url=/'>"; 
+?>

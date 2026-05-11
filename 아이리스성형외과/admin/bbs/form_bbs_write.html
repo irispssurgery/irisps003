@@ -1,0 +1,74 @@
+<? 
+
+	if(!$bbsadmin)
+
+		include "./admin/bbs/form_bbs_write.php";
+
+	else
+
+		include "./form_bbs_write.php";
+
+?>
+
+<html>
+
+<head>
+
+<title>Untitled Document</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+
+<style type="text/css">
+
+<!--
+
+table {  font-family: "u"; font-size: 9pt}
+
+-->
+
+</style>
+
+</head>
+
+
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="eeeeee">
+
+<center>
+
+<form name="bbs_write" method="post" action="" enctype="multipart/form-data">
+
+    <table border="0" height="350" bordercolor="<?echo $list_border_color;?>" cellpadding="3" cellspacing="0" bordercolorlight='silver' bordercolordark='white'>
+      <?echo $board_write;?>
+      <tr> 
+
+      <td colspan="2" align="center" >
+
+	  <input type="hidden" name="bbsadmin" value="<?echo $bbsadmin;?>">
+
+	  <input type="hidden" name="bbscode_code" value="<?echo $bbscode_code;?>">
+
+	  <input type="hidden" name="is_uploaded_file" value="<?echo $is_uploaded_file;?>">
+
+	  <input type="hidden" name="site_code" value="<?echo $site_code;?>">
+
+		<?echo $button;?>
+
+	  <a href="javascript:checkForm(document.bbs_write);"><img src="./board_img/btn_ok.gif" align="absmiddle" border="0"></a>&nbsp;
+
+	  <a href="javascript:document.bbs_write.reset();"><img src="./board_img/btn_cancle.gif" align="absmiddle" border="0"></a>
+
+	  </td>
+
+    </tr>
+
+  </table>
+
+</form>
+
+</center>
+
+</body>
+
+</html>
+

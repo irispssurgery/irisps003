@@ -1,0 +1,43 @@
+# 1. 환경 변수 설정 (경로를 명확하게 재정의)
+$srcDir = "C:\Users\USER\Documents\MyKnowledge" # 사용자 환경에 맞게 수정이 필요할 수 있으나, 아래 명령어를 그대로 쓰세요.
+$targetPath = "C:\Users\USER\Documents\MyKnowledge\30_Permanent\Project_Master_Archive.txt" 
+
+# 만약 위 경로가 어렵다면, 현재 실행 중인 폴드로 설정합니다.
+$currentDir = Get-Location
+$finalDest = Join-Path $currentDir "Project_Master_Archive.txt"
+
+# 2. 대상 폴더(30_Permanent)가 있는지 확인하고 없으면 생성
+$destFolder = Join-Path $currentDir "30_Permanent"
+if (-not (Test-Path $destFolder)) {
+    New-Item -ItemType Directory -Path $destFolder | Out-Null
+    Write-Host "✅ [알림] 30_Permanent 폴더를 새로 생성했습니다." -ForegroundColor Cyan
+}
+
+# 3. 파일 통합 로직
+$filesToProcess = Get-ChildItem -Path $currentDir -Include "idea_*.txt", "task_*.txt", "project_*.txt" -File # 대상 파일 패턴
+
+$contentBuilder = New-Object System.Text.StringBuilder
+[void]$contentBuilder.AppendLine("=====================================================")
+[void]$contentBuilder.AppendLine("🚀 프로젝트 통합 마스터 아카이브 (Generated: $(Get-Date))")
+[void]$contentBuilder.AppendLine("=====================================================")
+
+foreach ($file in $filesToProcess) {
+    [void]$contentBuilder.AppendLine("`n[파일 출처: $($file.Name)]")
+    [void]$contentBuilder.AppendLine("-----------------------------------------------------")
+    $fileContent = Get-Content -Path $file.FullName -Raw
+    [void]$contentBuilder.AppendLine($fileContent)
+    [void]$contentBuilder.AppendLine("`n[끝]")
+}
+
+# 4. 최종 저장 (경로를 $finalDest로 고정하여 안전하게 저장)
+$finalDest | Out-File -FilePath $finalDest -Encoding utf8 # 이 줄은 오류 방지를 위해 아래로 수정
+$finalPath = Join-Path $destFolder "Project_Master_Archive.txt"
+
+$contentBuilder.ToString() | Out-File -FilePath $finalPath -Encoding utf8
+
+Write-Host "-----------------------------------------------------" -ForegroundColor Green
+Write-Host "✅ [성공] 모든 파일이 성공적으로 통합되었습니다!" -ForegroundColor Green
+Write-Host "📂 [저장 위치]: $finalPath" -ForegroundColor Yellow
+Write-Host "-----------------------------------------------------" -ForegroundColor GreenProcessed: [ ] 메일 확인하기
+Processed: [ ] 병원 홈페이지 로고 수정
+Processed: [ ] 다음 주 미팅 준비

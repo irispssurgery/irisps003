@@ -1,0 +1,295 @@
+<?
+session_start();
+include "./CObject.lib";
+include "top.html";
+$user_info=$member->getUser($user_id);
+?>
+<link href="css/iris.css" rel="stylesheet" type="text/css">
+<script language="Javascript" src="java/form_member_write.js"></script>
+<!-- 메인start -->
+<script language="JavaScript">
+<!--
+function MM_openBrWindow(theURL,winName,features) { //v2.0
+  window.open(theURL,winName,features);
+}
+
+function checkForm()
+{
+	var form=document.member_join;
+
+	if(!form.user_pwd1.value)
+	{
+		alert("비밀번호를 입력하여 주십시요.");
+		form.user_pwd1.focus();
+
+		return false;
+	}
+
+	if(!form.user_pwd2.value)
+	{
+		alert("비밀번호를 입력하여 주십시요.");
+		form.user_pwd2.focus();
+
+		return false;
+	}
+
+	if(!form.user_name.value)
+	{
+		alert("이름를 입력하여 주십시요.");
+		form.user_name.focus();
+
+		return false;
+	}
+
+	if(!form.zipcode.value)
+	{
+		alert("우편번호를 입력하여 주십시요.");
+		form.zipcode.focus();
+
+		return false;
+	}
+
+	if(!form.address1.value)
+	{
+		alert("주소를 입력하여 주십시요.");
+		form.address1.focus();
+		return false;
+	}
+
+	if(!form.address2.value)
+	{
+		alert("상세 주소를 입력하여 주십시요.");
+		form.address2.focus();
+		return false;
+	}
+
+	if(!form.telephone.value)
+	{
+		alert("휴대전화를 입력하여 주십시요.");
+		form.telephone.focus();
+		return false;
+	}
+
+	if(!form.email.value)
+	{
+		alert("이메일을 입력하여 주십시요.");
+		form.email.focus();
+
+		return false;
+	}
+
+	if(form.user_pwd1.value != form.user_pwd2.value)
+	{
+		alert("비밀번호가 일치하지 않습니다.");
+		form.user_pwd1.focus();
+
+		return false;
+	}
+}
+
+function checkID()
+{
+	var form=document.member_join;
+	
+	if(!form.user_id.value)
+	{
+		alert("아이디를 입력하여 주십시요.");
+		form.user_id.focus();
+		return ;
+	}
+	else
+	{
+		window.open('id_popup.html?user_id='+form.user_id.value,'','width=370,height=130');
+	}
+}
+
+function zipcode()
+{
+	window.open('add_popup.html','','width=390,height=300, scrollbars=yes');
+
+}
+
+//-->
+</script>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td height="688" bgcolor="DCCB94" valign="top" width="864"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="26"><img src="images/x.gif" width="26" height="5"></td>
+          <td width="1" bgcolor="#4F4233"><img src="images/x.gif" width="1" height="5"></td>
+          <td bgcolor="#5F543A" height="105" valign="top"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td bgcolor="#000000" width="187" height="105"><img src="images/x.gif" width="187" height="135"></td>
+              </tr>
+              <tr> 
+                <td width="187" valign="top" background="images/left_bg.gif" bgcolor="#5F543A" height="400"> 
+                  <?
+include "left_menu.html";
+?>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td width="1" bgcolor="#4F4233"><img src="images/x.gif" width="1" height="5"></td>
+          <td height="688" valign="top"> 
+            <?
+include "sub_baner_02.html";
+?>
+            <table width="647" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td colspan="2" height="7"></td>
+              </tr>
+            </table>
+            <table width="634" border="0" cellspacing="1" cellpadding="5" align="center" bgcolor="EEEEEE">
+              <tr> 
+                <td bgcolor="DCCB94" > 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td bgcolor="EEEEEE"> 
+                        <table width="610" border="0" cellspacing="0" cellpadding="0" align="center">
+                          <tr> 
+                            <td height="19" colspan="2"></td>
+                          </tr>
+                          <tr> 
+                            <td colspan="2"><img src="images/member_title_04.gif" width="610" height="41"></td>
+                          </tr>
+                          <tr> 
+                            <td height="19" colspan="2"></td>
+                          </tr>
+                        </table>
+						<form name="member_join" method="post" action="./proc_member_modify.php" onsubmit="return checkForm();">
+                        <table width="575" border="0" cellspacing="0" cellpadding="0" align="center">
+                          <tr> 
+                              <td align="center" bgcolor="D2CCAF" height="48"><img src="images/box_title_04.gif" width="575" height="48"></td>
+                          </tr>
+                          <tr> 
+                            <td align="center" bgcolor="D2CCAF" height="200" valign="top"> 
+                              
+                                <table width="500" border="0" cellspacing="0" cellpadding="5">
+                                  <tr> 
+                                    <td width="90"><img src="images/join_title_01.gif" width="83" height="18"></td>
+                                    <td> <?echo $user_info[0]["user_id"];?></td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/join_title_02.gif" width="83" height="18"></td>
+                                    <td> 
+                                      <input id=user_idt style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" name="user_pwd1" type="password" value="<?echo $user_info[0]["user_pwd"];?>">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/join_title_03.gif" width="83" height="18"></td>
+                                    <td> 
+                                      <input id=user_idt style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" name="user_pwd2" type="password" value="<?echo $user_info[0]["user_pwd"];?>">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/join_title_04.gif" width="83" height="18"></td>
+                                    <td> 
+                                      <input id=user_idt style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" name="user_name" value="<?echo $user_info[0]["user_name"];?>">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/join_title_05.gif" width="83" height="18"></td>
+                                    <td> 
+                                      <input  value="<?echo $user_info[0]["zipcode"];?>" id=user_idt style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" name="zipcode" readonly>
+                                      <a href="javascript:zipcode();"><img src="images/join_btn5.gif" width="53" height="23" align="absmiddle" border="0"></a></td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/join_title_06.gif" width="83" height="18"></td>
+                                    <td> 
+                                      <input id=user_idt style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 300px; HEIGHT: 18px" name="address1" value="<?echo $user_info[0]["address"];?>">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/join_title_07.gif" width="83" height="18"></td>
+                                    <td> 
+                                      <input id=user_idt style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 300px; HEIGHT: 18px" name="address2" value="<?echo $user_info[0]["detail_address"];?>">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/join_title_08.gif" width="83" height="18"></td>
+                                    <td> 
+                                      <input id=user_idt  value="<?echo $user_info[0]["telephone"];?>" style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" name="telephone">
+                                      <input type="checkbox" name="tel_yes">
+                                      SMS문자 수신여부</td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/join_title_09.gif" width="83" height="18"></td>
+                                    <td> 
+                                      <input id=user_idt  value="<?echo $user_info[0]["phone"];?>" style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" name="phone">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/join_title_10.gif" width="90" height="18"></td>
+                                    <td> 
+                                      <input id=user_idt value="<?echo $user_info[0]["email"];?>" style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 200px; HEIGHT: 18px" name="email">
+                                      <input type="checkbox" name="email_yes" >
+                                      이메일 수신여부</td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                </table>
+                              
+                              <br>
+							    <input type="hidden" name="user_id" value="<?echo $user_info[0]["user_id"];?>">
+                                <input type="image" src="images/modify.gif" width="106" height="23" align="absmiddle" border="0">
+                                </a> <!--<img src="images/secession.gif" width="106" height="23" align="absmiddle" border="0">--></td>
+                          </tr>
+                          <tr> 
+                            <td bgcolor="D2CCAF"><img src="images/box_down.gif" width="575" height="111"></td>
+                          </tr>
+                        </table>
+						</form>
+                        <br>
+                        <br>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td background="images/main_right_bg.gif" valign="top">
+<?
+include "right_baner.html";
+?>	 
+      </td>
+  </tr>
+</table>
+<?
+include "down.html";
+?>
+<!-- 메인end -->

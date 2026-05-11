@@ -1,0 +1,374 @@
+<?
+	class CDiscusslist
+	{
+		var $db;
+		var $PAGE;
+		var $save_data;
+		var $origin_data;
+
+		function CDiscusslist()
+		{
+			global $db;
+
+			if(!$db || !isset($db))
+				return -1;
+
+			$this->db=$db;
+		}
+
+		function mInsert($data)
+		{
+			if(!$data)
+				return false;
+
+			if(isset($data["img_savedata"]) && isset($data["img_origindata"]))
+			{
+				$this->save_data = time();
+				$this->origin_data = $data["img_savedata"];
+
+				if(!$this->FileUpload(topic_DATA))
+					return false;
+
+				$data["img_savedata"] = $this->save_data;
+			}
+
+			while(list($key, $value)=each($data))
+			{
+				$col[]=$key;
+				$row[]="'".$value."'";
+			}
+
+			$cols=implode(",", $col);
+			$tuple=implode(",", $row);
+
+			$query = "SELECT max(dl_idx)+1 FROM discuss_list";
+			$result = $this->db->ExecuteDML($query);
+
+			$dl_code = $this->db->getResult($result, 0, 0);
+
+			if(!$dl_code)
+				$dl_code="dl1";
+			else
+				$dl_code="dl".$dl_code;
+
+			$query="INSERT INTO discuss_list (".$cols.", reg_signdate, dl_code) VALUES (".$tuple.", current_date,'".$dl_code."');";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function mListAlltotal($search_choice, $search_word)
+		{
+			if($search_choice && $search_word)
+				$query="SELECT * FROM discuss_list WHERE ".$search_choice." LIKE '%".$search_word."%' ORDER BY dl_idx DESC";
+			else
+				$query="SELECT * FROM discuss_list ORDER BY dl_idx DESC";
+
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mListAllPart($search_choice, $search_word)
+		{
+			global $PAGE;
+
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$GET_RECORD=15;
+			$START_RECORD=($this->PAGE-1)*$GET_RECORD;
+
+			if($search_choice && $search_word)
+				$query="SELECT * FROM discuss_list WHERE ".$search_choice." LIKE '%".$search_word."%' ORDER BY dl_idx DESC LIMIT ".$GET_RECORD.", ".$GET_RECORD."";
+			else
+				$query="SELECT * FROM discuss_list ORDER BY dl_idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mListAll($mm_code, $sm_code, $search_choice, $search_word)
+		{
+			if($search_choice && $search_word)
+				$query="SELECT * FROM discuss_list WHERE mm_code='".$mm_code."' AND sm_code='".$sm_code."' AND ".$search_choice." LIKE '%".$search_word."%' ORDER BY dl_idx DESC";
+			else
+				$query="SELECT * FROM discuss_list WHERE mm_code='".$mm_code."' AND sm_code='".$sm_code."' ORDER BY dl_idx DESC";
+
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mListAllByUser($make_user, $search_choice, $search_word)
+		{
+			if($search_choice && $search_word)
+				$query="SELECT * FROM discuss_list WHERE make_user='".$make_user."' AND ".$search_choice." LIKE '%".$search_word."%' ORDER BY dl_idx";
+			else
+				$query="SELECT * FROM discuss_list WHERE make_user='".$make_user."' ORDER BY dl_idx DESC";
+
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+		
+		function mListPart($mm_code, $sm_code, $search_choice, $search_word)
+		{
+			if(!$PAGE)
+				$PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$GET_RECORD=10;
+			$START_RECORD=($PAGE-1) * $GET_RECORD;
+
+			if($search_choice && $search_word)
+				$query="SELECT * FROM discuss_list WHERE mm_code='".$mm_code."' AND sm_code='".$sm_code."' AND ".$search_choice." LIKE '%".$search_word."%' ORDER BY dl_idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			else
+				$query="SELECT * FROM discuss_list WHERE mm_code='".$mm_code."' AND sm_code='".$sm_code."' ORDER BY dl_idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mListPartByUser($make_user, $search_choice, $search_word)
+		{
+			global $PAGE;
+
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$GET_RECORD=10;
+			$START_RECORD=($this->PAGE-1)*$GET_RECORD;
+
+			if($search_choice && $search_word)
+				$query="SELECT * FROM discuss_list WHERE make_user='".$make_user."' AND ".$search_choice." LIKE '%".$search_word."%' ORDER BY dl_idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			else
+				$query="SELECT * FROM discuss_list WHERE make_user='".$make_user."' ORDER BY dl_idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mPermission($dl_idx)
+		{
+			if(!$dl_idx)
+				return false;
+
+			$query="UPDATE discuss_list SET is_active='Y' WHERE end_date>=current_date AND start_date<=current_date";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function mListBymmcode($mm_code, $is_active, $count)
+		{
+			if(!$mm_code || !$is_active || !$count)
+				return false;
+
+			$query="SELECT * FROM discuss_list WHERE mm_code='".$mm_code."' AND is_active='".$is_active."' ORDER BY dl_idx DESC LIMIT ".$count."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getDiscussByIdx($dl_idx)
+		{
+			if(!$dl_idx)
+				return false;
+
+			$query="SELECT * FROM discuss_list WHERE dl_idx=".$dl_idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function Modify($data)
+		{
+			if(!$data || !is_array($data))
+				return false;
+
+			if(isset($data["img_savedata"]) && isset($data["img_origindata"]))
+			{
+				$query = "SELECT img_savedata FROM discuss_list WHERE dl_idx=".$data["dl_idx"]."";
+				$result = $this->db->ExecuteDML($query);
+
+				$save_data = $this->db->getResult($result, 0, 0);
+
+				$this->db->freeResult($result);
+
+				if(file_exists(topic_DATA."/".$save_data))
+					unlink(topic_DATA."/".$save_data);
+
+				$this->save_data = time();
+				$this->origin_data = $data["img_savedata"];
+
+				if(!$this->FileUpload(topic_DATA))
+					return false;
+
+				$data["img_savedata"] = $this->save_data;
+			}
+
+			while(list($key, $value) =each($data))
+			{
+				if($key == "dl_idx")
+					continue;
+
+				$field[] = "".$key." = '".$value."'";
+			}
+
+			$f = implode(",", $field);
+			$query = "UPDATE discuss_list SET ".$f." WHERE dl_idx=".$data["dl_idx"];
+			$result = $this->db->ExecuteDML($query);
+			
+			return $result;
+		}
+
+		function getTitleByDlcode($dl_code)
+		{
+			if(!$dl_code)
+				return false;
+
+			$query="SELECT title FROM discuss_list WHERE dl_code='".$dl_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getImgByDlcode($dl_code)
+		{
+			if(!$dl_code)
+				return false;
+
+			$query="SELECT img_savedata, img_origindata FROM discuss_list WHERE dl_code='".$dl_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			$imgdata["img_savedata"]=$this->db->getResult($result, 0, 0);
+			$imgdata["img_origindata"]=$this->db->getResult($result, 0, 1);
+
+			return $imgdata;
+		}
+
+		function mDeleteDis($idx, $dl_code)
+		{
+			if(!$dl_code)
+				return false;
+
+			$query = "SELECT img_savedata FROM discuss_list WHERE dl_idx=".$idx."";
+			$result = $this->db->ExecuteDML($query);
+
+			$save_data = $this->db->getResult($result, 0, 0);
+
+			$this->db->freeResult($result);
+
+			if(file_exists(topic_DATA."/".$save_data))
+				unlink(topic_DATA."/".$save_data);
+
+
+
+			$query="DELETE FROM detail_discuss WHERE dl_code='".$dl_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+			{
+				return false;
+			}
+			else
+			{
+				$query="DELETE FROM discuss_list WHERE dl_idx=".$idx."";
+				$result=$this->db->ExecuteDML($query);
+
+				if(!$result)
+					return false;
+				else
+					return true;
+			}
+		}
+
+		function FileUpload($save_path)
+		{
+			if(!$save_path)
+				return false;
+	
+			if(copy($this->origin_data, $save_path."/".$this->save_data))
+			{
+				unlink($this->origin_data);
+				return true;
+			}
+			else
+			{
+				unlink($this->origin_data);
+				return false;
+			}
+		}
+
+		function mGetRecentDiscuss($mm_code)
+		{
+			if(!$mm_code)
+				return false;
+
+			$query="SELECT * FROM discuss_list WHERE mm_code='".$mm_code."' ORDER BY dl_idx DESC LIMIT 1";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+	}
+?>

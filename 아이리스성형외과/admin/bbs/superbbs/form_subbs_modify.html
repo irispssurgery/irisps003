@@ -1,0 +1,493 @@
+<?
+	include "./result_subbs_modify.php";
+
+
+?>
+
+<html>
+
+<head>
+
+<title>Untitled Document</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+
+<style type="text/css">
+
+<!--
+
+table {  font-family: "굴림체"; font-size: 9pt}
+
+-->
+
+</style>
+
+<Script language="javascript">
+
+function checkForm(form)
+
+{
+
+	
+	if(!form.bbscode_title.value)
+
+	{
+
+		alert("게시판 제목을 입력하지 않았습니다.");
+
+		form.bbscode_title.focus();
+
+
+
+		return;
+
+	}
+
+
+
+	if(!form.list_select_color.value)
+
+	{
+
+		alert("게시판 선택메뉴의 색깔을 입력하지 않았습니다.");
+
+		form.list_select_color.focus();
+
+
+
+		return;
+
+	}
+
+
+
+	if(!form.list_number_color.value)
+
+	{
+
+		alert("게시판 번소메뉴의 색깔을 입력하지 않았습니다.");
+
+		form.list_number_color.focus();
+
+
+
+		return;
+
+	}
+
+
+
+	if(!form.list_title_color.value)
+
+	{
+
+		alert("게시판 제목메뉴의 색깔을 입력하지 않았습니다.");
+
+		form.list_title_color.focus();
+
+
+
+		return;
+
+	}
+
+
+
+
+
+	if(!form.list_name_color.value)
+
+	{
+
+		alert("게시판 이름메뉴의 색깔을 입력하지 않았습니다.");
+
+		form.list_name_color.focus();
+
+
+
+		return;
+
+	}
+
+
+
+	if(!form.list_file_color.value)
+
+	{
+
+		alert("게시판 파일메뉴의 색깔을 입력하지 않았습니다.");
+
+		form.list_file_color.focus();
+
+
+
+		return;
+
+	}
+
+
+
+	if(!form.list_date_color.value)
+
+	{
+
+		alert("게시판 날짜메뉴의 색깔을 입력하지 않았습니다.");
+
+		form.list_date_color.focus();
+
+
+
+		return;
+
+	}
+
+
+
+	if(!form.list_hit_color.value)
+
+	{
+
+		alert("게시판 조회메뉴의 색깔을 입력하지 않았습니다.");
+
+		form.list_hit_color.focus();
+
+
+
+		return;
+
+	}
+
+
+
+	if(!form.link_color.value)
+
+	{
+
+		alert("링크시 글짜색깔을 지정하지 않았습니다.");
+
+		form.link_color.focus();
+
+
+
+		return;
+
+	}
+
+
+
+	if(!form.unlink_color.value)
+
+	{
+
+		alert("일반글자색을 입력하지 않았습니다.");
+
+		form.unlink_color.focus();
+
+
+
+		return;
+
+	}
+
+
+}	
+
+
+
+function colorPicker(which) 
+
+{
+
+	whichCol = which;
+
+	
+
+	cPicker = window.showModalDialog("colorSelect.html","ColorPicker","status:no;, dialogWidth:510px;, dialogHeight=410px");
+
+
+
+	if(!cPicker)
+
+		cPicker=black;
+
+
+
+	setColor(cPicker, whichCol);
+
+}
+
+
+
+function setColor(color, whichCol)
+
+{
+
+	switch(whichCol)
+
+	{
+
+		case "list_border_color":
+
+			document.forms[0].list_border_color.value = color;
+
+			break;
+
+		case "list_select_color":
+
+			document.forms[0].list_select_color.value = color;
+
+			break;
+
+		case "list_number_color":
+
+			document.forms[0].list_number_color.value = color;
+
+			break;
+
+		case "list_title_color":
+
+			document.forms[0].list_title_color.value = color;
+
+			break;
+
+		case "list_name_color":
+
+			document.forms[0].list_name_color.value = color;
+
+			break;
+
+		case "list_file_color":
+
+			document.forms[0].list_file_color.value = color;
+
+			break;
+
+		case "list_hit_color":
+
+			document.forms[0].list_hit_color.value = color;
+
+			break;
+
+		case "list_date_color":
+
+			document.forms[0].list_date_color.value = color;
+
+			break;
+
+		case "link_color":
+
+			document.forms[0].link_color.value = color;
+
+			break;
+
+		case "unlink_color":
+
+			document.forms[0].unlink_color.value = color;
+
+			break;
+
+		case "view_major_color":
+
+			document.forms[0].view_major_color.value = color;
+
+			break;
+
+		case "view_submajor_color":
+
+			document.forms[0].view_submajor_color.value = color;
+
+			break;
+
+		
+
+	}
+
+}
+
+</Script>
+
+</head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="eeeeee">
+
+<form name="form1" method="post" action="proc_subbs_modify.php" onsubmit="return checkForm('form1');">
+
+  <table width="720" border="1" height="552" bordercolorlight="silver" bordercolordark="white" cellspacing="0" cellpadding="3">
+    <tr bordercolorlight="B7B292"> 
+      <td colspan="3" align="center" height="30" bgcolor="E7E5D7"><b>게시판 수정</b></td>
+    </tr>
+    <tr> 
+      <td width="144" align="center" bgcolor="F3F2EB">게시판 제목 설정</td>
+      <td colspan="2" bgcolor="#FFFFFF">&nbsp; 
+        <input type="text" name="bbscode_title" size="30" value="<?echo $bbscode_title;?>">
+      </td>
+    </tr>
+    <tr> 
+      <td width="144" align="center" rowspan="2" bgcolor="F3F2EB">게시판 환경설정</td>
+      <td height="94" colspan="2" bgcolor="#FFFFFF"> 
+        <table width="530" border="1" bordercolorlight="silver" bordercolordark="white" cellspacing="0" cellpadding="3">
+          <tr align="center" bgcolor="f4fdec"> 
+            <td colspan="3">게시판 목록 설정</td>
+          </tr>
+          <tr> 
+            <td width="159" align="center" bgcolor="f9f9f9">테두리 색깔</td>
+            <td colspan="2">&nbsp; 
+              <input type="text" name="list_border_color" value="<?echo $list_border_color;?>">
+              &nbsp; <a href="javascript:colorPicker('list_border_color');"><img src="../but/but_color.gif" align="absmiddle" border="0"></a> 
+            </td>
+          </tr>
+          <tr> 
+            <td width="159" align="center" rowspan="7" bgcolor="f9f9f9">주메뉴 색깔</td>
+            <td width="87" height="11" align="center" bgcolor="#FFFFFF">선택</td>
+            <td width="262" height="11">&nbsp; 
+              <input type="text" name="list_select_color" value="<?echo $list_select_color;?>">
+              &nbsp; <a href="javascript:colorPicker('list_select_color');"><img src="../but/but_color.gif" align="absmiddle" border="0"></a> 
+            </td>
+          </tr>
+          <tr> 
+            <td width="87" align="center" height="15" bgcolor="#FFFFFF">순번</td>
+            <td width="262" height="15">&nbsp; 
+              <input type="text" name="list_number_color" value="<?echo $list_number_color;?>">
+              &nbsp; <a href="javascript:colorPicker('list_number_color');"><img src="../but/but_color.gif" align="absmiddle" border="0"></a> 
+            </td>
+          </tr>
+          <tr> 
+            <td width="87" align="center" bgcolor="#FFFFFF">제목</td>
+            <td width="262">&nbsp; 
+              <input type="text" name="list_title_color" value="<?echo $list_title_color;?>">
+              &nbsp; <a href="javascript:colorPicker('list_title_color');"><img src="../but/but_color.gif" align="absmiddle" border="0"></a> 
+            </td>
+          </tr>
+          <tr> 
+            <td width="87" align="center" bgcolor="#FFFFFF">이름</td>
+            <td width="262">&nbsp; 
+              <input type="text" name="list_name_color" value="<?echo $list_name_color;?>">
+              &nbsp; <a href="javascript:colorPicker('list_name_color');"><img src="../but/but_color.gif" align="absmiddle" border="0"></a> 
+            </td>
+          </tr>
+          <tr> 
+            <td width="87" align="center" bgcolor="#FFFFFF">파일</td>
+            <td width="262">&nbsp; 
+              <input type="text" name="list_file_color" value="<?echo $list_file_color;?>">
+              &nbsp; <a href="javascript:colorPicker('list_file_color');"><img src="../but/but_color.gif" align="absmiddle" border="0"></a> 
+            </td>
+          </tr>
+          <tr> 
+            <td width="87" align="center" bgcolor="#FFFFFF">날짜</td>
+            <td width="262">&nbsp; 
+              <input type="text" name="list_date_color" value="<?echo $list_date_color;?>">
+              &nbsp; <a href="javascript:colorPicker('list_date_color');"><img src="../but/but_color.gif" align="absmiddle" border="0"></a> 
+            </td>
+          </tr>
+          <tr> 
+            <td width="87" align="center" bgcolor="#FFFFFF">조회수</td>
+            <td width="262">&nbsp; 
+              <input type="text" name="list_hit_color" value="<?echo $list_hit_color;?>">
+              &nbsp; <a href="javascript:colorPicker('list_hit_color');"><img src="../but/but_color.gif" align="absmiddle" border="0"></a> 
+            </td>
+          </tr>
+          <tr> 
+            <td width="159" align="center" bgcolor="f9f9f9">링크 글자 색깔</td>
+            <td colspan="2"> &nbsp; 
+              <input type="text" name="link_color" value="<?echo $link_color;?>">
+              &nbsp; <a href="javascript:colorPicker('link_color');"><img src="../but/but_color.gif" align="absmiddle" border="0"></a> 
+            </td>
+          </tr>
+          <tr> 
+            <td width="159" align="center" bgcolor="f9f9f9">일반 글자 색깔</td>
+            <td colspan="2">&nbsp; 
+              <input type="text" name="unlink_color" value="<?echo $unlink_color;?>">
+              &nbsp; <a href="javascript:colorPicker('unlink_color');"><img src="../but/but_color.gif" align="absmiddle" border="0"></a> 
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr> 
+      <td height="87" colspan="2" bgcolor="#FFFFFF"> 
+        <table width="529" border="1" bordercolorlight="silver" bordercolordark="white" cellspacing="0" cellpadding="3">
+          <tr align="center" bgcolor="f4fdec"> 
+            <td colspan="3" height="15">게시판 보기, 작성, 수정 환경설정</td>
+          </tr>
+          <tr> 
+            <td width="122" align="center" rowspan="3" bgcolor="f9f9f9">주메뉴 색깔</td>
+            <td width="76" height="14" align="center">메뉴색깔</td>
+            <td width="206" height="14">&nbsp; 
+              <input type="text" name="view_major_color" value="<?echo $view_major_color;?>">
+              &nbsp; <a href="javascript:colorPicker('view_major_color');"><img src="../but/but_color.gif" align="absmiddle" border="0"></a> 
+            </td>
+          </tr>
+          <tr> 
+            <td align="center" height="28">입력색깔</td>
+            <td height="28"> &nbsp; 
+              <input type="text" name="view_submajor_color" value="<?echo $view_submajor_color;?>">
+              &nbsp; <a href="javascript:colorPicker('view_submajor_color');"><img src="../but/but_color.gif" align="absmiddle" border="0"></a> 
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr> 
+      <td width="144" align="center" bgcolor="F3F2EB">파일업로드 유무</td>
+      <td colspan="2" bgcolor="#FFFFFF">&nbsp; 
+        <?echo $file_checked;?>
+      </td>
+    </tr>
+    <tr> 
+      <td width="144" align="center" height="79" bgcolor="F3F2EB">게시판 기능 설정</td>
+      <td height="79" colspan="2" bgcolor="#FFFFFF"> 
+        <table width="527" border="1" cellspacing="0" cellpadding="3" bordercolorlight="silver" bordercolordark="white">
+          <tr> 
+            <td width="123" align="center" bgcolor="f9f9f9">글쓰기</td>
+            <td width="287">&nbsp; 
+              <?echo $write_checked;?>
+            </td>
+          </tr>
+          <tr> 
+            <td width="123" align="center" bgcolor="f9f9f9">수정</td>
+            <td width="287">&nbsp; 
+              <?echo $modify_checked;?>
+          </tr>
+          <tr> 
+            <td width="123" align="center" bgcolor="f9f9f9">답변</td>
+            <td width="287">&nbsp; 
+              <?echo $reply_checked;?>
+          </tr>
+          <tr> 
+            <td width="123" align="center" bgcolor="f9f9f9">삭제</td>
+            <td width="287">&nbsp; 
+              <?echo $delete_checked;?>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr> 
+      <td width="144" align="center" bgcolor="F3F2EB">게시판 제목 이미지</td>
+      <td colspan="2" bgcolor="#FFFFFF">&nbsp; 
+        <textarea name="title_image" cols="60" rows="5"><?echo $title_image;?></textarea>
+      </td>
+    </tr>
+    <tr> 
+      <td width="144" align="center" bgcolor="F3F2EB">게시판 꼬리 이미지</td>
+      <td colspan="2" bgcolor="#FFFFFF">&nbsp; 
+        <textarea name="tail_image" cols="60" rows="5"><?echo $tail_image;?></textarea>
+      </td>
+    </tr>
+  </table>  <br>
+  <table width="720" border="0" bordercolorlight="silver" bordercolordark="white" cellspacing="0" cellpadding="0">
+    <tr> 
+      <td colspan="3" align="center"> 
+        <input type="hidden" name="bbscode_idx" value="<?echo $bbscode_idx;?>">
+        <input type="hidden" name="bbscode_code" value="<?echo $bbscode_code;?>">
+        <a href="javascript:location.href='result_subbs_list.html'"> <img src="../but/but_list.gif" align="absmiddle" border="0"></a> 
+        <input type="image" src="../but/but_ok.gif" align="absmiddle" value=" 확인 " onClick="return checkForm(document.forms[0]);" name="image">
+        <a href="javascript:document.forms[0].reset();"><img src="../but/but_can.gif" align="absmiddle" border="0"></a> 
+      </td>
+    </tr>
+  </table>
+</form>
+
+</body>
+
+</html>
+

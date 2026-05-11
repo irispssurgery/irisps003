@@ -1,0 +1,508 @@
+<?
+	class CShopcart
+	{
+		var $db;
+		var $PAGE;
+
+		function CShopcart()
+		{
+			global $db;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+		}
+
+		function insertCart($data)
+		{
+			if(!$data)
+				return false;
+
+			while(list($key, $value)=each($data))
+			{
+				$col[]=$key;
+				$row[]="'".$value."'";
+			}
+
+			$cols=implode(",", $col);
+			$tuple=implode(",", $row);
+
+			$query="INSERT INTO shopCart (".$cols.", signdate) VALUES (".$tuple.", current_date);";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getCart($cus_id)
+		{
+			if(!$cus_id)
+				return false;
+
+			$query="SELECT * FROM shopCart WHERE user_id='".$cus_id."' ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function isCart($cus_id, $pcode)
+		{
+			if(!$cus_id || !$pcode)
+				return false;
+
+			$query="SELECT idx FROM shopCart WHERE user_id='".$cus_id."' AND pcode='".$pcode."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function delCart($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="DELETE FROM shopCart WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function insertJumun($data)
+		{
+			if(!$data)
+				return false;
+
+			################################포인트 적립하기#####################################
+			if($data["settle"]=="online" || $data["settle"]=="card")
+			{
+				$query="SELECT point FROM buyedCart WHERE confirm='".$data["confirm"]."'";
+				$result=$this->db->ExecuteDML($query);
+
+				while($resultSet=$this->db->FetchArray($result))
+				{
+					$total_point+=$resultSet["point"];
+				}
+
+				$query1="UPDATE member SET total_point=total_point+".$total_point." WHERE user_id='".$data["buyer_id"]."'";
+				$result1=$this->db->ExecuteDML($query1);
+			}
+			#######################################################################################
+
+			######################주문서 작성 루핀####################################
+			while(list($key, $value)=each($data))
+			{
+				$col[]=$key;
+				$row[]="'".$value."'";
+			}
+
+			$cols=implode(",", $col);
+			$tuple=implode(",", $row);
+
+			$query="INSERT INTO jumun (".$cols.") VALUES (".$tuple.");";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+			#############################################################################
+		}
+
+		function moveBuyedCart($data)
+		{
+			######################장바구니에 있는 상품을 buyedCart로 옮기기###########
+
+			$query="SELECT * FROM shopCart WHERE user_id='".$data["buyer_id"]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$point=$this->getPoint($resultSet["pcode"]);
+
+				$buyed_query="INSERT INTO buyedCart (user_id, pcode, buycount, unit_money, signdate, confirm, point) VALUES ('".$resultSet["user_id"]."', '".$resultSet["pcode"]."', '".$resultSet["buycount"]."', '".$resultSet["unit_money"]."', '".$resultSet["signdate"]."', '".$data["confirm"]."', ".$point.");";
+
+				$result1=$this->db->ExecuteDML($buyed_query);
+			}
+			$shop_query="DELETE FROM shopCart WHERE user_id='".$data["buyer_id"]."'";
+			$result=$this->db->ExecuteDML($shop_query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+
+			##########################################################################
+		}
+
+		function getPoint($pcode)
+		{
+			if(!$pcode)
+				return false;
+
+			$query="SELECT pinterest FROM product WHERE pcode='".$pcode."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+		
+		function getPcode($get_id)
+		{
+			if(!$get_id)
+				return false;
+
+			$query="SELECT pcode FROM shopCart WHERE user_id='".$get_id."' ORDER BY idx DESC LIMIT 1";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function delCartByUser($buy_id)
+		{
+			if(!$buy_id)
+				return false;
+
+			$query="DELETE FROM shopCart WHERE user_id='".$buy_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getOrderListAll($settle)
+		{
+			if(!$settle)
+				return false;
+
+			$query="SELECT * FROM jumun WHERE settle='".$settle."' ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getOrderList($settle)
+		{
+			global $PAGE;
+
+			if(!$settle)
+				return false;
+
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$GET_RECORD=10;
+			$START_RECORD=($this->PAGE-1)*$GET_RECORD;
+
+			$query="SELECT * FROM jumun WHERE settle='".$settle."' ORDER BY idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getOrderUserListAll($user)
+		{
+			if(!$user)
+				return false;
+
+			$query="SELECT * FROM jumun WHERE buyer_id='".$user."' ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getOrderUserList($user)
+		{
+			global $PAGE;
+
+			if(!$user)
+				return false;
+
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$GET_RECORD=10;
+			$START_RECORD=($this->PAGE-1)*$GET_RECORD;
+
+			$query="SELECT * FROM jumun WHERE buyer_id='".$user."' ORDER BY idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getOrderConfirmListAll($confirm)
+		{
+			if(!$confirm)
+				return false;
+
+			$query="SELECT * FROM jumun WHERE confirm='".$confirm."' ORDER BY idx DESC";
+
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getOrderConfirmList($confirm)
+		{
+			if(!$confirm)
+				return false;
+
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$GET_RECORD=10;
+			$START_RECORD=($this->PAGE-1)*$GET_RECORD;
+
+			$query="SELECT * FROM jumun WHERE confirm='".$confirm."' ORDER BY idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getJumunListAll()
+		{
+			$query="SELECT * FROM jumun ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getJumunList()
+		{
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$GET_RECORD=10;
+			$START_RECORD=($this->PAGE-1)*$GET_RECORD;
+
+			$query="SELECT * FROM jumun ORDER BY idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getJumunListAllByUser($buyer_id)
+		{
+			$query="SELECT * FROM jumun WHERE buyer_id='".$buyer_id."' ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getJumunListByUser($buyer_id)
+		{
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$GET_RECORD=10;
+			$START_RECORD=($this->PAGE-1)*$GET_RECORD;
+
+			$query="SELECT * FROM jumun WHERE buyer_id='".$buyer_id."' ORDER BY idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+
+		function getPcodeByConfirm($confirm)
+		{
+			if(!$confirm)
+				return false;
+
+			$query="SELECT pcode FROM buyedCart WHERE confirm='".$confirm."' ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function updateBaesong($idx, $is_baesong)
+		{
+			if(!$idx || !$is_baesong)
+				return false;
+
+			$query="UPDATE jumun SET is_baesong='".$is_baesong."' WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getBuyedCart($confirm)
+		{
+			if(!$confirm)
+				return false;
+
+			$query="SELECT * FROM buyedCart WHERE confirm='".$confirm."' ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getProduct($pcode)
+		{
+			if(!$pcode)
+				return false;
+
+			$query="SELECT * FROM product WHERE pcode='".$pcode."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getNameProduct($pcode)
+		{
+			if(!$pcode)
+				return false;
+
+			$query="SELECT pname FROM product WHERE pcode='".$pcode."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+		
+		function getProductName($pcode)
+		{
+			if(!$pcode)
+				return false;
+
+			$query="SELECT pname FROM product WHERE pcode='".$pcode."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getProductCost($confirm)
+		{
+			if(!$confirm)
+				return false;
+
+			$query="SELECT * FROM buyedCart WHERE confirm='".$confirm."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function delBuyedCart($confirm)
+		{
+			if(!$confirm)
+				return false;
+
+			$query="DELETE FROM buyedCart WHERE confirm='".$confirm."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function updatePay($idx, $val)
+		{
+			if(!$idx || !$val)
+				return false;
+
+			$query="UPDATE jumun SET pay_result='".$val."' WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		
+	}
+?>

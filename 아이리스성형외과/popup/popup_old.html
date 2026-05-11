@@ -1,0 +1,39 @@
+<script> 
+function eventgo(){ 
+opener.parent.main.location.href = '../bbshop/shop/main.php?page=view_item&class_id=7&item_id=12' 
+window.close() 
+} 
+</script>
+<script language="JavaScript">
+<!--
+function setCookie(name,value,expiredays) {
+var todayDate = new Date();
+todayDate.setDate(todayDate.getDate() + expiredays);
+document.cookie = name + "=" + escape( value ) + "; path=/; expires=" + todayDate.toGMTString() + ";"
+}
+
+function closeWin() {
+if(document.checkClose.ncook.checked == true) {
+setCookie("ncook", "done" ,7);
+}
+self.close();
+}
+//-->
+</script>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<form name="checkClose">
+  <table width="300" border="0" cellpadding="0" cellspacing="0">
+    <tr> 
+      <td><img src="img/event1.jpg" width="870" height="600" border="0"></td>
+  </tr>
+</table>
+
+  <table border="0" cellpadding="0" cellspacing="0" width="300">
+    <tr bgcolor="#E1602F"> 
+      <td class="font01" align="right" bgcolor="#B50000"> <font color="#FFFFFF">&nbsp;&nbsp; 
+        <input type="checkbox" name="ncook">
+        <span style="font-size:8pt;">오늘하루 이창을 열지 않습니다</span>. </font> <a href="#" onClick="closeWin()"><img src="img/close.gif" width="60" height="20" border="0" align="absmiddle"></a></td>
+    </tr>
+  </table>
+</form>

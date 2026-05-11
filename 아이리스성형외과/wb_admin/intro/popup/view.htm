@@ -1,0 +1,236 @@
+<?
+ob_start(); 
+session_start(); 
+ 
+extract($HTTP_GET_VARS); 
+extract($HTTP_POST_VARS); 
+extract($HTTP_SESSION_VARS); 
+ 
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+include "../../auth_admin.php3";
+
+$inst->Connect(); 
+?>
+<html>
+<head>
+<title><?echo $head_title;?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='../../image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 운영관리 &gt; 팝업창 설정</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="../../image/sub02left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                              <table width="90%" border="0" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td style="padding-top:10px; padding-bottom:10px" background="../../image/left_bg.gif"> 
+                                    <!-- 왠쪽 메뉴 시작-->
+                             <?
+								include "../manage_menu.htm";
+							 ?>
+                                    <!-- 왠쪽 메뉴 끝-->
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="670" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td><img src="image/bar10.gif" width="670" height="40"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>
+<!------------------------------------------------------->
+                
+<?
+$db_table="main_open_win";
+
+$query="select * from $db_table where no='$no'";
+$row=$inst->ExecFetch($query);
+
+if ($row){
+	$no=$row[no];
+	$title=$row[title];
+	$open=$row[open];
+	$content=$row[content];
+	$filename=$row[filename];
+    $top=$row[top];
+	$left1=$row[left1];
+	$width=$row[width];
+	$height=$row[height];
+	$start_date=$row[start_date];
+	$end_date=$row[end_date];
+	$date1=$row[date1];
+	$image_use=$row[image_use];
+	
+	$title=stripslashes($title);
+	
+//	$content=str_replace(" ","&nbsp;",$content); 
+  //  $content=nl2br($content);
+	
+}
+?>
+   <table width="669" border="0" cellspacing="0" cellpadding="5" align="center" class="text">
+		<tr>
+			<td  height="4" bgcolor="#6493B3" colspan='3'></td>
+		</tr>
+		<tr> 
+		  <td height="30" bgcolor="#DEEFFA" align="center" colspan='3'><b>팝업창 설정</b></td>
+		</tr>
+		<tr> 
+		  <td height="1" bgcolor="#93AEBF" colspan='3'></td>
+		</tr>
+		<tr> 
+		  <td height="2" bgcolor="#C5D3DC" colspan='3'></td>
+		</tr>
+		<tr bgcolor='#FFFFFF'> 
+		  <td width='100' height="37" ><b><center>새창 띄우기</center></b></td>
+          <td width='514'>&nbsp;<? echo $open; ?></td>		
+	    </tr>
+		<tr> 
+		  <td colspan="3" height="2" background="../../image/table_line_b.gif"></td>
+		</tr>
+		<tr bgcolor='#FFFFFF'> 
+		  <td width='100' height="37" ><b><center>Title</center></b></td>
+		  <td width='514'>&nbsp;<? echo "$title"; ?></td>		
+		</tr>
+		<tr> 
+		  <td colspan="3" height="2" background="../../image/table_line_b.gif"></td>
+		</tr>
+        <tr bgcolor='#FFFFFF'> 
+		  <td width='100' height="37" ><b><center>내용</center></b></td>
+		  <td width='514'>&nbsp;<? echo "$content"; ?></td>		
+		</tr>
+		<tr> 
+		  <td colspan="3" height="2" background="../../image/table_line_b.gif"></td>
+		</tr>
+		<tr bgcolor='#FFFFFF'> 
+		  <td width='100' height="37" ><b><center>파일명</center></b></td>
+		  <td width='514'>&nbsp;<? echo "$filename"; ?></td>		
+		</tr>
+		<tr> 
+		  <td colspan="3" height="2" background="../../image/table_line_b.gif"></td>
+		</tr>
+		<tr bgcolor='#ffffff'> 
+		  <td  height="37"><b><center>새창 위치</center></b></td>			
+		  <td class=ListNormal>&nbsp;[Left : <? echo "$top"; ?>]&nbsp;&nbsp;&nbsp;&nbsp;[Top : <? echo "$left1"; ?>]&nbsp;&nbsp;&nbsp;&nbsp;[Width : <? echo "$width"; ?>]&nbsp;&nbsp;&nbsp;&nbsp;[Height : <? echo "$height"; ?>]</td>
+		</tr>
+		<tr> 
+		  <td colspan="3" height="2" background="../../image/table_line_b.gif"></td>
+		</tr>
+		 <tr bgcolor='#FFFFFF'> 
+		  <td align='center' height="37"><b> 게재 기간 </b></td>			
+		  <td>&nbsp;<? echo "$start_date"; ?> 에서 ~ <? echo "$end_date"; ?> 까지</td>		
+	    </tr>
+		<tr> 
+		  <td colspan="3" height="2" background="../../image/table_line_b.gif"></td>
+		</tr>
+	    <tr bgcolor='#FFFFFF'> 
+		  <td align='center' height="37"><b> 등 록 일 </b></td>			
+		  <td>&nbsp;<? echo "$date1"; ?></td>		
+	    </tr>
+		<tr> 
+		  <td colspan="3" height="2" background="../../image/table_line_b.gif"></td>
+		</tr>
+		<tr> 
+		  <td colspan="3" height="2" bgcolor="#B3C6D2"></td>
+		</tr>
+        <tr bgcolor='#FFFFFF'>
+		  <td colspan='3' height="37" align='center'>
+			<center>[ <a href='javascript:history.go(-1)'>list</a> ]</center>
+		  </td>		
+	    </tr>
+      </table> 
+<!-------------------------------------------------------->
+					  
+					  </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

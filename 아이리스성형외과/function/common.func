@@ -1,0 +1,74 @@
+<?
+	function Error1($msg)
+	{
+		echo "<Script language=\"javascript\">";
+		echo "	alert(\"".$msg."\");";
+		echo "	history.back();";
+		echo "</Script>";
+
+		exit;
+	}
+
+	function alert($msg)
+	{
+		echo "<Script language=\"javascript\">";
+		echo "	alert(\"".$msg."\");";
+		echo "</Script>";
+	}
+
+	function Redirect($url)
+	{
+		$url = eregi_replace("'", "", $url);
+		echo "<meta http-equiv='refresh' content='0 url=".$url."'>";
+	}
+	
+	function cutString($val,$cut_len)
+	{ 
+
+			$tot_len = strlen($val); 
+			$cut_str = substr($val,0,$cut_len); 
+			$len = strlen($cut_str); 
+		
+			for($i=0;$i<$len;$i++)
+			{ 
+		
+				if(ord($val[$i]) > 127)
+				{ 
+					$hanlen++; 
+				} 
+				else
+				{ 
+					$englen++; 
+				} 
+		
+			} 
+		
+			$cut_gap = $hanlen % 2; 
+		
+			if($cut_gap == 1)
+			{ 
+				$hanlen--; 
+			} 
+		
+			$length=$hanlen + $englen;
+		
+			if($tot_len > $length)
+			{ 
+				return substr($val,0,$length)."..."; 
+			} 
+
+			else
+			{ 
+				return substr($val,0,$length); 
+			} 
+	}
+
+	function OrderLogin($url)
+	{
+		echo "<Script language=\"javascript\">";
+		echo "	alert(\"로그인을 하여 주십시요.\");";
+		echo "	location.href=\"".$url."\";";
+		echo "</Script>";
+	}
+
+?>

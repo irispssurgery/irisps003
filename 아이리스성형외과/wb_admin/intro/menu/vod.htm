@@ -1,0 +1,448 @@
+<?
+ob_start(); 
+session_start(); 
+ 
+extract($HTTP_GET_VARS); 
+extract($HTTP_POST_VARS); 
+extract($HTTP_SESSION_VARS); 
+ 
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+
+include "../../auth_admin.php3";
+
+$inst->Connect(); 
+
+$db_table="km_vod";
+$vod_depth = $depth-1;
+
+if ($seq==0){
+	$where_str = "";
+}else{
+	$where_str = "where vod_seq=$seq and vod_depth = $vod_depth";
+}
+
+if(!$code){
+	$query="select * from $db_table $where_str ORDER BY pid desc";
+
+	$row=$inst->ExecFetch($query);
+	$title=$row[title];
+	$filename=$row[file01_name];
+
+	$file_ext = explode(".",$filename);
+
+	if ($file_ext [1]=="flv"){
+		$code="flv";
+	}else{
+		$code="vod";
+	}
+}	
+
+?>
+<html>
+<head>
+<title><?echo $head_title;?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+<script type="text/javascript" src="/js/util.js"></script>
+<script type="text/javascript" src="swfobject.js"></script>
+<script language="JavaScript">
+<!--
+
+function vod(code, seq, depth, program_code, pid) {
+	filename=program_code;
+
+	window.location.href="vod.htm?code="+code+"&seq="+seq+"&depth="+depth+"&filename="+filename;
+}
+
+function mFull() {
+	document.WMPlay.DisplaySize = 3;
+}
+//-->
+</script>
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+
+<? include "../../include/top.htm"; ?>
+
+<!-- admin menu ----------------------------------------------------------------------------------->
+				<form name='f_check' style='margin:0px'>
+				<input type='hidden' name='depth' value='<?=(!$depth) ? '1':$depth;?>'>
+				<input type='hidden' name='seq' value='<?=(!$seq) ? '0':$seq;?>'>
+				</form>
+
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='../../image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; VOD</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="image/left_title1.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                              <table width="90%" border="0" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td style="padding-top:10px; padding-bottom:10px" background="../../image/left_bg.gif"> 
+                                    <!-- 왠쪽 메뉴 시작-->
+                             <?
+								include "./left.htm";
+							 ?>
+
+                                    <!-- 왠쪽 메뉴 끝-->
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="670" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="image/title2.gif" width="300" height="30"></td>
+                          </tr>
+                          <tr> 
+                            <td bgcolor="#D4D4D4" height="1"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                   <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>
+						<!-- 내용 -->
+						<table width="700" border="0" cellspacing="0" cellpadding="0" height="425">
+						  <tr>
+							<td width="5" height="5"><img src="image/vod_top_left.gif" width="5" height="5"></td>
+							<td background="image/vod_top_bg.gif"></td>
+							<td width="5"><img src="image/vod_top_right.gif" width="5" height="5"></td>
+						  </tr>
+						  <tr>
+							<td background="image/vod_left_bg.gif">&nbsp;</td>
+							<td valign="top"> 
+							  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<tr>
+								  <td>
+									<table width="100%" border="0" cellspacing="0" cellpadding="0">
+									  <tr>
+										<td style="padding-left:5px"><img src="image/top_logo.gif" width="680" height="80"></td>
+									  </tr>
+									</table>
+								  </td>
+								</tr>
+								<tr>
+								  <td>
+									<table width="100%" border="0" cellspacing="0" cellpadding="0">
+									  <tr> 
+										<td width="350" align="center" valign="top"> 
+										  <table border="0" cellspacing="0" cellpadding="0">
+											<tr> 
+											  <td><img src="image/vod_top.gif" width="339" height="31"></td>
+											</tr>
+											<tr> 
+											  <td background="image/vod_bg.gif" align="center">
+											  <p id="player1"><a href="http://www.macromedia.com/go/getflashplayer"></p>
+											  <? If ($code=="vod"){ ?>
+												<script type="text/javascript">
+													setem = new setEmbed();
+													setem.init('movie','mms://127.0.0.1/data/vod/<?=$filename?>','320','305','Player');
+													setem.parameter('transparentAtStart','True');
+													setem.parameter('transparentAtStop','True');
+													setem.parameter('AnimationAtStart','True');
+													setem.parameter('AutoStart','True');
+													setem.parameter('AutoRewind','True');
+													setem.parameter('DisplaySize','0');
+													setem.parameter('AutoSize','false');
+													setem.parameter('ShowDisplay','False');
+													setem.parameter('ShowStatusBar','True');
+													setem.parameter('ShowPositionControls','True');
+													setem.parameter('ShowTracker','True');
+													setem.parameter('ShowControls','True');
+													setem.parameter('SendMouseClickEvents','True');
+													setem.parameter('Enabled','1');
+													setem.parameter('EnableContextMenu','0');
+													setem.parameter('EnablePositionControls','1');
+													setem.parameter('EnableFullScreenControls','1');
+													setem.parameter('ShowPositionControls','1');
+													setem.parameter('ClickToPlay','0');
+													setem.parameter('CursorType','1');
+													setem.parameter('Volume','1');
+													setem.show();
+												</script>
+												<? } Else If ($code=="flv"){ ?>
+											    <script type="text/javascript">
+													var s1 = new SWFObject("flvplayer.swf","single","320","260","7");
+													s1.addParam("allowfullscreen","true");
+													s1.addVariable("autostart","true");
+													s1.addVariable("file","http://127.0.0.1/data/vod//<?=$filename?>");
+													s1.addVariable("image","");
+													s1.addVariable("width","320");
+													s1.addVariable("height","260");
+													s1.write("player1");
+											    </script>
+												<? } ?>
+											</tr>
+											<tr> 
+											  <td>
+												<!--<img src="image/vod_bottom.gif" width="339" height="55" usemap="#Map2" border="0" onClick="javascript:mFull();" style="cursor:hand">-->
+												<img src="image/vod_bottom.gif" width="339" height="55" border="0">
+											  </td>
+											</tr>
+										  </table>
+										</td>
+										<td>
+										  <table border="0" cellspacing="0" cellpadding="0" width="335">
+											<tr> 
+											  <td background="image/right_top2.gif" height="30"> 
+												<table width="100%" border="0" cellspacing="0" cellpadding="0">
+												<form name='form' method='post' action='news_desk.htm'>
+												  <tr> 
+													<td style="padding-left:8px" valign="bottom">
+													  <b><font size="2" color="#0066CC">VOD</font></b>
+													</td>
+													<td width="100">&nbsp;
+													</td>
+												  </tr>
+												  <tr>
+													<td style="padding-left:8px" height="3"></td>
+													<td></td>
+												  </tr>
+												</form>
+												</table>
+											  </td>
+											</tr>
+											<tr> 
+											  <td background="image/right_bg2.gif" height="240" align="center" valign='top'> 
+												<table width="320" border="0" cellspacing="0" cellpadding="0">
+												  <tr> 
+													<td> 
+													  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+														<tr> 
+														  <td bgcolor="#333399" height="26"> 
+															<table width="100%" border="0" cellspacing="0" cellpadding="0">
+															  <tr> 
+																<td align="center" width="250"> <font color="#FFFFFF"><b>제목</b></font></td>
+																<td valign="top" width="1" bgcolor="#FFFFFF"></td>
+																<td align="center"><b><font color="#FFFFFF">보기</font></b></td>
+															  </tr>
+															</table>
+														  </td>
+														</tr>
+													  </table>
+													  <table width="100%" border="0" cellspacing="1" cellpadding="0" bgcolor="#E9E9E9">
+						<?
+								$query="select pid from $db_table $where_str";
+								$total=$inst->ExecNumRows($query);
+								
+								$pagecount='10'; 
+								$block='10'; 
+								
+								$pages=$total/$pagecount;
+								$totalpage=ceil($pages);
+								
+								if($page<=0){
+									$page=1;
+								}
+								$pg=$page;
+								$num=$total-(($page-1)*$pagecount);
+								$query_limit = ($pg-1)*$pagecount;
+								
+								
+								$query="select * from $db_table $where_str ORDER BY pid desc limit $query_limit,$pagecount";
+								$result=$inst->Execute($query);
+
+								$i=0; 
+								while($row=$inst->ExecFetchArray($result)){
+									$pid=$row[pid];
+									$title=$row[title];
+									$file01_name=$row[file01_name];
+
+									$file_ext = explode(".",$file01_name);
+
+									if ($file_ext [1]=="flv"){
+										$code="flv";
+									}else{
+										$code="vod";
+									}
+						?>
+
+														<tr bgcolor="#FFFFFF"> 
+														  <td height="25" width="240" style="padding-left:10px"><font color='#000000'><?=$title?></font></td>
+														  <td align="center">
+															<a href="javascript:vod('<?=$code?>','<?=$seq?>','<?=$depth?>','<?=$file01_name?>','<?=$pid?>')"><img src="image/vod.gif" width="37" height="14" border='0'></a>
+														  </td>
+														</tr>
+						<?
+								$i++;
+							}
+
+							for($k=1;$k<=$pagecount-$i;$k++)
+							{
+						?>
+														<tr bgcolor="#FFFFFF"> 
+														  <td height="26" width="240" style="padding-left:10px"><font color='#000000'></font></td>
+														  <td align="center"></td>
+														</tr>
+						<? } ?>
+														<tr> 
+														  <td height="5" bgcolor="#333399"></td>
+														  <td height="5" bgcolor="#333399"></td>
+														</tr>
+													  </table>
+													</td>
+												  </tr>
+												  <tr> 
+													<td height="18">
+													  <table width="320" border="0" cellspacing="0" cellpadding="2">
+														<tr> 
+														  <td align="center">
+								  <?
+										// == Page Start ======================================//
+												
+										$block='10';
+										$widthpage=floor(($page-1)/$block)+1;
+										$start = ($widthpage-1) * $block+1;
+										$end = $widthpage*$block;
+										if ($totalpage < $end) $end = $totalpage;
+
+										if ($widthpage>1)
+										{
+											 $prev=$start - 1;
+											 echo "<a href='./vod.htm?page=$prev'>[이전] ◀ </a>";
+										}else{
+											 echo "<font color='gray'>[이전] ◀ </font>";
+										}
+												
+										for($start; $start<=$end; $start++)
+										{
+											if ($page == $start) echo "<font color=red> ".$start." </font>";
+											else
+												echo "<a href = './vod.htm?page=$start'> ".$start." </a>";
+										}
+												
+										if ($totalpage > $end) {
+											$next=$end+1;
+											echo "<a href='./vod.htm?page=$next'> ▶ [다음]</a>";
+										}else{
+											echo "<font color='gray'> ▶ [다음]</font>";
+										}
+																														
+										// == End Page =============================//
+									?>									  
+														  </td>
+														</tr>
+													  </table>							
+													</td>
+												  </tr>
+												</table>
+													
+											  </td>
+											</tr>
+											<tr> 
+											  <td><img src="image/vod_bottom.gif" width="335" height="52" usemap="#Map" border="0"></td>
+											</tr>
+										  </table>
+										</td>
+									  </tr>
+									  <tr>
+										<td height="4" align="center"></td>
+										<td></td>
+									  </tr>
+									</table>
+								  </td>
+								</tr>
+							  </table>
+							</td>
+							<td background="image/vod_right_bg.gif">&nbsp;</td>
+						  </tr>
+						  <tr>
+							<td height="5"><img src="image/vod_bottom_left.gif" width="5" height="5"></td>
+							<td background="image/vod_bottom_bg.gif"></td>
+							<td><img src="image/vod_bottom_right.gif" width="5" height="5"></td>
+						  </tr>
+						</table>
+						<!-- //내용 -->
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../include/bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

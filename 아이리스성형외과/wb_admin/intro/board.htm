@@ -1,0 +1,17 @@
+<? 
+ob_start(); 
+session_start(); 
+session_cache_limiter('private'); 
+extract($HTTP_GET_VARS); 
+extract($HTTP_POST_VARS); 
+ 
+include "../../config/dbconn.php3"; 
+include "../../config/function.php3"; 
+
+
+
+$inst->Connect(); 
+
+			   $db="news";
+			    include_once "../../km_board/board.htm"; 
+?>

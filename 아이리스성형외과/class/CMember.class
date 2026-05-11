@@ -1,0 +1,322 @@
+<?
+	class CMember
+	{
+		var $db;
+
+		function CMember()
+		{
+			global $db;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+		}
+
+		function mInsert($data)
+		{
+			if(!$data)
+				return false;
+
+			while(list($key, $value)=each($data))
+			{
+				$col[]=$key;
+				$row[]="'".$value."'";
+			}
+
+			$cols=implode(",", $col);
+			$tuple=implode(",", $row);
+
+			$query="INSERT INTO SC_TRAN (tr_senddate, tr_sendstat, tr_phone, tr_callback ,tr_msg) ";
+			$query.="VALUES (now(), '0', '".$data["phone"]."', '0518090021', '".$data["user_name"]."님 아이리스 성형외과 가입을 축하드립니다.');";
+			$result=$this->db->ExecuteDML($query);
+
+			$query="INSERT INTO users (".$cols.", signdate) VALUES (".$tuple.", now());";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}	
+
+		function checkId($userid)
+		{
+			if(!$userid)
+				return false;
+
+			$query="SELECT count(*) FROM users WHERE user_id='".$userid."'";
+			$result=$this->db->ExecuteDML($query);
+
+			$isUser=$this->db->getResult($result, 0, 0);
+
+			if($isUser<=0)
+				return true;
+			else
+				return false;
+		}
+
+
+		
+		function searchDong($dong)
+		{
+			if(!$dong)
+				return false;
+
+			$query="SELECT * FROM zipcode WHERE dong LIKE '%".$dong."%'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function updateusers($data)
+		{
+			if(!$data)
+				return false;
+
+			foreach($data as $key => $value)
+			{
+				if($key=="user_id")
+					continue;
+
+				$cols[]="".$key."='".$value."'";
+			}
+
+			$column=implode(",", $cols);
+			$query="UPDATE users SET ".$column." WHERE user_id='".$data["user_id"]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function mDeleteMember($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="DELETE FROM users WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function userListAll()
+		{
+			$args=func_get_args();
+
+			if($args[0]&&$args[1])
+				$add_query="WHERE ".$args[0]." LIKE '%".$args[1]."%'";
+				
+			$query="SELECT * FROM users ".$add_query." ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function userListPart()
+		{
+			global $PAGE;
+
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$GET_RECORD=10;
+			$START_RECORD=($this->PAGE-1)*$GET_RECORD;
+
+			$args=func_get_args();
+
+			if($args[0]&&$args[1])
+				$add_query="WHERE ".$args[0]." LIKE '%".$args[1]."%'";
+
+			$query="SELECT * FROM users ".$add_query." ORDER BY idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getUser($user_account)
+		{
+			if(!$user_account)
+				return false;
+
+			$query="SELECT * FROM users WHERE user_id='".$user_account."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function isLogin($user_id, $user_pwd)
+		{		
+			if(!$user_id || !$user_pwd)
+				return false;
+
+			$query="SELECT count(*) FROM users WHERE user_id='".$user_id."' AND user_pwd='".$user_pwd."'";
+			$result=$this->db->ExecuteDML($query);
+
+			$is_account=$this->db->getResult($result, 0, 0);
+
+			return $is_account;
+		}
+
+		function getPoint($get_id)
+		{
+			if(!$get_id)
+				return false;
+
+			$query="SELECT total_point FROM users WHERE user_id='".$get_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function updatePoint($get_id, $point)
+		{
+			if(!$get_id || !$point)
+				return false;
+
+			$query="UPDATE users SET total_point=".$point." WHERE user_id='".$get_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getName($user)
+		{
+			if(!$user)
+				return false;
+
+			$query="SELECT user_name FROM users WHERE user_id='".$user."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function emaillist()
+		{
+			$query="SELECT * FROM users WHERE isr_email='Y'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getAccount($user_name, $email)
+		{
+			if(!$user_name || !$email)
+				return false;
+
+			$query="SELECT * FROM users WHERE user_name='".$user_name."' AND email='".$email."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function delMember($idx, $user_id)
+		{
+			if(!$idx || !$user_id)
+				return false;
+
+			$query="DELETE FROM users WHERE no=".$idx." AND user_id='".$user_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getBonus($users)
+		{
+			if(!$users)
+				return false;
+
+			$query="SELECT bonus FROM user_bonus WHERE user_id='".$users."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getJuminMember($user)
+		{
+			if(!$user)
+				return false;
+
+			$query="SELECT jumin FROM users WHERE user_id='".$user."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function updateCall($users, $bonus)
+		{
+			if(!$users || !$bonus)
+				return false;
+			
+			$query="UPDATE user_bonus SET addbonus=addbonus+".$bonus.", bonus=bonus+".$bonus." WHERE user_id='".$users."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function isID($name, $jumin)
+		{
+			if(!$name || !$jumin)
+				return false;
+
+			$query="SELECT count(*) FROM users WHERE user_name='".$name."' AND jumin='".$jumin."'";
+			$result=$this->db->ExecuteDML($query);
+
+			$is=$this->db->getResult($result, 0, 0);
+
+			if($is<=0)
+				return false;
+			else
+				return true;
+		}
+
+
+	}
+?>

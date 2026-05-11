@@ -1,0 +1,356 @@
+<?
+ob_start(); 
+session_start(); 
+ 
+extract($HTTP_GET_VARS); 
+extract($HTTP_POST_VARS); 
+extract($HTTP_SESSION_VARS); 
+ 
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+
+include "../../auth_admin.php3";
+
+$inst->Connect(); 
+
+if ($doing=="modify"){
+	$table="km_vod";
+	$query="select * from $table where pid='$pid'";
+	$row=$inst->ExecFetch($query);
+	if ($row)
+	{
+		$title=$row[title];
+		$writer=$row[writer];
+		$content=$row[content];
+
+		$file01_name=$row[file01_name];
+
+	}
+}
+?>
+<html>
+<head>
+<title><?echo $head_title;?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+<script type="text/javascript" src="/js/util.js"></script>
+<script language="javascript" src="/TrashUpload/trashfileform.js"></script>
+<script language="JavaScript" src="/easy_editor/easyEditor.js"></script>
+<script language="JavaScript">
+<!--
+
+	var bUploadControl = true;
+	var bSubmit = false;
+
+	function AttachFiles()
+	{
+		document.TrashUpload.AttachFiles();
+	}
+
+	function DeleteFiles()
+	{
+		document.TrashUpload.DeleteFiles();
+	}
+
+
+	function content_check(form) {
+		if ( bUploadControl == false ) {
+			alert("컨트롤이 설치되지 않았습니다.");
+			return;
+		}
+
+		if(bSubmit == true){
+			return;
+		}
+
+		var f = document.form1;
+
+		if(f.writer.value.length == 0){
+			alert("이름을 입력하세요.");
+			f.writer.focus();
+			return;
+		}
+		if(f.title.value.length == 0){
+			alert("제목을 입력하세요.");
+			f.title.focus();
+			return;
+		}
+
+		var content = ed.getHtml(); //대체한 textarea에 작성한HTML값 전달
+		if(content=="")
+		{
+			alert("내용을 적어주세요!");
+			ed.focus();
+			return false;
+		}
+
+		bSubmit = true;
+		if(document.TrashUpload.Submit() == true){
+			// 폼 전송후 서버에서 날라오는 메세지 뿌려주기 
+			// 메세지 표시를 원하지 않고 다른 페이지로 바로 이동하려면 아래에서 처리 하면 된다.
+			document.write(document.TrashUpload.Response);
+		}else{ 
+			alert("전송이 취소되었습니다.");
+		}
+			bSubmit = false;
+	}
+
+//-->
+</script>
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+
+<? include "../../include/top.htm"; ?>
+
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='../../image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; VOD</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="../../image/sub02left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                              <table width="90%" border="0" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td style="padding-top:10px; padding-bottom:10px" background="../../image/left_bg.gif"> 
+                                    <!-- 왠쪽 메뉴 시작-->
+                             <?
+								include "./vod_left.htm";
+							 ?>
+
+                                    <!-- 왠쪽 메뉴 끝-->
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="670" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="image/title1.gif" width="300" height="30"></td>
+                          </tr>
+                          <tr> 
+                            <td bgcolor="#D4D4D4" height="1"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                   <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="720" border="0" cellspacing="0" cellpadding="0">
+						<form name='form1' method='post' action='vod_write_ok.htm' enctype='multipart/form-data'>
+						<input type="hidden" name="doing" value="insert">
+						<input type="hidden" name="vod_seq" value="<?=$vod_seq?>">
+						<input type="hidden" name="vod_depth" value="<?=$vod_depth?>">
+						<input type="hidden" name="key" value="this is hidden-key">
+                          <tr> 
+                            <td> 
+                              <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td  height="3" bgcolor="425EA0"></td>
+                                </tr>
+                                <tr> 
+                                  <td bgcolor="f7f7f7" height="30"> 
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                      <tr> 
+                                        <td width="110" align="center"><b><font color="#000000">구분</font></b></td>
+                                        <td width="1" bgcolor="#999999"></td>
+                                        <td align="center"><b><font color="#000000">내용</font></b></td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td height="1" bgcolor="dadada"></td>
+                                </tr>
+                                <tr> 
+                                  <td height="2" bgcolor="#E9E9E9"></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td> 
+                              <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td width="110" align="center" height="30" ><b><font color="#000000">이름</font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px"> 
+                                    <input name="writer" type="text" value="<?=$writer?>" size="25" class="form1">
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="image/table_line_b.gif"></td>
+                                </tr>
+                                <tr bgcolor="F8F8F8"> 
+                                  <td width="110" align="center" height="30" ><b><font color="#000000">제목 </font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px"> 
+                                    <input name="title" type="text" value="<?=$title?>" size="80" class="form1">
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="image/table_line_b.gif"></td>
+                                </tr>
+                                <tr> 
+                                  <td width="110" align="center" height="30" ><b><font color="#000000">내용 </font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px"> 
+                                    <textarea name="content" id="content" style="word-break:break-all"><?=$content?></textarea>
+									<script>
+										var ed = new easyEditor("content"); //초기화 id속성값
+										ed.init(); //웹에디터 삽입
+									</script>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="image/table_line_b.gif"></td>
+                                </tr>
+                                <tr bgcolor="F8F8F8"> 
+                                  <td width="110" align="center" height="30" ><b><font color="#000000">동영상 </font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:0px"> 
+									<table width="100%" cellpadding="5" cellspacing="0" border="0">
+									<tr>
+									  <td width="550">
+										<SCRIPT LANGUAGE="JAVASCRIPT">
+											insert_control();
+										</SCRIPT>
+									  </td>
+									  <td align="left" style="padding-left:5px"> 
+										<a href="javascript:AttachFiles();"><img src="/TrashUpload/bc_filesearch.gif" width="58" height="21" border="0" align="absmiddle"></a><br><br>
+										<a href="javascript:DeleteFiles();"><img src="/TrashUpload/bc_del.gif" width="34" height="21" border="0" align="absmiddle"></a>
+									  </td>
+									</tr>
+									</table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="image/table_line_b.gif"></td>
+                                </tr>
+								<tr>
+									<td colspan="7" height="2" bgcolor="#B3C6D2"></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td height="40" align="center"> 
+                              <table border="0" cellspacing="0" cellpadding="2">
+                                <tr> 
+                                  <td><input type='image' onclick="return content_check(this.form);" src="image/btn_confi.gif" width="50" height="20"></td>
+                                  <td><img src="image/btn_cancle.gif" width="50" height="20"></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+						</form>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+					<tr>
+					  <td>
+						<table width="700" border="0" cellspacing="0" cellpadding="0">
+						  <tr>
+                          <tr> 
+                            <td align="right"> 
+                              <table border="0" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td width="55"><a href="vod_write.asp"><img src="image/btn_up2.gif" width="50" height="20" border="0"></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+						</table>
+                      </td>
+					</tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../include/bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

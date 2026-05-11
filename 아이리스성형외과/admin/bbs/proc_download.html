@@ -1,0 +1,8 @@
+<?
+	include "../../constant/common.def";
+	include "../../class/CDownload.class";
+	
+	$download = new CDownload($bbs_origin_data, BBS_DATA."/".$bbs_save_data);
+
+	$download->download("attachment");
+?>

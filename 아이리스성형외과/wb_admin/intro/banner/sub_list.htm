@@ -1,0 +1,257 @@
+<?
+ob_start(); 
+session_start(); 
+ 
+extract($HTTP_GET_VARS); 
+extract($HTTP_POST_VARS); 
+extract($HTTP_SESSION_VARS); 
+ 
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+ 
+include "../../auth_admin.php3";
+
+$inst->Connect(); 
+?>
+<html>
+<head>
+<title><?echo $head_title;?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='../../image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 운영관리 &gt; 배너관리</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" height="400" valign="top">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="../image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+<!-- left menu -------------------------------------------------------------------------------------->
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                             <?
+								include "../manage_menu.htm";
+							 ?>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+<!-- left menu -------------------------------------------------------------------------------------->
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="97%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td><img src="image/title01.gif"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="100%" border="0"  cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td> 
+                              <table width="100%" border="0">
+                                <tr> 
+                                  <td> 
+                                    <table width="100%" align="center" cellpadding="0" cellspacing="0" border="1" bordercolor="#E0E0E0" style="border-collapse:collapse;" class="defstyle">
+										<?					
+										 $db_table="main_coolsite_group";
+
+										$query="select * from $db_table where no='$group_id'";
+										$row=$inst->ExecFetch($query);
+
+										if ($row){ 
+											$title_g=$row[title];
+											}     
+										?>	
+									  <tr> 
+									    <td height="30"align="center"> 
+										<b><font color='blue'><b>[ <? echo $title_g; ?> 그 룹 ]</font>배 너 설 정</b></td>
+									  </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td align="center"> 
+                                    <table width="100%" align="center" cellpadding="0" cellspacing="0" border="1" bordercolor="#E0E0E0" style="border-collapse:collapse;" class="defstyle">
+                                      <tr> 
+                                        <td width="40" align="center" height="30"><b><font color="#000000">NO</font></b></td>
+                                        <td align="center"><b>제목</b> </td>
+                                        <td align="center" width='40'><b>SEQ</b> </td>
+                                        <td width="100" align="center"><b>등록일</b></td>
+                                        <td align="center" width="100"><b>수정 / 삭제</b></td>
+                                      </tr>
+										<?
+										$db_table="main_coolsite";
+										$query="select no from $db_table where group_id=$group_id";
+										$total=$inst->ExecNumRows($query);
+
+										$pagecount='15'; 
+										$block='10'; 
+
+										$pages=$total/$pagecount;
+										$totalpage=ceil($pages);
+
+										if($page<=0){
+											$page=1;
+										}
+										$pg=$page;
+										$num=$total-(($page-1)*$pagecount);
+										$query_limit = ($pg-1)*$pagecount;
+
+
+										$query="select * from main_coolsite where group_id='$group_id' ORDER BY no asc limit $query_limit,$pagecount";
+
+										$result=$inst->Execute($query);
+
+										while($row=$inst->ExecFetchArray($result)){
+											
+											$no       = $row[no];
+											$title    = $row[title];
+											$banner   = $row[banner];
+											$date1    = $row[date1];
+											$homepage = $row[homepage];
+											$day      = explode(" ",$date1);
+											$title1   = han_cut($title,40);
+											$content  = $row[content];
+											$seq      = $row[seq];
+
+											if (($num % 2) == 1) {$bgcolor = "#FFFFFF";}
+											else {$bgcolor = "#F4F4F4";} 
+											
+										?>
+                                      <tr> 
+                                        <td bgcolor="<?=$bgcolor;?>" height="30" align="center" width="40"><?=$num?></td>
+                                        <td bgcolor="<?=$bgcolor;?>" style="padding-left:5px; padding-right:5px"><a href='<?=$homepage?>' target='_blank'><?=$title1?></a></td>
+                                        <td bgcolor="<?=$bgcolor;?>" align="center" width="40"><?=$seq?></td>
+                                        <td bgcolor="<?=$bgcolor;?>" align="center" width="100"><?=$day[0]?></td>
+                                        <td bgcolor="<?=$bgcolor;?>" align="center" width="100"> 
+                                          <table border="0" cellspacing="0" cellpadding="2">
+                                            <tr> 
+                                              <td><a href='./sub_modify.htm?no=<?=$no?>&group_id=<?=$group_id?>'><img src="../../image/but02.gif" width="40" height="18" border='0'></a></td>
+                                              <td><a href='./sub_delete_ok.php3?no=<?=$no?>&group_id=<?=$group_id?>' OnClick="return confirm('정말 삭제하시겠습니까?')"><img src="../../image/but01.gif" width="40" height="18" border='0'></a></td>
+                                            </tr>
+                                          </table>
+                                        </td>
+                                      </tr>
+										<?
+										$num--;
+										} 
+										?>
+                                    </table>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td align="center">
+                        <table border="0" cellspacing="0" cellpadding="2">
+                          <tr> 
+                            <td><a href="sub_write.htm?group_id=<?=$group_id?>">[배너등록]</a></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td align="center">
+                        <table border="0" cellspacing="0" cellpadding="2">
+                          <tr> 
+                            <td>
+								<? 
+								$db="&group_id=".$group_id;
+								getPagingString1($total, $pagecount, $block, $page, $db, $skin, $search, $mtitle, $mcontent, $mname) ?>	
+							</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

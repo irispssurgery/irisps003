@@ -1,0 +1,154 @@
+<?
+ob_start();
+session_start();
+session_cache_limiter('private');
+
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+extract($HTTP_SESSION_VARS);
+extract($HTTP_COOKIE_VARS);
+
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+include "../../auth_admin.php3";
+$inst->Connect();
+
+
+set_time_limit(0);
+
+extract($_POST);
+extract($_SERVER);
+extract($_FILES);
+
+$addfilelist = array();  
+
+$t_MapPath="../../../data/vod"; #저장될 디렉토리 
+
+// 파일명 중복 체크 
+function confirmFname($Fname) {  #파일명,폴더명 매개변수 
+	$t_MapPath="../../../data/vod/"; #저장될 디렉토리 
+
+	chmod($t_MapPath,0777);  // 추후 디렉토리에 따라서 수정 필요
+
+	if(strpos($Fname,'.') > 0) { #확장자가 있으면 
+		$attach_file = explode(".",$Fname);  #파일명 분리 
+		$strExt= array_pop($attach_file);      #확장자
+		$strName = implode(".",$attach_file);       #파일명
+		$bExist = True ;  #일단 파일이 있다고 가정하는 불린 변수 
+		$strName = str_replace(" ", "_", $strName); 
+		$strName = str_replace("&nbsp;", "_", $strName);	
+		$strFileName = $t_MapPath . $strName . "." . $strExt;  #전체 경로 
+		$FileName = $strName . "." . $strExt;
+	}
+	else {
+		$strName = $Fname;       #파일명
+		$bExist = True ;  #일단 파일이 있다고 가정하는 불린 변수 
+		$strName = str_replace(" ", "_", $strName); 
+		$strName = str_replace("&nbsp;", "_", $strName);	
+		$strFileName = $t_MapPath . $strName ;  #전체 경로 
+		$FileName = $strName;
+	}
+
+	$countFileName = 0; 
+	If (file_exists($strFileName)) { 
+        while ($bExist)  {                  #우선 있다고 생각 
+               If (file_exists($strFileName)) { 
+                       $countFileName = $countFileName + 1 ; 
+					   if(strpos($Fname,'.') > 0) { #확장자가 있으면 
+                       		$FileName1 = $strName . "_" . $countFileName . "." . $strExt; 
+					   }
+					   else {
+							$FileName1 = $strName . "_" . $countFileName;
+					   }
+
+                       $strFileName  = $t_MapPath . $FileName1; 
+               } else { 
+                       $bExist = False; 
+               } 
+        } 
+              return $FileName1; 
+	}else{ 
+		return $FileName; 
+	} 
+} 
+
+
+ 
+function fileUpload($img_tmp,$img_name,$img_size,$img_type){
+
+        if(!$img_tmp){ 
+        	    Error("업로드할 자료가 없습니다");
+                exit;
+        }
+        if ($img_name) {
+                $savepath = "../../../data/vod/".$img_name;
+                if (file_exists($savepath)){
+				Error("같은이름의 파일이 등록되어 있습니다.");
+                exit;
+                }
+                if (is_uploaded_file($img_tmp)) {
+                        move_uploaded_file($img_tmp,$savepath); 
+                }else{
+				Error("파일등록을 실패했습니다.");
+                exit;
+                }
+        }
+}
+
+
+for($i=0; $i<count($_FILES['joyfile']['name']); $i++) {
+  if(is_uploaded_file($_FILES['joyfile']['tmp_name'][$i])) {
+		$file_name[$i] = $_FILES['joyfile']['name'][$i];
+		$file_tmp_name[$i] = $_FILES['joyfile']['tmp_name'][$i];
+		$file_size[$i] = $_FILES['joyfile']['size'][$i];
+		$file_type[$i] = $_FILES['joyfile']['type'][$i];
+		$file_error[$i] = $_FILES['joyfile']['error'][$i];
+	
+
+		if($file_error[$i]) { echo "file error $file_error"; exit; }
+		$fn = confirmFname($file_name[$i]);
+		fileUpload($file_tmp_name[$i],$fn,$file_size[$i],$file_type[$i]); 
+	}
+}
+
+
+
+
+$insertip=getenv("REMOTE_ADDR");
+$inserttime=date("Y-m-d A g:i");
+$title=addslashes(trim($title));
+
+if ($doing=="insert"){
+	$query="select pid from km_vod order by pid desc";
+
+	$row=$inst->ExecFetch($query);
+	$pid=$row[pid];
+	if($row != 0){
+		$pid+=1;
+	}else{
+		$pid=1;
+	}
+
+
+	$title=addslashes(trim($title));
+	$content=addslashes(trim($content));
+
+	$query="insert into km_vod(pid,vod_seq,vod_depth,title,writer,content,insertip,inserttime,file01_name,file01_code,file01_size,file01_down,file02_name,file02_code,file02_size,file02_down,file03_name,file03_code,file03_size,file03_down) values ('$pid','$vod_seq','$vod_depth','$title','$writer','$content','$insertip','$inserttime','$file_name[0]','$file01_code[0]','$file01_size[0]','$file01_down[0]','$file02_name[1]','$file02_code[1]','$file02_size[1]','$file02_down[1]','$file03_name[2]','$file03_code[2]','$file03_size[2]','$file03_down[2]')";
+
+	$inst->Execute($query); 
+	$inst->Disconnect();
+
+}else if($doing=="modify"){
+
+}
+else if($doing=="delete"){
+	$del_qry  = "delete from km_vod where pid='$pid'";
+	$inst->Execute($del_qry); 
+}
+
+//echo("<meta http-equiv='refresh' content='0;url=vod.htm'>");
+?>
+
+<script>
+	location.href='vod_admin.htm?seq=$vod_seq&depth=$vod_depth';
+</script>

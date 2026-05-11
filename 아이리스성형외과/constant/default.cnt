@@ -1,0 +1,11 @@
+<?
+	DEFINE("SITE_CODE", "voiceshout");
+
+	$WEB_PATH["199"]="인터넷 검색";
+	$WEB_PATH["299"]="신문, 잡지 광고";
+	$WEB_PATH["399"]="인터넷 배너광고";
+	$WEB_PATH["499"]="타인으로부터 추천";
+
+	$submenu_top=85;
+	$submenu_left=10;
+?>

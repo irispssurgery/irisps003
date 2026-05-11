@@ -1,0 +1,106 @@
+<? 
+	include "./admin/bbs/result_bbs_list.php";
+?>
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link href="./watercorea.css" rel="stylesheet" type="text/css">
+</style>
+<Script language="javascript">
+function checkForm(form1)
+{
+	var form=document.bbs_list;
+
+	if(!form.search_word.value)
+	{
+		alert("검색어를 입력하시길 바랍니다.");
+		form.search_word.focus();
+
+		return false;
+	}
+	
+	form.submit();
+}
+
+function sAll(mode)
+{
+	var form = document.bbs_list;
+	var len = form.elements.length;
+	
+	for(i=0; i<len; i++)
+	{
+		form.elements[i].checked=mode;
+	}
+}
+
+function del()
+{
+	var form = document.bbs_list;
+	var len = form.elements.length;
+	var sel_count=0;
+	
+	for(i=0; i<len; i++)
+	{
+		if(form.elements[i].checked==true)
+			sel_count++;
+	}
+
+	if(sel_count <= 0)
+	{
+		alert("선택을 하지 않았습니다.");
+	}
+	else
+	{
+		form.action="proc_mbbs_delete.html";
+		form.submit();
+	}
+}
+</Script>
+</head>
+
+<body bgcolor="#FFFFFF">
+<form name="bbs_list" method="post" action="">
+  <table width="<?echo $table_width;?>" border="0" bordercolor="<?echo $list_border_color;?>" cellpadding="0" cellspacing="0">
+    <tr> 
+      <td align="center"><?echo $title_image;?></td>
+    </tr>
+  </table>
+  <?echo $board;?>
+  <table width="<?echo $table_width;?>" border="0" bordercolor="<?echo $list_border_color;?>" cellpadding="3" cellspacing="0" bordercolorlight='silver' bordercolordark='white'>
+    <tr> 
+      <td align="center"><?echo $show_page;?></td>
+    </tr>
+    <tr> 
+      <td height="15" align="center">&nbsp;
+		<select name="search_key">
+			<option value="bbs_name">이 름</option>
+			<option value="bbs_title">제 목</option>
+			<option value="bbs_content">내 용</option>
+		</select>&nbsp;
+		<input type="text" name="search_word" class="border">&nbsp;
+		<input type="image" src="./board_img/gongji_search.gif" align="absmiddle" value=" 찾 기 " onclick="return checkForm(document.forms[0]);">
+	  </td>
+    </tr>
+    <tr> 
+      <td align="center">&nbsp;
+	  <input type="hidden" name="bbscode_code" value="<?echo $bbscode_code;?>">
+	  <a href="<?echo $PHP_SELF;?>?bbscode_code=<?echo $bbscode_code;?>&PAGE=<?echo $PAGE;?>&site_code=<?echo $site_code;?>"><img src="./board_img/btn_list.gif" align="absmiddle" border="0"></a>&nbsp;
+	  <!--
+	  <a href="<?echo $page_write_path;?>?bbscode_code=<?echo $bbscode_code;?>&is_uploaded_file=<?echo $is_uploaded_file;?>"><img src="../button/write.gif" align="absmiddle" border="0"></a>
+	  -->
+	  <?echo $write_button;?>
+	  </td>
+    </tr>
+  </table>
+  <!--
+  <p>&nbsp;</p>
+  <table width="<?echo $table_width;?>" border="0" bordercolor="<?echo $list_border_color;?>" cellpadding="0" cellspacing="0">
+    <tr> 
+      <td align="center"><?echo $tail_image;?></td>
+    </tr>
+  </table>-->
+</center>
+</form>
+</body>
+</html>

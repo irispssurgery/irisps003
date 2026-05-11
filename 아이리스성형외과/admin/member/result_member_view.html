@@ -1,0 +1,73 @@
+<?
+	include getenv("DOCUMENT_ROOT")."/CObject.lib";
+
+	$user_info = $member->getUser($HTTP_GET_VARS["user_id"]);
+?>
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<style type="text/css">
+<!--
+table {  font-family: "굴림체"; font-size: 9pt}
+-->
+</style>
+</head>
+
+<body bgcolor="eeeeee">
+<table width="550" border="1" cellpadding="1" cellspacing="0" bordercolorlight="#B7B292" bordercolordark="#FFFFFF" align="center">
+  <tr> 
+    <td colspan="2" height="30" align="center" bgcolor="B7B292"><font color="#FFFFFF"><b>회원정보</b></font></td>
+  </tr>
+  <tr> 
+    <td width="131" height="25" align="center" bgcolor="E7E5D7">아이디</td>
+    <td width="503" height="25" bgcolor="#FFFFFF">&nbsp; 
+      <?echo $user_info[0]["user_id"];?>
+    </td>
+  </tr>
+  <tr> 
+    <td width="131" height="25" align="center" bgcolor="E7E5D7">이름</td>
+    <td width="503" height="25" bgcolor="#FFFFFF">&nbsp; 
+      <?echo $user_info[0]["user_name"];?>
+    </td>
+  </tr>
+  <tr> 
+    <td width="131" height="25" align="center" bgcolor="E7E5D7">우편번호</td>
+    <td width="503" height="25" bgcolor="#FFFFFF">&nbsp; 
+      <?echo $user_info[0]["zipcode"];?>
+    </td>
+  </tr>
+  <tr> 
+    <td width="131" height="25" align="center" bgcolor="E7E5D7">주소</td>
+    <td width="503" height="25" bgcolor="#FFFFFF">&nbsp; 
+      <?echo $user_info[0]["address"];?>
+    </td>
+  </tr>
+  <tr> 
+    <td width="131" height="25" align="center" bgcolor="E7E5D7">상세주소</td>
+    <td width="503" height="25" bgcolor="#FFFFFF">&nbsp; 
+      <?echo $user_info[0]["detail_address"];?>
+    </td>
+  </tr>
+  <tr> 
+    <td width="131" height="25" align="center" bgcolor="E7E5D7">휴대폰</td>
+    <td width="503" height="25" bgcolor="#FFFFFF">&nbsp; 
+      <?echo $user_info[0]["telephone"];?>
+    </td>
+  </tr>
+  <tr> 
+    <td width="131" height="25" align="center" bgcolor="E7E5D7">이메일</td>
+    <td width="503" height="25" bgcolor="#FFFFFF">&nbsp; 
+      <?echo $user_info[0]["email"];?>
+    </td>
+  </tr>
+</table>
+<table width="550" border="0" cellpadding="0" cellspacing="0" bordercolorlight="#B7B292" bordercolordark="#FFFFFF" align="center">
+  <tr> 
+    <td colspan="2" height="30" align="center" valign="bottom">&nbsp; 
+      <input type="button" value="회원목록으로" onClick="location.href='./result_member_list.html';" name="button">
+    </td>
+  </tr>
+</table>
+</body>
+</html>

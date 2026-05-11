@@ -1,0 +1,22 @@
+<?
+$destprefix = "/home/gbh/public_html/up_board/vod_board/";
+
+function uniq_name($fileName) {
+	$dot = strrpos($fileName,".");
+	$noext = substr($fileName,0, $dot);
+	$ext = substr($fileName,$dot+1);
+	$seq = 0;
+	do {
+		$savename = "${noext}_${seq}.${ext}";
+		$seq++;
+	} while (is_file($destprefix.$savename));
+
+	return $savename;
+}
+
+$source = "울산교수학습센터자료050129.zip";
+    
+$file_name=uniq_name($source);
+
+echo "$file_name";
+?>

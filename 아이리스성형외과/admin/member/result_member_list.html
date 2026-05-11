@@ -1,0 +1,41 @@
+<?
+	include "./result_member_list.php";
+?>
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<style type="text/css">
+<!--
+table {  font: 9pt "굴림체"}
+-->
+</style>
+<Script language="javascript">
+function mDel(idx)
+{
+	if(confirm("정말 삭제하시겠습니까?"))
+		location.href="./result_member_list.html?mode=del&idx="+idx;
+}
+</Script>
+</head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="eeeeee">
+<table width="760" border="1" cellpadding="1" bordercolorlight="#B7B292" bordercolordark="#FFFFFF" cellspacing="0">
+  <tr align="center" bgcolor="E7E5D7"> 
+    <td height="30" width="39"><font color="#000000">번호</font></td>
+    <td height="30" width="58"><font color="#000000">아이디</font></td>
+    <td height="30" width="60"><font color="#000000">이름</font></td>
+    <td height="30" width="159"><font color="#000000">주소</font></td>
+    <td height="30" width="96" bgcolor="E7E5D7"><font color="#000000">이메일</font></td>
+    <td height="30" width="45"><font color="#000000">휴대폰</font></td>
+	<td height="30" width="45"><font color="#000000">삭제</font></td>
+  </tr>
+  <?echo $member_list;?>
+  <tr bgcolor="E7E5D7" align="center"> 
+    <td height="25" colspan="9">&nbsp;<font color="black"> 
+      <?echo $page->showPaging();?>
+      </font></td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!-- 동영상제어 start -->
+<SCRIPT language=JavaScript type=text/JavaScript>
+<!--
+function TVplay()
+	{
+	    if (MediaPlayer1.PlayState != 2) 
+		{
+		MediaPlayer1.Play();
+		}
+	}
+	function TVstop()
+	{
+	 	MediaPlayer1.Stop(); 
+		MediaPlayer1.CurrentPosition=0;
+	}
+	function TVpause()
+	{
+	 	if (MediaPlayer1.PlayState == 2) 
+		{
+			MediaPlayer1.Pause(); 
+		}
+	}
+
+//-->
+</SCRIPT>
+<!-- 동영상제어 end -->
+<BODY BGCOLOR=D2CDB0 LEFTMARGIN=0 TOPMARGIN=0 MARGINWIDTH=0 MARGINHEIGHT=0>
+<TABLE WIDTH=372 BORDER=0 CELLPADDING=0 CELLSPACING=0>
+	<TR>
+		<TD COLSPAN=3>
+			<IMG SRC="images/movie_iframe_01.gif" WIDTH=372 HEIGHT=13 ALT=""></TD>
+	</TR>
+	<TR>
+		<TD>
+			<IMG SRC="images/movie_iframe_02.gif" WIDTH=13 HEIGHT=309 ALT=""></TD>
+		
+    <TD height="309" width="346" background="images/movie_iframe_03.gif"><object id=MediaPlayer1 
+            codebase=http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701 
+            type=application/x-oleobject height=309 
+            standby="Loading Microsoft?Windows?Media Player components..." 
+            width=346 classid=CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95 
+            name=mPlayer>
+        <param name="FileName" value="avi/8.wmv">
+        <param name="Mute" value="0">
+        <param name="LOOP" value="1">
+        <param name="transparentAtStart" value="True">
+        <param name="transparentAtStop" value="True">
+        <param name="AnimationAtStart" value="True">
+        <param name="AutoStart" value="true">
+        <param name="AutoRewind" value="true">
+        <param name="SendMouseClickEvents" value="True">
+        <param name="DisplaySize" value="0">
+        <param name="AutoSize" value="False">
+        <param name="ShowDisplay" value="False">
+        <param name="ShowControls" value="false">
+        <param name="ShowTracker" value="True">
+        <param name="Enabled" value="1">
+        <param name="EnableContextMenu" value="0">
+        <param name="EnablePositionControls" value="1">
+        <param name="EnableFullScreenControls" value="1">
+        <param name="ShowPositionControls" value="1">
+        <param name="Rate" value="1">
+        <param name="SAMILang" value="">
+        <param name="SAMIStyle" value="">
+        <param name="SAMIFileName" value="">
+        <param name="ClickToPlay" value="0">
+        <param name="CursorType" value="1">
+      </object> </TD>
+		<TD>
+			<IMG SRC="images/movie_iframe_04.gif" WIDTH=13 HEIGHT=309 ALT=""></TD>
+	</TR>
+	<TR>
+		
+    <TD COLSPAN=3> <IMG SRC="images/movie_iframe_05.gif" WIDTH=372 HEIGHT=35 ALT="" usemap="#movie_iframe" border="0"></TD>
+	</TR>
+	
+  <TR valign="top"> 
+    <TD  background="images/movie_iframe_06.gif" COLSPAN=3 height="207"> 
+      <table width="95%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td font style="FONT-SIZE: 9pt" height="25"><img src="images/icon_02.gif" width="7" height="9" align="absmiddle"> 
+            <font color="#FFFFFF">아이리스 보도자료 - 눈밑성형</font></td>
+        </tr>
+      </table>
+      <?
+include "iframe_btn.html";
+?>
+    </TD>
+	</TR>
+</TABLE>
+<map name="movie_iframe"> 
+  <area shape="rect" coords="300,2,321,34" a href="#" onclick=TVplay() onfocus='this.blur()'>
+  <area shape="rect" coords="321,3,340,34" href="#" onclick=TVstop() onfocus='this.blur()'>
+  <area shape="rect" coords="340,3,359,34" href="#" onclick=TVpause() onfocus='this.blur()'>
+  <area shape="rect" coords="11,4,79,30" href="#" onClick='MediaPlayer1.DisplaySize=3' onfocus='this.blur()'>
+</map>
+</BODY>
+</HTML>

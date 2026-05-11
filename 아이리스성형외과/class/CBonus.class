@@ -1,0 +1,143 @@
+<?
+	class CBonus
+	{
+		var $db;
+		var $PAGE;
+
+		function CBonus()
+		{
+			global $db;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+		}
+
+		function addBonus($data)
+		{
+			if(!$data)
+				return false;
+
+			while(list($key, $value)=each($data))
+			{
+				$col[]=$key;
+			
+				if($key=="addbonus" || $key=="usebonus" || $key=="bonus")
+					$row[]="".$value."";
+				else
+					$row[]="'".$value."'";
+			}
+
+			$cols=implode(",", $col);
+			$tuple=implode(",", $row);
+
+			$query="INSERT INTO user_bonus (".$cols.") VALUES (".$tuple.");";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function listBonusAll()
+		{
+			$args=func_get_args();
+
+			if($args[0]&&$args[1])
+				$add_query="WHERE ".$args[0]." LIKE '%".$args[1]."%'";
+
+			$query="SELECT * FROM user_bonus ".$add_query." ORDER BY num DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+		
+		function listBonusPart()
+		{
+			global $PAGE;
+
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$GET_RECORD=BONUS_PAGE;
+			$START_RECORD=($this->PAGE-1)*$GET_RECORD;
+
+			$args=func_get_args();
+
+			if($args[0]&&$args[1])
+				$add_query="WHERE ".$args[0]." LIKE '%".$args[1]."%'";
+
+			$query="SELECT * FROM user_bonus ".$add_query." ORDER BY num DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;	
+		}
+
+		function getBonusBuUser($user_id)
+		{
+			if(!$user_id)
+				return false;
+
+			$query="SELECT * FROM user_bonus WHERE user_id='".$user_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function updatebonus($data)
+		{
+			if(!$data)
+				return false;
+
+			foreach($data as $key => $value)
+			{
+				if($key=="user_id")
+					continue;
+
+				$cols[]="".$key."='".$value."'";
+			}
+
+			$column=implode(",", $cols);
+			$query="UPDATE user_bonus SET ".$column." WHERE user_id='".$data["user_id"]."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function delBonus($user_id)
+		{
+			if(!$user_id)
+				return false;
+
+			$query="DELETE FROM user_bonus WHERE user_id='".$user_id."'";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+	}
+?>

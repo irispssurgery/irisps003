@@ -1,0 +1,136 @@
+<?
+	class CError
+	{
+		var $db;
+
+		function CError()
+		{
+			global $db;
+			
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+		}
+
+		function insertError($user, $title, $content)
+		{
+			if(!$user || !$title || !$content)
+				return false;
+
+			$query="INSERT INTO errorList (user_name, error_title, error_content, signdate, is_process) VALUES ('".$user."', '".$title."', '".$content."', current_date, 'N');";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function errorListAll()
+		{
+			$query="SELECT * FROM errorList ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function errorList()
+		{
+			$query="SELECT * FROM errorList ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function updateProcess($idx, $process)
+		{
+			if(!$idx || !$process)
+				return false;
+
+			$query="UPDATE errorList SET is_process='".$process."' WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function errorListAllPerfect()
+		{
+			$query="SELECT * FROM errorList WHERE is_process='Y' ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function errorListPerfect()
+		{
+			$query="SELECT * FROM errorList WHERE is_process='Y' ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function errorListAllNoPerfect()
+		{
+			$query="SELECT * FROM errorList WHERE is_process='N' ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function errorListNoPerfect()
+		{
+			$query="SELECT * FROM errorList WHERE is_process='N' ORDER BY idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function delError($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="DELETE FROM errorList WHERE idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+	}
+?>

@@ -1,0 +1,17 @@
+<?
+        #데이타베이스
+        $dbName="irisbeauty";
+        $host = "localhost";
+        $id ="irisbeauty";
+        $pwd="irisbeauty";
+
+        $dbconn = mysql_connect($host, $id, $pwd);
+        mysql_select_db($dbName, $dbconn);
+
+        $query="INSERT INTO SC_TRAN (tr_senddate, tr_sendstat, tr_phone, tr_callback ,tr_msg) ";
+        $query.="VALUES (now(), '0', '0118411144', '3030', 'NOMO ID:testuser PW:998877');";
+
+        mysql_query($query, $dbconn);
+
+        echo("1");
+?>

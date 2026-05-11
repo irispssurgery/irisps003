@@ -1,0 +1,188 @@
+<?
+ob_start(); 
+session_start(); 
+ 
+extract($HTTP_GET_VARS); 
+extract($HTTP_POST_VARS); 
+extract($HTTP_SESSION_VARS); 
+?>
+<html>
+<head>
+<title>::: 관리자 홈페이지입니다. :::</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="title.css" type="text/css">
+<script language='javascript'>
+<!--
+	function getfocus(){ 
+     form.auth_id.focus(); 
+   } 
+	function content_check(form) {
+		if (form.auth_id.value == '') {
+			alert('아이디를 입력하세요');
+			form.auth_id.focus();
+			return false;
+		}
+		else if (form.auth_passwd.value == '') {
+			alert('비밀번호를 입력하세요');
+			form.auth_passwd.focus();
+			return false;
+		}
+	   form.submit();
+	
+	}
+//-->
+</script>
+</head>
+<script language="JavaScript">
+<!--
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_findObj(n, d) { //v4.0
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && document.getElementById) x=document.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+//-->
+</script>
+
+<style type="text/css">
+<!--
+table {  font-family: "굴림"; font-size: 9pt}
+-->
+</style>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000" leftmargin="0" topmargin="0" background="image/sms_bg.gif" onLoad="MM_preloadImages('image/login_but2.gif');getfocus();" >
+<table width="100%" border="0" cellspacing="0" cellpadding="0" height="100%">
+  <tr>
+    <td align="center"> 
+      <table width="500" border="0" cellspacing="0" cellpadding="0">
+        <!--<tr> 
+          <td> <img src="image/login_title01.gif" width="500" height="45"></td>
+        </tr>-->
+        <tr>
+          <td bgcolor="A6A6A6" height="6"></td>
+        </tr>
+        <tr>
+          <td><img src="image/login_tit.gif" width="500" height="50"></td>
+        </tr>
+        <tr> 
+          <td style="border-left:1px solid #A6A6A6;border-right:1px solid #A6A6A6;border-bottom:1px solid #A6A6A6;" align="center" bgcolor="#FFFFFF"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" >
+              <tr> 
+                <td height="20" bgcolor="FCFCFC"></td>
+              </tr>
+              <tr> 
+                <td align="center" height="25"> 
+                  <table border="0" cellspacing="2" cellpadding="0" width="80%">
+                    <tr> 
+                      <td width="200"><font color="#FF6600"><b><font color="#CC0033">▶ 
+                        관리자 페이지입니다.</font></b></font></td>
+                      <td align="right"><b>아이디 비밀번호를 입력하세요! </b></td>
+                    </tr>
+                    <tr bgcolor="#DFDFDF"> 
+                      <td colspan="2" height="1"></td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr> 
+                <td align="center"> 
+                  <table width="90%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center" height="125"> <img src="image/login_right.gif" width="180" height="120"> 
+                      </td>
+                      <td align="center"> 
+                        <table width="95%" border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td background="image/left_bg2.gif" width="10"><img src="image/bot_top_left.gif" width="10" height="10"></td>
+                            <td background="image/bot_top_bg.gif" align="center"> 
+                            </td>
+                            <td background="image/right_bg2.gif" width="10"><img src="image/bot_top_right.gif" width="10" height="10"></td>
+                          </tr>
+                          <tr> 
+                            <td background="image/left_bg2.gif" width="10"></td>
+                            <td bgcolor="FAF9F9" align="center" height="90"> 
+                              <table border="0" cellspacing="0" cellpadding="0">
+							    <form name='form' method='post' action='logok.php' enctype='multipart/form-data' onSubmit='return content_check(this)'>
+								<input type="hidden" name="mode" value="auth_login">
+								<input type="hidden" name="ref_url" value="/wb_admin">
+								<input type="hidden" name="loginmode" value="true">
+                                <tr> 
+                                  <td colspan="2"><img src="image/login_tit03.gif" width="150" height="12"> 
+                                  </td>
+                                </tr>
+                                <tr valign="top"> 
+                                  <td colspan="2" height="12"> 
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                      <tr> 
+                                        <td background="image/dot01_width.gif" height="1"></td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td> 
+                                    <table border="0" cellspacing="0" cellpadding="0">
+                                      <tr> 
+                                        <td><img src="image/id.gif" width="55" height="20"></td>
+                                        <td> 
+                                          <input type="text" name="auth_id" size="15" style="width:100; height:22; padding:2; border:1 solid #999999;">
+                                        </td>
+                                      </tr>
+                                      <tr> 
+                                        <td><img src="image/pw.gif" width="55" height="20"></td>
+                                        <td> 
+                                          <input type="password" name="auth_passwd" size="15" style="width:100; height:22; padding:2; border:1 solid #999999">
+                                        </td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                  <td width="64" align="center"><a href="#" onMouseOut="MM_swapImgRestore()" onMouseOver="MM_swapImage('Image11','','image/login_but2.gif',1)"><input type='image' name="Image11" border="0" src="image/login_but.gif" width="60" height="46"></a></td>
+                                </tr>
+								</form>
+                              </table>
+                            </td>
+                            <td background="image/right_bg2.gif" width="10"></td>
+                          </tr>
+                          <tr> 
+                            <td height="10"><img src="image/bot_left.gif" width="10" height="10"></td>
+                            <td background="image/bot_bg.gif"></td>
+                            <td><img src="image/bot_right.gif" width="10" height="10"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td align="center">&nbsp;</td>
+              </tr>
+              <tr> 
+                <td align="center"> <!--<img src="image/login_bottom.gif" width="400" height="20">--></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>

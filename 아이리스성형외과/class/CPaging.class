@@ -1,0 +1,99 @@
+<?
+	class CPaging
+	{
+		var $PAGE="";
+		var $TOTAL_PAGE="";
+		var $TOTAL_COUNT="";
+		var $BLOCK="";
+		var $LIST_BY_PAGE="";
+	
+		function CPaging($result)
+		{
+			if(!$result || !is_array($result))
+				return -1;
+			
+			$this->TOTAL_COUNT = count($result);
+		}
+
+		
+		#페이지당 보여줄 리스트 갯수
+		function listByPage($LIST)
+		{
+			$this->LIST_BY_PAGE=$LIST;
+			$this->TOTAL_PAGE = ceil($this->TOTAL_COUNT / $this->LIST_BY_PAGE);
+		}
+
+		#BLOCK COUNT
+		function setBlock($BLOCK)
+		{
+			$this->BLOCK=$BLOCK;
+		}
+	
+
+		function showPaging()
+		{
+			global $PAGE;
+			global $PHP_SELF;
+			global $viewPage;
+			global $curPage;
+			global $START_PAGE;
+			global $CUR_BLOCK;
+			global $prevPage, $nextPage;
+			global $HTTP_GET_VARS;
+			global $var;
+			global $START_PAGE_KEY;
+
+			$LAST_BLOCK=ceil($this->TOTAL_PAGE / $this->BLOCK); 
+			$LAST_PAGE=ceil($this->TOTAL_COUNT / $this->LIST_BY_PAGE); 
+			$CUR_BLOCK = ceil($PAGE / $this->BLOCK);
+			$START_PAGE_KEY = $this->BLOCK-1;
+			$START_PAGE = ($CUR_BLOCK * $this->BLOCK) - $START_PAGE_KEY;
+
+			foreach($HTTP_GET_VARS AS $key => $val)
+			{
+				if($key != "PAGE")
+					$var[] =$key."=".$val;
+			}
+
+			@$value = implode("&", $var);
+	
+			if($CUR_BLOCK > 1)
+			{
+				$prevPage = ($CUR_BLOCK -1) * $this->BLOCK;
+
+				$viewPage =" <a href=".$PHP_SELF."?PAGE=".$prevPage."&".$value.">[이전 10개]</a> ";
+			}
+
+			for($i=$START_PAGE; $i <= $CUR_BLOCK * $this->BLOCK; $i++)
+			{
+				if($i > $LAST_PAGE)
+				{
+					break;
+				}
+				else
+				{
+					if($PAGE == $i)
+					{
+						$viewPage .="[<B>".$i."</B>]";
+					}
+					else
+					{
+						$viewPage .=" <a href=".$PHP_SELF."?PAGE=".$i."&".$value.">[".$i."]</a> ";
+					}
+				}
+
+			}
+
+			if($CUR_BLOCK < $LAST_BLOCK)
+			{
+				$nextPage = ($CUR_BLOCK * $this->BLOCK) + 1;
+				$viewPage .=" <a href=".$PHP_SELF."?PAGE=".$nextPage."&".$value.">[다음 10개]</a> ";
+			}
+	
+			return $viewPage;
+		}
+
+
+	}
+
+?>

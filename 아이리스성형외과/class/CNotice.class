@@ -1,0 +1,220 @@
+<?
+	class CNotice
+	{
+		var $db;
+
+		function CNotice()
+		{
+			global $db;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+		}
+
+		function Insert($data)
+		{
+			if(!$data || !is_array($data))
+				return false;
+
+			while(list($key, $value) = each($data))
+			{
+				$kf[] = $key;
+				$vf[] = "'".$value."'";
+			}
+
+			$k = implode(",", $kf);
+			$v = implode(",", $vf);
+
+			$query = "INSERT INTO notice (".$k.") VALUES (".$v.");";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function DeleteNotice($nc_idx, $nc_code)
+		{
+			if(!$nc_idx || !$nc_code)
+				return false;
+
+			$key = implode(",", $nc_idx);
+
+			$query = "DELETE FROM notice WHERE nc_code='".$nc_code."' AND nt_idx IN (".$key.");";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function Modify($data)
+		{
+			if(!$data || !is_array($data))
+				return false;
+
+			while(list($key, $value) =each($data))
+			{
+				if($key == "nt_idx" || $key == "nc_code")
+					continue;
+
+				$field[] = "".$key." = '".$value."'";
+			}
+
+			$f = implode(",", $field);
+			$query = "UPDATE notice SET ".$f." WHERE nc_code='".$data["nc_code"]."' AND nt_idx=".$data["nt_idx"];
+			$result = $this->db->ExecuteDML($query);
+			
+			return $result;
+		}
+
+		function View($nc_code, $nt_idx)
+		{
+			if(!$nc_code || !$nt_idx)
+				return false;
+
+			$query ="SELECT * FROM notice WHERE nc_code='".$nc_code."' AND nt_idx=".$nt_idx;
+			$result = $this->db->ExecuteDML($query);
+			
+			$list= array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+	
+		function NoticeListAll($nc_code, $search_key, $search_word)
+		{
+			if(!$nc_code)
+				return false;
+
+			if($search_word && $search_key)
+				$SQL= " AND ".$search_key." LIKE '%".$search_word."%'";
+
+			$query = "SELECT * FROM notice WHERE nc_code='".$nc_code."' ".$SQL."";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}	
+
+		function NoticeList($nc_code, $search_key, $search_word)
+		{
+			global $PAGE;
+
+			if(!$nc_code)
+				return false;
+
+			if(!$PAGE)
+				$PAGE=1;
+
+			$this->PAGE=$PAGE;
+			$GET_RECORD=LIST_BY_PAGE;
+			$START_RECORD=($PAGE-1)*$GET_RECORD;
+
+			if($search_key && $search_word)
+				$SQL = " AND ".$search_key." LIKE '%".$search_word."%'";
+
+			$query = "SELECT * FROM notice WHERE nc_code='".$nc_code."' ".$SQL." ORDER BY nt_idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+		
+		function mNoticeList($nc_code)
+		{
+			if(!$nc_code)
+				return false;
+
+			$query = "SELECT * FROM notice WHERE nc_code='".$nc_code."' ORDER BY nt_idx DESC LIMIT ".NOTICE_COUNT_LIST."";
+			$result = $this->db->ExecuteDML($query);
+			
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		function TodayNoticeList($nc_code)
+		{
+			if(!$nc_code)
+				return false;
+
+			$query ="SELECT * FROM notice WHERE nc_code='".$nc_code."' AND nt_signdate = '".date("Y-m-d")."' ORDER BY nt_idx DESC LIMIT ".NOTICE_COUNT_LIST."";
+			$result = $this->db->ExecuteDML($query);
+
+			$notice_list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$notice_list[] = $recordSet;
+			}
+
+			return $notice_list;
+		}
+
+		function getTotalCount($nc_code, $search_key, $search_word)
+		{
+			if(!$nc_code)
+				return false;
+
+			if($search_key && $search_word)
+				$SQL = " AND ".$search_key." LIKE '%".$search_word."%'";
+
+			$query = "SELECT count(*) FROM notice WHERE nc_code='".$nc_code."' ".$SQL."";
+			$result = $this->db->ExecuteDML($query);
+
+			$total_count = $this->db->getResult($result, 0 ,0);
+
+			return $total_count;
+		}
+
+		function getNoticeByCount($nc_code, $count)
+		{
+			if(!$nc_code || !$count)
+				return false;
+
+			$query="SELECT * FROM notice WHERE nc_code='".$nc_code."' ORDER BY nt_idx DESC LIMIT ".$count."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function addHit($nt_idx)
+		{
+			if(!$nt_idx)
+				return false;
+
+			$query="UPDATE notice SET nt_hit=nt_hit+1 WHERE nt_idx=".$nt_idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+	}
+?>

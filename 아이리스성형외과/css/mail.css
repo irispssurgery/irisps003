@@ -1,0 +1,13 @@
+input,TEXTAREA {color:#eeeeee;font-size:9pt;}
+SELECT,option {font-color:#eeeeee;}
+BODY,TD,DIV,form,center,pre,blockquote {font-size:9pt;font-family:µ¸¿ò;line-height:180%;}
+body {color:#eeeeee;background-color:#777367;size:9pt;}
+
+A:link    {color:black;text-decoration:none;}
+A:visited {color:black;text-decoration:none;}
+A:active  {color:8c8c8c;text-decoration:none;}
+A:hover  {color:8c8c8c;text-decoration:underline}
+
+.input_file {background-color:#837F74;border:solid 1 #69655A;width:200px;height:20px;}
+.name {background-color:#837F74;border:solid 1 #69655A;width:130px;height:20px;}
+.area {background-color:#837F74;border:solid 1 #69655A;width:270px;height:150px;}

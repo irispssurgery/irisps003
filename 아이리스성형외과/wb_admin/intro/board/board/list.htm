@@ -1,0 +1,519 @@
+<?
+ob_start();
+session_start();
+session_cache_limiter('private');
+
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+extract($HTTP_SESSION_VARS);
+extract($HTTP_COOKIE_VARS);
+
+include "../../../../config/dbconn.php3"; 
+include "../../../../config/function.php3"; 
+include "../../../auth_admin.php3";
+$inst->Connect();
+
+include "board_function.php3"; 
+
+if ($Check_Box) // 게시판 공지사항
+{	
+		$query="select list_top,list_del from ezboard where no=$Check_Box";
+		$row=$inst->ExecFetch($query);
+		$top=trim($row[list_top]);
+
+		if ($row[list_del]=='yes'){
+			echo("
+				<script>
+					window.alert('삭제된 게시물은 공지글로 등록할 수 없습니다.')
+					history.go(-1)
+				</script>
+			");
+			exit;
+		}
+
+		if ($top=='yes'){
+			$top ='no';
+		}else if ($top=='no'){
+			$top ='yes';		
+		}	
+
+		$query="update ezboard set list_top='$top' where no=$Check_Box";
+		$inst->Execute($query);
+		echo("<meta http-equiv='refresh' content='0;url=list.htm?db=$db&go_it=$go_it'>");
+}
+
+
+if ($Check_Box2)
+{
+		$query="select list_del from ezboard where no=$Check_Box2";
+		$del=$inst->ExecValue($query);
+		if ($del=='yes'){
+			$del ='no';
+		}else if ($del=='no'){
+			$del ='yes';		
+		}
+		$query="update ezboard set list_del='$del' where no=$Check_Box2";
+		$inst->Execute($query);	
+		echo("<meta http-equiv='refresh' content='0;url=list.htm?db=$db&go_it=$go_it'>");
+}
+
+?>
+<html>
+<head>
+<title><?=$head_title;?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../../css/css.css" type="text/css">
+<script language='javascript'>
+<!--
+function Selected(no){
+	var db = list_form.db.value;
+	var page = list_form.page.value;
+	var go_it = list_form.go_it.value;
+	window.location.href="list.htm?Check_Box=" + no + "&db=" + db + "&page=" + page + "&go_it=" + go_it;
+}
+function Selected2(no){
+	var db = list_form.db.value;
+	var page = list_form.page.value;
+	var go_it = list_form.go_it.value;
+	window.location.href="list.htm?Check_Box2=" + no + "&db=" + db + "&page=" + page + "&go_it=" + go_it;
+}
+
+function Board(BOARD,db,no,go_it) { 
+	location.href="view.htm?db=" + db + "&no=" + no + "&go_it=" + go_it;
+}
+
+function getfocus(){ 
+      form.search.focus(); 
+} 
+
+function content_check(form) {
+	if (form.search.value == '') {
+		alert('검색어를 입력하세요');
+		form.search.focus();
+		return false;
+	}
+		
+	form.submit();
+}
+//-->
+</script>
+
+<script language="javascript">
+<!--
+function  checkUserSelect() {
+   var check_nums = document.signform.elements.length;
+   for(var i = 0; i < check_nums; i++) {
+      var checkbox_obj = eval("document.signform.elements[" + i + "]");
+      if(checkbox_obj.checked == true) {
+         break;
+      }
+   }
+   if(i == check_nums) {
+      alert("먼저 읽고자 하는 게시물을 선택하여 주십시오");
+      return;   
+   } else {
+      document.signform.submit();
+   }   
+}
+//-->
+</script>
+
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='../image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 홈페이지관리 &gt; 게시판관리 </td>
+                <td width="360" valign="top"> &nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" height="400" valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="../image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+<!-- left menu -------------------------------------------------------------------------------------->
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                             <?
+								include "../left.htm";
+								
+							 ?>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+<!-- left menu -------------------------------------------------------------------------------------->
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="670" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td><img src="../image/bar02.gif" width="670" height="40"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+					  <!-- start -->
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+						  <form name='list_form' action='list_del.php3'>
+						  <input type='hidden' name='db' value='<?=$db?>'>
+						  <input type='hidden' name='id' value='<?=$id?>'>
+						  <input type='hidden' name='ref' value='<?=$ref?>'>
+						  <input type='hidden' name='step1' value='<?=$step?>'>
+						  <input type='hidden' name='page' value='<?=$pg?>'>
+						  <input type='hidden' name='go_it' value='<?=$go_it;?>'>
+						  <input type='hidden' name='mode' value='db_del'>
+						  <tr> 
+							<td> 
+							  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+								<tr> 
+								  <td> 
+									<table border="0" width="100%" cellspacing="0" cellpadding="0">
+									  <tr> 
+										<td  height="4" bgcolor="#6493B3"></td>
+									  </tr>
+									  <tr> 
+										<td height="30" bgcolor="#DEEFFA" align="center"> 
+										  <b><font color="#000000">게시판 관리자 모드 
+										  - [<?=$boardname?>] 
+										</td>
+									  </tr>
+									  <tr> 
+										<td height="1" bgcolor="#93AEBF"></td>
+									  </tr>
+									  <tr>
+										<td height="2" bgcolor="#C5D3DC"></td>
+									  </tr>
+									  <tr> 
+										<td height="30" align="right"> 
+										  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+											<tr> 
+											  <td>
+											&nbsp;전체 : <?=$total?>개, <?=$pg?>/<?=$totalpage?>페이지						  
+											  </td>
+											  <td align="right"> 
+												<table border="0" cellspacing="0" cellpadding="0">
+												  <tr> 
+													<td width="85">&nbsp;</td>
+													<td><a href='write.htm?db=<?=$db;?>'><img src="../image/but05.gif" width="80" height="20" border="0"></a></td>
+												  </tr>
+												</table>
+											  </td>
+											</tr>
+										  </table>
+										</td>
+									  </tr>
+									</table>
+								  </td>
+								</tr>
+								<tr> 
+								  <td> 
+									<table width="100%" border="0" cellspacing="0" cellpadding="0">
+									  <tr> 
+										<td> 
+										  <table border="0" width="670" cellspacing="0" cellpadding="0">
+											<tr> 
+											  <td  height="4" bgcolor="#94B5CA"></td>
+											</tr>
+											<tr> 
+											  <td height="30" bgcolor="#C3E2F6"> 
+												<table width="100%" border="0" cellspacing="0" cellpadding="0">
+												  <tr> 
+													<td width="40" align="center" height="30"><b><font color="#000000">NO</font></b></td>
+													<td width="1" bgcolor="#94B5CA"></td>
+													<td align="center"><b><font color="#000000">제목</font></b></td>
+													<td bgcolor="#94B5CA" width="1"></td>
+													<td width="90" align="center"><b><font color="#000000">글쓴이</font></b></td>
+													<td bgcolor="#94B5CA" width="1"></td>
+													<td align="center" width="80"><b><font color="#000000">등록일</font></b></td>
+													<td bgcolor="#94B5CA" width="1"></td>
+													<td align="center" width="40"><b><font color="#000000">조회</font></b></td>
+													<td bgcolor="#94B5CA" width="1"></td>
+													<td align="center" width="40"><b><font color="#000000">공지</font></b></td>
+													<td bgcolor="#94B5CA" width="1"></td>
+													<td align="center" width="50"><input type='image' src="../image/but01.gif" width="40" height="18" title='DB에서 완전 삭제'></td>
+												  </tr>
+												</table>
+											  </td>
+											</tr>
+											<tr> 
+											  <td height="3" bgcolor="#B3C6D2"></td>
+											</tr>
+											<tr> 
+											  <td height="1"></td>
+											</tr>
+										  </table>
+										</td>
+									  </tr>
+									  <tr> 
+										<td> 
+										  <table border="0" width="670" cellspacing="0" cellpadding="0">
+											<?
+$sel_fld = "no,id,ref,step,name,passwd,email,title,date1,ip,hit,tabcheck,filename1,list_del";
+if (!$search){
+	$query="select $sel_fld from ezboard where db='$db' ORDER BY id desc,step ASC limit $query_limit,$pagecount";
+}else{
+	$query="select $sel_fld from ezboard where db='$db' and $menu like '%$search%' ORDER BY id desc,step ASC limit $query_limit,$pagecount";
+}
+
+$result=$inst->Execute($query);
+
+while($row=$inst->ExecFetchArray($result)){
+	$no=$row[no];
+	$id=$row[id];
+	$ref=$row[ref];
+	$step=$row[step];
+	$name=$row[name];
+	$email=$row[email];
+	$title=$row[title];
+	$hit=$row[hit];
+	$filename=$row[filename];
+	$date1=$row[date1];
+	$del=trim($row[list_del]);
+	$day=explode(" ",$date1);
+	$username=explode(":::",$name);
+    
+	$title=stripslashes($title);
+    $content=nl2br($content);
+    $title=han_cut($title,$title_length);
+	$list_del=$row[list_del];
+	$list_top=$row[list_top];
+
+												if ($new_use!='no'){
+													$today_time_new_use_time = New_Use($new_use,$date1,$new_time);
+													$today_time = $today_time_new_use_time[0];
+													$new_use_time = $today_time_new_use_time[1];
+													if ($today_time <= $new_use_time) {
+														$view_img = "<img src=../image/new.gif border='0'>";
+														$title_length = $title_length - 8;
+													$title=han_cut($title,$title_length);
+													}else{
+													$title=han_cut($title,$title_length);					
+													}
+												}else{
+													$title=han_cut($title,$title_length);							
+												}
+
+												if ($list_del=='yes') {
+													$color='#CE4806'; 
+												}else{
+													$color=''; 
+												}
+												
+												if ($ref!='0') {
+													$disabled='disabled'; 
+												}else{
+													$disabled=''; 
+												}
+												if (($i % 2) == 1) {$bgcolor = "#F8F8F8";}
+												else {$bgcolor = "#FFFFFF";}
+											?>
+											<tr> 
+											  <td width="40" align="center"  bgcolor="<?=$bgcolor;?>" height="30" >
+											  <?
+												if ($list_top=="yes") 
+													echo "<font color='red'>공지</font>";
+												else
+													echo "$num";	
+											  ?>
+											  </td>
+											  <td width="1" bgcolor="#DFDFDF"></td>
+											  <td bgcolor="<?=$bgcolor;?>" style="padding-left:5px">
+												<?
+												for($i=0;$i<=$ref;$i++)
+												{
+													echo "&nbsp;";
+												}
+													if($ref>0){
+														echo "&nbsp;";
+														echo "<img src=../image/re.gif border=0>";
+													}
+
+													echo ("
+														<a href=\"javascript:Board('$boardname','$db','$no','$go_it')\">
+														<font color='$title_color' size='$font_size'>$title</font></a>
+													");
+
+														echo $view_img;
+
+												?>
+												</td>
+											  <td width="1" bgcolor="#DFDFDF"></td>
+											  <td align="center" bgcolor="<?=$bgcolor;?>" width="90" alt="ID : <?=$username[1]?>"><?=$username[0];?></td>
+											  <td width="1" bgcolor="#DFDFDF"></td>
+											  <td width="80" align="center" bgcolor="<?=$bgcolor;?>"><?=$day[0];?></td>
+											  <td width="1" bgcolor="#DFDFDF"></td>
+											  <td align="center" bgcolor="<?=$bgcolor;?>" width="40">
+											  <?
+												if ($cool_use!='NO' && $hit>=$cool_no){
+														echo "<font color=red>$hit</font>";
+												}else{
+														echo $hit;
+												}
+											?>
+								  
+											  </td>
+											  <td width="1" bgcolor="#DFDFDF"></td>
+												<?
+												if ($list_top=='yes'){
+													$Checked ="checked";
+												}else if ($list_top=='no'){
+													$Checked =" ";
+												}
+												if ($list_del=='yes'){
+													$Checked2 ="checked";
+												}else if ($list_del=='no'){
+													$Checked2 =" ";
+												}
+												?>
+											  <td align="center" bgcolor="<?=$bgcolor;?>" width="40"> 
+												<input type='checkbox' name='list_top[]' value='<?=$no?>' <?=$disabled?> <?=$Checked?> onclick='Selected(<?=$no?>);'>
+											  </td>
+											  <td width="1" bgcolor="#DFDFDF"></td>
+											  <td align="center" bgcolor="<?=$bgcolor;?>" width="50">
+												<input type='checkbox' name='no[]' value='<?=$no?>' <?=$Checked2?> onclick='Selected2(<?=$no?>);'>
+											  </td>
+											</tr>
+											<tr> 
+											  <td colspan="15" height="2" background="../image/table_line_b.gif"></td>
+											</tr>
+											<?
+													$i++;
+													$view_img="";
+													$num--;
+											}
+											?>
+
+											<tr bgcolor="#B3C6D2"> 
+											  <td colspan="15" height="2"></td>
+											</tr>
+
+
+
+
+										  </table>
+										</td>
+									  </tr>
+									</table>
+								  </td>
+								</tr>
+							  </table>
+							</td>
+						  </tr>
+						  <tr> 
+							<td height="8"></td>
+						  </tr>
+						  <tr> 
+							<td align="center">
+							  <table border="0" cellspacing="0" cellpadding="2">
+								<tr> 
+								  <td>
+									<? 
+									   go_it_getPagingString1($total, $pagecount, $block, $page, $db, $skin, $search, $mtitle, $mcontent, $mname,$go_it) 						 
+									  ?>
+								  </td>
+								</tr>
+							  </table>
+							</td>
+						  </tr>
+						  </form>
+						  <tr>
+							  <td align="left">
+								<form name='form' method='post' action='list.htm' onSubmit='return content_check(this)'>
+								 <input type='hidden' name='db' value='<?=$db?>'>
+								 <input type='hidden' name='go_it' value='<?=$go_it?>'>
+
+								<table border="0" cellspacing="0" cellpadding="2">
+								  <tr> 
+									<td valign="bottom"> <font size=-1>
+										<input type='checkbox' name='mtitle' value='title' checked style="width:14; height:14; padding:2; border:0 solid #AFAFAF">&nbsp;제목
+										<input type='checkbox' name='mcontent' value='content' style="width:14; height:14; padding:2; border:0 solid #AFAFAF">&nbsp;내용
+										<input type='checkbox' name='mname' value='name' style="width:14; height:14; padding:2; border:0 solid #AFAFAF">&nbsp;글쓴이
+									  </font></td>
+									<td> 
+									  <input type="text" name="search" size=25 value="" class="form1" style="width:120; height:19; padding:2;">
+									</td>
+									<td><input type='image' src="../image/but_search.gif" width="47" height="20"></td>
+								  </tr>
+								</table>
+								</form>
+							  </td>
+						  </tr>
+						</table>
+					  <!-- End -->
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>

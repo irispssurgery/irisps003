@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>의료진 소개 - 아이리스 성형외과</title>
+<style>
+/* 기본 초기화 */
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Pretendard', sans-serif;
+}
+body {
+background-color: #fff;
+color: #333;
+line-height: 1.7;
+}
+/* 헤더 - 고정 */
+header {
+display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 10%;
+            border-bottom: 1px solid #eee;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+}
+.logo {
+font-size: 24px;
+font-weight: 700;
+text-decoration: none;
+color: #c5a880;
+}
+nav ul {
+display: flex;
+list-style: none;
+gap: 30px;
+}
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s ease; /* 색상 변화를 부드럽게 만듦 */
+}
+
+/* 마우스를 올렸을 때(Hover) 스타일 */
+nav ul li a:hover {
+  color: #d4a373; /* 포인트 색상으로 변경 */
+  text-decoration: underline; /* 또는 밑줄을 나타나게 함 */
+}
+/* 페이지 상단 타이틀 섹션 */
+.page-header {
+padding: 150px 10% 60px;
+text-align: center;
+background-color: #f9f9f9;
+}
+.page-header h1 {
+font-size: 35px;
+margin-bottom: 15px;
+}
+.page-header p {
+color: #d4a373;
+font-weight: 600;
+letter-spacing: 1px;
+}
+/* 의료진 섹션 */
+.doctor-section {
+padding: 80px 10%;
+}
+/* 프로필 컨테이너 (사진 + 내용) */
+.profile-container {
+display: flex;
+gap: 60px; /* 사진과 글 사이 간격을 조금 더 넓힘 */
+align-items: center; 
+flex-wrap: wrap; 
+}
+
+/* [수정된 부분: 사진 크기를 보기 좋게 축소 및 최적화] */
+.profile-image-box {
+flex: 0 1 300px; /* 사진의 기본 크기를 300px로 제한 (기존은 350px 이상으로 커짐) */
+max-width: 300px; /* 사진이 무작정 커지지 않도록 상한선 설정 */
+position: relative;
+z-index: 1;
+margin: 0 auto; /* 모바일에서 중앙 정렬을 위해 추가 */
+}
+
+.profile-image-box::after {
+content: "";
+position: absolute;
+top: 15px;
+left: -15px;
+width: 100%;
+height: 100%;
+background: rgba(212, 163, 115, 0.15);
+border-radius: 15px;
+z-index: -1;
+}
+
+.profile-image-box img {
+width: 100%;
+border-radius: 15px;
+box-shadow: 0 15px 35px rgba(0,0,0,0.1); /* 그림자 크기도 사진에 맞춰 소폭 조정 */
+display: block;
+transition: transform 0.3s ease;
+}
+
+.profile-image-box img:hover {
+transform: translateY(-8px);
+}
+/* [수정 끝] */
+
+/* 오른쪽: 내용 영역 */
+.profile-info {
+flex: 1; /* 남은 공간을 텍스트가 채우도록 설정 */
+min-width: 320px;
+}
+.profile-info h2 {
+font-size: 32px;
+margin-bottom: 10px;
+color: #222;
+}
+.profile-info .title {
+font-size: 18px;
+color: #d4a373;
+font-weight: 600;
+margin-bottom: 30px;
+display: block;
+}
+/* 약력 리스트 스타일 */
+/* 리스트 전체 컨테이너 */
+.profile-details {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 각 리스트 아이템 */
+.profile-details li {
+  display: flex;
+  align-items: flex-start; /* 내용이 길어져도 상단 정렬 유지 */
+  padding: 10px 0;
+  color: #333;
+  font-size: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 불렛 포인트 커스텀 (가상 요소 사용) */
+.profile-details li::before {
+  content: ""; 
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #d4a373; /* 원하시는 포인트 색상 */
+  margin-right: 12px;
+  margin-top: 8px; /* 텍스트 높이에 맞춰 조정 */
+  flex-shrink: 0;  /* 불렛 크기 유지 */
+}
+/* 리스트 전체 컨테이너 */
+.profile-details {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 각 리스트 아이템 */
+.profile-details li {
+  display: flex;
+  align-items: flex-start; /* 내용이 길어져도 상단 정렬 유지 */
+  padding: 10px 0;
+  color: #333;
+  font-size: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 불렛 포인트 커스텀 (가상 요소 사용) */
+.profile-details li::before {
+  content: ""; 
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #d4a373; /* 원하시는 포인트 색상 */
+  margin-right: 12px;
+  margin-top: 8px; /* 텍스트 높이에 맞춰 조정 */
+  flex-shrink: 0;  /* 불렛 크기 유지 */
+}
+       /* 푸터 */
+  footer {
+      background: #333;
+      color: #fff;
+      padding: 40px 10%;
+      text-align: center;
+    }
+
+    .footer-info {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+/* 모바일 대응 */
+@media (max-width: 768px) {
+.profile-container {
+flex-direction: column;
+}
+.profile-image-box {
+width: 100%;
+max-width: 100%; /* 모바일에서는 화면 꽉 차게 */
+margin-bottom: 30px;
+}
+}
+</style>
+</head>
+<body>
+<!-- 헤더 -->
+<header>
+<a href="index.html" class="logo" style="display: flex; align-items: center;"><img src="image/iris-logo.gif" alt="Logo" style="height: 45px; margin-right: 10px;">아이리스 성형외과</a>
+<nav>
+<ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="doctor.html">의료진</a></li>
+                <li><a href="eye.html">진료안내</a></li>
+                <li><a href="contact.html">오시는길</a></li>
+            </ul>
+</nav>
+</header>
+<!-- 페이지 타이틀 -->
+<section class="page-header">
+<h1>Our Specialists</h1>
+<p>최고의 전문성을 갖춘 의료진이 함께합니다.</p>
+</section>
+<!-- 의료진 프로필 섹션 -->
+<section class="doctor-section">
+<div class="profile-container">
+<!-- 왼쪽: 사진 -->
+<div class="profile-image-box">
+<img src="image/doctor_img_01.gif" alt="서일경 원장">
+</div>
+<!-- 오른쪽: 약력 정보 -->
+<div class="profile-info">
+<h2>서일경 (徐一慶) 원장</h2>
+<span class="title">의학 박사, 성형외과 전문의 | 아이리스 성형외과의원 대표원장</span>
+<ul class="profile-details">
+<li>대한 성형외과학회 정회원</li>
+<li>대한 미용성형외과학회 정회원</li>
+<li>대한 두개안면성형외과학회 정회원</li>
+<li>대한 수부외과학회 정회원</li>
+<li>국제 미용성형수술학회(ISAPS) 정회원</li>
+<li>국제 성형외과학회(IPRAS) 정회원</li>
+<li>前 인제대학교 의과대학 임상 외래교수</li>
+<li>前 대한성형외과의사회 부회장</li>
+<li>前 부산시성형외과의사회 회장</li>
+<li>前 부산광역시의료관광추진협의회 위원</li>
+<li>前 부산관광공사 비상임이사</li>
+<li>前 부산문화관광축제조직위원회 집행위원</li>
+<li>前 부산광역시 항노화산업지원위원회 위원</li>
+<li>前 한중 의료미용 테마크루즈 추진협의회 공동대표</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- 푸터 -->
+<footer>
+<div class="footer-content">
+        <p>&copy; 2005 IRIS PLASTIC SURGERY. All Rights Reserved.</p>
+        <div class="footer-info">
+            주소: 부산광역시 부산진구 서면 문회로2 3층 | 대표전화: 051-809-0021<br>
+            진료시간: 평일 10:00 - 18:00 | 토요일 10:00 - 13:00
+        </div>
+</footer>
+</body>
+</html>

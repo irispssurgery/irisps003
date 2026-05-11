@@ -1,0 +1,294 @@
+BODY {
+	scrollbar-face-color: #FFFFFF;/* ¹Ú½º¾ÈÀÇ »öÀ» ¼³Á¤ */
+	scrollbar-track-color: #EBEBEB;/* ½ºÅ©·ÑµÇ´Â ¹Ù´Ú »ö ¼³Á¤ */
+	scrollbar-arrow-color: #EE2C2C;/* À§¾Æ·¡ ¹æÇâÈ­»ìÇ¥ÀÇ »öÀ» ¼³Á¤ */
+	scrollbar-highlight-color: #DCDCDC;/* ¹Ú½º¾ÈÀÇ »ó´Ü/ÁÂÃø¼±ÀÇ »öÀ» ¼³Á¤ */
+	scrollbar-3dlight-color: #FFFFFF;/* ¹Ú½º¹ÛÀÇ »ó´Ü/ÁÂÃø ¼±ÀÇ »öÀ» ¼³Á¤(highlightÀÇ ¿ÞÂÊ/»ó´Ü) */
+	scrollbar-shadow-color: #BEBEBE;/* ¹Ú½º¾ÈÀÇ ÇÏ´Ü/¿ìÃø¼±ÀÇ »öÀ» ¼³Á¤ */
+	scrollbar-darkshadow-color: #ffffff;/* ¹Ú½º¹ÛÀÇ ÇÏ´Ü/¼öÃø ¼±ÀÇ »öÀ» ¼³Á¤(shadowÀÇ ¿À¸¥ÂÊ/ÇÏ´Ü) */
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 9pt;
+	color: #666666;
+}
+
+table {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 10pt;
+	color: #666666;
+	left: 7px;
+}
+td {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 12px;
+	color: #666666;
+}
+tr {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 12px;
+	color: #666666;
+}
+tt {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 12px;
+	color: #666666;
+}
+a:visited {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	color: #666666;
+	text-decoration: none;
+}
+a:link {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	color: #666666;
+	text-decoration: none;
+}
+a:hover {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	color: #000000;
+	text-decoration: underline;
+}
+/* text ¼³Á¤ */
+.text_white_11px {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 11px;
+	line-height: 19px;
+	color: #ffffff;
+}
+.text_white_12px {
+	FONT-SIZE: 12px;
+	COLOR: #ffffff;
+	LINE-HEIGHT: 15px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+}
+.text_white_12px_bold {
+	FONT-SIZE: 12px;
+	COLOR: #ffffff;
+	LINE-HEIGHT: 15px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-weight: bold;
+}
+.text_gray_11px {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 11px;
+	line-height: 19px;
+	color: #666666;
+}
+.text_gray_12px {
+	FONT-SIZE: 12px;
+	COLOR: #666666;
+	LINE-HEIGHT: 20px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+}
+.text_gray_12px_17 {
+	FONT-SIZE: 12px;
+	COLOR: #666666;
+	LINE-HEIGHT: 17px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+}
+.text_gray_12px_20 {
+	FONT-SIZE: 12px;
+	COLOR: #666666;
+	LINE-HEIGHT: 20px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+}
+.text_gray_12px_bold {
+	FONT-SIZE: 12px;
+	COLOR: #666666;
+	LINE-HEIGHT: 15px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-weight: bold;
+}
+.text_gray_12px_indent7 {
+	FONT-SIZE: 12px;
+	COLOR: #666666;
+	LINE-HEIGHT: 18px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	text-indent: 7px;
+}
+.text_gray_11px_indent7 {
+	FONT-SIZE: 11px;
+	COLOR: #666666;
+	LINE-HEIGHT: 19px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	text-indent: 7px;
+}
+.text_gray_13px_bold {
+	FONT-SIZE: 13px;
+	COLOR: #666666;
+	LINE-HEIGHT: 25px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-weight: bold;
+}
+.text_gray_14px_bold {
+	FONT-SIZE: 20px;
+	COLOR: #666666;
+	LINE-HEIGHT: 25px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-weight: bold;
+}
+.text_gray_20px_bold1 {
+	FONT-SIZE: 17px;
+	COLOR: #666666;
+	LINE-HEIGHT: 30px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-weight: bold;
+}
+
+.text_gray_20px_bold {
+	FONT-SIZE: 20px;
+	COLOR: #666666;
+	LINE-HEIGHT: 30px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-weight: bold;
+}
+.text_black_11px {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 11px;
+	line-height: normal;
+	color: #000000;
+}
+.text_black_12px {
+	FONT-SIZE: 12px;
+	COLOR: #000000;
+	LINE-HEIGHT: 15px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+}
+.text_black_12px_bold {
+	FONT-SIZE: 12px;
+	COLOR: #000000;
+	LINE-HEIGHT: 15px;
+	FONT-FAMILY: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-weight: bold;
+}
+.text_orange_11px {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 11px;
+	line-height: 19px;
+	color: #FF6600;
+}
+.text_orange_12px {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 12px;
+	line-height: 19px;
+	color: #FF6600;
+}
+.text_orange_12px_bold {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 12px;
+	line-height: 19px;
+	color: #FF6600;
+	font-weight: bold;
+}
+.text_pink_11px {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 11px;
+	line-height: 19px;
+	color: #FF6699;
+}
+.text_pink_12px {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 12px;
+	line-height: 19px;
+	color: #FF6699;
+}
+.text_pink_12px_bold {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 12px;
+	line-height: 19px;
+	color: #FF6699;
+	font-weight: bold;
+}
+.text_blue_11px {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 11px;
+	line-height: 19px;
+	color: #3333CC;
+}
+.text_blue_12px {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 12px;
+	line-height: 19px;
+	color: #3333CC;
+}
+.text_blue_12px_bold {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 12px;
+	line-height: 19px;
+	color: #3333CC;
+	font-weight: bold;
+}
+
+/* Å×ÀÌºí LEFT ÆÐµù */
+.TablePadding-05 {font-family:"±¼¸²","µ¸¿ò","Tahoma","Verdana"; font-size:9pt; color:#242628; padding-left:5px}
+.TablePadding-10 {font-family:"±¼¸²","µ¸¿ò","Tahoma","Verdana"; font-size:9pt; color:#242628; padding-left:10px}
+.TablePadall-10 {font-family:"±¼¸²","µ¸¿ò","Tahoma","Verdana"; font-size:9pt; color:#242628; padding:10px}
+
+/* INPUT FORM Ä®¶ó¼³Á¤ */
+.Input-Gray {
+    border:1 solid #FFFFFF; 
+	background-color:#EEEEEE;  
+	font-size: 8pt; 
+	color:#323B42}
+.input-line1px {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 12px;
+	color: #000000;
+	background-color: #FFFFFF;
+	text-indent: 3px;
+	border: 1px solid #CCCCCC;
+}
+.Input-DarkGray {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 12px;
+    border:1 solid #FFFFFF; 
+	background-color:#A6A6A6;  
+	font-size: 8pt; 
+	color:#FFFFFF}
+.input01 {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	font-size: 12px;
+	color: #666666;
+	border: 1px solid #CCCCCC;
+}
+.input02 {
+	font-family: "±¼¸²", "±¼¸²Ã¼", "µ¸¿ò", "µ¸¿òÃ¼", Verdana, Arial;
+	color: #666666;
+	border: 1px solid #64AACE;
+}
+/* µðÀÚÀÎµÈ ¼¿·ºÆ® Æû */
+.selectdesign {behavior: url('../includes/selectbox.htc');}
+
+/* Å×ÀÌºí¿¡ ½ºÅ©·Ñ¹Ù »ý¼º <TD><DIV id="ScrollBox">³»¿ë</DIV></TD>    */
+#ScrollBox  {width:600; height:170; overflow:auto; padding:10px; border:1; border-style:solid; border-color:#CFCFCF}
+
+/* ÅØ½ºÆ®ÀÔ·ÂÆû ¹è°æ»ö ¹× ¹è°æÀÌ¹ÌÁö ÁöÁ¤ */
+.TxtArea-GrayColor  {color:#7A7B7D; background-color:#F4F4F4; border-color:#FFFFFF; border-style:soild;}
+.TxtArea-Background {color:#7A7B7D; border-color:#FE8E8E8; border-style:soild; background:url(http://www.creative21.co.kr/images/flowerbg.gif);}
+
+/* ½ºÅ©·Ñ¹Ù Àå½Ä */
+.Scrollbar--01 {scrollbar-face-color:#C0C0C0;scrollbar-highlight-color:#FFFFFF;scrollbar-3dlight-color:#C0C0C0;scrollbar-darkshadow-color:#C0C0C0;scrollbar-shadow-color:#FFFFFF;scrollbar-arrow-color:#FFFFFF;scrollbar-track-color:#FFFFFF;}
+.Scrollbar--02 {scrollbar-face-color:#FF8080 ;scrollbar-highlight-color:#FFFFFF;scrollbar-3dlight-color:#FF8080;scrollbar-darkshadow-color:#FF8080;scrollbar-shadow-color:#FFFFFF;scrollbar-arrow-color:#FFFFFF;scrollbar-track-color:#FFFFFF;}
+.Scrollbar--03 {scrollbar-face-color:#66A9CC;scrollbar-highlight-color:#FFFFFF;scrollbar-3dlight-color:#66A9CC;scrollbar-darkshadow-color:#66A9CC;scrollbar-shadow-color:#FFFFFF;scrollbar-arrow-color:#FFFFFF;scrollbar-track-color:#FFFFFF;}
+
+.boardtxt {  font-family: "µ¸¿ò"; font-size: 10pt; line-height: 22px; padding-left:5px; padding-right:5px;padding-top:5px; padding-bottom:5px; color: #000000;}
+
+/* Ä¶¸°´õ */
+.fc_main { background: #DDDDDD; border: 1px solid #000000; font-family: Verdana; font-size: 10px; }
+.fc_date { font-family: tahoma; border: 1px solid #D9D9D9;  cursor:pointer; font-size: 8pt; text-align: center;}
+.fc_dateHover, TD.fc_date:hover { font-family: tahoma;cursor:pointer; border-top: 1px solid #FFFFFF; border-left: 1px solid #FFFFFF; border-right: 1px solid #999999; border-bottom: 1px solid #999999; background: #E7E7E7; font-size: 8pt; text-align: center; }
+.fc_wk {font-family: Verdana; font-size: 11px; text-align: center;}
+.fc_wknd { color: #FF0000; font-weight: bold; font-size: 11px; text-align: center;}
+.fc_wknd1 { color: blue; font-weight: bold; font-size: 11px; text-align: center;}
+.fc_head { background: #000066; color: #FFFFFF; font-weight:bold; text-align: left;  font-size: 11px; }
+
+/* ³×ºñ°ÔÀÌ¼Ç */
+td,select,input {color:#3E3E3E;font-family:µ¸¿ò;font-size:12px}
+body{margin:0px}
+img{border:none}
+.trc{font-size:12px;font-family:µ¸¿ò;color:#000000;text-decoration:none}
+a.trc:link{color:#000000;text-decoration:none}
+a.trc:visited{color:#000000;text-decoration:none}
+a.trc:active{color:#4DA500;text-decoration:underline}
+a.trc:hover{color:#4DA500;text-decoration:underline}
+.info{font-size:11px;font-family:µ¸¿ò;color:#507927;text-decoration:none;letter-spacing:-1px}
+.his{font-size:11px;font-family:µ¸¿ò;color:#555555;text-decoration:none;letter-spacing:-1px}

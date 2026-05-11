@@ -1,0 +1,129 @@
+<?
+	class Ckeyword
+	{
+		var $db;
+		var $save_data;
+		var $origin_data;
+		var $site;
+
+		function Ckeyword()
+		{
+			global $db;
+			global $site;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+			$this->site=$site;
+		}
+
+		function Insert($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+			
+			while(list($key, $value) = each($data))
+			{
+				$kf[]= $key;
+				$vf[]="'".$value."'";
+			}
+		
+			$k = implode(",", $kf);
+			$v = implode(",", $vf);
+
+			$query = "INSERT INTO keyword (".$k.", signdate) VALUES (".$v.", now());";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function View($idx)
+		{
+			if(!isset($idx))
+				return false;
+
+			$query = "SELECT * FROM keyword WHERE k_idx=".$idx;
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		
+		function Modify($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+			
+			while(list($key, $value) = each($data))
+			{
+				if($key == "k_idx")
+					continue;
+
+				$field[] = "".$key." = '".$value."'";
+			}
+
+			$f = implode(",", $field);
+			
+			$query = "UPDATE keyword SET ".$f." WHERE k_idx=".$data["k_idx"];
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function DeleteKeyword($k_idx)
+		{
+			if(!$k_idx)
+				return false;
+
+			$query = "DELETE FROM keyword WHERE k_idx=".$k_idx."";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+	
+		function listAll($search_word, $search_key)
+		{
+			if($search_word && $search_key)
+				$SQL = "WHERE ".$search_key." LIKE '%".$search_word."%'";
+
+			$query = "SELECT * FROM keyword ".$SQL."";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		function getTagInfo()
+		{
+			$query="SELECT * FROM keyword ORDER BY k_idx DESC LIMIT 1";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$info["k_title"]=$resultSet["k_title"];
+				$info["k_keyword"]=$resultSet["k_keyword"];
+				$info["k_description"]=$resultSet["k_description"];
+			}
+
+			return $info;
+		}
+
+		function _Cdd($inst)
+		{
+			$this->db->_CDatabase();
+			unset($inst);
+		}
+	}
+?>

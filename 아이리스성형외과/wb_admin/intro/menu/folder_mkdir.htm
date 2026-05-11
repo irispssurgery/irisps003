@@ -1,0 +1,91 @@
+<?
+ob_start(); 
+session_start(); 
+ 
+extract($HTTP_GET_VARS); 
+extract($HTTP_POST_VARS); 
+extract($HTTP_SESSION_VARS); 
+ 
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+
+$inst->Connect(); 
+$table="km_menu";
+?>
+<html>
+<head>
+<link rel="StyleSheet" href="../../css/css.css" type="text/css">
+<title>메뉴 생성</title>
+<script>
+function go_save(){
+	if(f_check.folder.value.replace(/\s/g,'') == ''){
+		alert('이름을 입력하세요');
+		return;
+	}
+<? if ($depth <> 1) { ?>
+	if (f_check.bitFileCheck.value != "1"){
+		alert("파일명 중복체크를 실행해 주시기 바랍니다.");
+		f_check.file_name.focus();
+		return;
+	}
+<? } ?>
+	f_check.submit();
+}
+
+function DupliCheck(str,sort){
+	sort=sort;
+
+	switch (str){
+		case "fileName" :
+			var str = f_check.folder;
+
+			var arr = showModalDialog('check_menu.php?sort='+ sort +'&file_name=' + document.all['file_name'].value + '&exec=0', 'memberID', 'dialogWidth:0px; dialogHeight: 0px; resizable: no; help: no; status: no; scroll: no;');
+			f_check.bitFileCheck.value = arr;
+			break;
+	}
+}
+
+function on_load(){
+	f_check.folder.focus();
+}
+</script>
+</head>
+<body leftmargin=0 topmargin=0 bgcolor='FFFFFF' onload='on_load()'>
+<iframe src='about:blank' name='ifra' width='0' height='0'></iframe>
+<form name='f_check' action='folder_mkdir.php' style='margin:0px'>
+<input type='hidden' name='depth' value='<?=$depth?>'>
+<input type='hidden' name='seq' value='<?=$seq?>'>
+<input type="hidden" name="bitFileCheck" value="0">
+<table cellpadding='0' cellspacing='0' border='0' bgcolor='EFEFEF' width=100% height=100%>
+<tr align=cetner width=100% height=100%>
+	<td align=center>
+	<table cellpadding='0' cellspacing='0' border='0'>
+<? if ($depth <> 1) { 
+	$sort_sql   = "select sort from $table where seq='$seq'";
+	$sort = $inst->ExecValue($sort_sql); 
+	if (!$sort) $sort='0';
+	$file_name="sub".$sort."_new.htm";
+?>
+	<tr>
+		<td height="25" colspan="4"><b>파일 생성 경로 : /intro/sub<?=$sort?>/</b></td>
+	</tr>
+	<tr height="25" >
+		<td><b>파일명</td>
+		<td width=3></td>
+		<td><input type='text' name='file_name' value="<?=$file_name?>" onChange="f_check.bitFileCheck.value='0';" ></td>
+		<td width=3></td>
+		<td><a href="javascript:DupliCheck('fileName','<?=$sort?>');"><img src='../../image/overlap.gif' border='0'></a></td>
+	</tr>
+<? } ?>
+	<tr height="25" >
+		<td><b>메뉴명</td>
+		<td width=3></td>
+		<td><input type='text' name='folder'></td>
+		<td width=3></td>
+		<td><a href="javascript:go_save()"><img src='../../image/menu_mk.gif' border='0'></a></td>
+	</tr>
+	</table>
+	</td>
+</tr>
+</table>
+</form>

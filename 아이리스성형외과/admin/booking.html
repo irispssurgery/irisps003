@@ -1,0 +1,102 @@
+<?
+	include "./booking.php";
+?>
+<html>
+<head>
+<title>아이리스 예약접수관리</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link href="../css/iris.css" type=text/css 
+rel=stylesheet>
+<style type="text/css">
+<!--
+table {  font-family: "굴림체"; font-size: 9pt}
+-->
+</style>
+<Script language="javascript">
+
+function mDel(idx)
+{
+	if(confirm("정말 삭제하시겠습니까?"))
+		location.href="./booking.html?mode=del&idx="+idx;
+}
+
+function accept(idx)
+{
+	if(confirm("접수완료 하시겠습니까?"))
+		location.href="./booking.html?mode=accept&idx="+idx;
+}
+
+function cancel(idx)
+{
+	if(confirm("접수취소 하시겠습니까?"))
+		location.href="./booking.html?mode=cancel&idx="+idx;
+}
+
+</Script>
+</head>
+
+<body bgcolor="#EEEEEE" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" height="500">
+  <tr> 
+    <td bgcolor="E7E5D7" width="207" valign="top"> 
+<?
+include "left_menu.html";
+?>
+    </td>
+    <td width="8" bgcolor="#FFFFFF">&nbsp;</td>
+    <td bgcolor="A7A7A7" width="1"></td>
+    <td bgcolor="C3C3C3" width="1"></td>
+    <td bgcolor="D9D9D9" width="1"></td>
+    <td bgcolor="E7E7E7" width="1"></td>
+    <td valign="top"> 
+      <table width="95%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td height="12"></td>
+        </tr>
+        <tr>
+          <td>
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="5"><img src="images/m_t_left.gif" width="5" height="49"></td>
+                <td bgcolor="B7B292"><font color="#FFFFFF"><b><img src="images/x.gif" width="3" height="5"></b></font><img src="images/m_bar_icon.gif" width="7" height="32" align="absmiddle"><font color="#FFFFFF"><b><img src="images/x.gif" width="13" height="5">예약접수관리</b></font></td>
+                <td width="5"><img src="images/m_t_right.gif" width="5" height="49"></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <div align="center"><font color="#FFFFFF"><b><img src="images/x.gif" width="13" height="12"></b></font><br>
+      </div>
+      <table width="95%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr>
+          <td bgcolor="#FFFFFF"> 
+            <table width="100%" border="1" cellpadding="1" cellspacing="0" bordercolorlight="B7B292" bordercolordark="#FFFFFF">
+              <tr align="center" bgcolor="E7E5D7"> 
+                <td height="25" width="23%"><b><font color="#000000">접수등록 날짜</font></b></td>
+                <td height="25" width="26%"><b><font color="#000000">진료 희망 날짜</font></b></td>
+                <td height="25" width="16%"><b><font color="#000000">예약자 이름</font></b></td>
+                <td height="25" width="17%"><b><font color="#000000">연락처</font></b></td>
+                <td height="25" width="10%"><b><font color="#000000">접수사항</font></b></td>
+                <td height="25" width="8%"><b><font color="#000000">삭제</font></b></td>
+              </tr>
+              <?echo $book_list;?>
+            </table>
+          <table width="100%" border="1" cellpadding="1" cellspacing="0" bordercolorlight="B7B292" bordercolordark="#FFFFFF">
+              <tr> 
+                <td align="center">&nbsp;<?echo $page->showPaging();?></td>
+              </tr>
+            </table>
+            
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td bgcolor="#CCCCCC">&nbsp;</td>
+  </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<html>
+<head>
+<title>Untitled Document</title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<style type="text/css">
+<!--
+table {  font-family: "굴림체"; font-size: 9pt}
+-->
+</style>
+<Script language="javascript">
+
+function checkForm()
+{
+	var form=document.form1;
+
+	if(!form.admin_id.value)
+	{
+		alert("관리자의 아이디를 입력하여 주십시요");
+		form.admin_id.focus();
+
+		return ;
+	}
+
+	if(!form.admin_pwd.value)
+	{
+		alert("비밀번호를 입력하여 주십시요");
+		form.admin_pwd.focus();
+
+		return ;
+	}
+
+	if(!form.admin_email.value)
+	{
+		alert("이메일을 입력하여 주십시요");
+		form.admin_email.focus();
+
+		return ;
+	}
+
+	form.action="proc_admin_write.php";
+	form.submit();
+}
+
+</Script>
+</head>
+
+<body bgcolor="eeeeee">
+<form name="form1" method="post" action="">
+  <br>
+  <table width="650" border="1" cellpadding="1" cellspacing="0" bordercolorlight="B7B292" bordercolordark="#FFFFFF" align="center">
+    <tr align="center"> 
+      <td height="30" bgcolor="E7E5D7"><font color="#000000"><b>관리자 아이디 및 패스워드 
+        추가</b></font></td>
+    </tr>
+    <tr> 
+      <td bgcolor="#FFFFFF" align="center" height="125">
+        <table border="0" cellpadding="0" cellspacing="0" bordercolorlight="B7B292" bordercolordark="#FFFFFF" align="center">
+          <tr> 
+            <td align="right" height="25"> 아이디 :</td>
+            <td height="25"> &nbsp; 
+              <input type="text" name="admin_id" size="30">
+            </td>
+          </tr>
+          <tr> 
+            <td align="right" height="25"> 패스워드 :</td>
+            <td height="25"> &nbsp; 
+              <input type="text" name="admin_pwd" size="30">
+            </td>
+          </tr>
+          <tr> 
+            <td align="right" height="25"> 이메일 :</td>
+            <td height="25"> &nbsp; 
+              <input type="text" name="admin_email" size="45">
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr align="center"> 
+      <td bgcolor="E7E5D7" height="25"> <a href="./result_admin_list.html"><font color="#000000">[관리자 
+        목록]</font></a> <a href="javascript:checkForm();"><font color="#000000">[확인]</font></a> 
+        <a href="javascript:document.forms[0].reset();"><font color="#000000">[취소]</font></a> 
+      </td>
+    </tr>
+  </table>
+</form>
+</body>
+</html>

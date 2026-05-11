@@ -1,0 +1,108 @@
+<?
+	class CMail
+	{
+		var $name;
+		var $send_email;
+		var $receive_email;
+		var $title;
+		var $content;
+		var $headers;
+		var $reply_date;
+		var $call;
+		var $charset = "base64";
+
+		function CMail($name, $send_email, $title, $reply_date, $call, $receive_email)
+		{
+			if(!$send_email || !$title || !$name || !$reply_date || !$call || !$receive_email)
+				return false;
+
+			$this->name = $name;
+			$this->receive_email = $receive_email;
+			$this->send_email = $send_email;
+			$this->title = $title;
+			$this->reply_date = $reply_date;
+			$this->call = $call;
+
+		}
+
+
+		function sendMail()
+		{
+			global $HTTP_POST_VARS, $HTTP_POST_FILES;
+				$md = new mime_decode();
+				$md->charset = "base64";
+				$md->use_html = 1;
+				$md->timezone = "+0900";
+
+				$to = $this->receive_email;
+				$content = $HTTP_POST_VARS["content"];
+
+				$title = StripSlashes($this->title); 
+				if ($to)      { $to = StripSlashes($this->receive_email); }
+				if ($cc)      { $cc = StripSlashes($cc); }
+				if ($content) { $content = StripSlashes($content);   }
+
+				if ($to && $content) 
+				{
+//					$to = "skypass@kuma.co.kr";
+					$ARTo = $md->get_names($to);
+
+					$mail = new cSendmail();
+					$mail->IsHTML(1);
+					$mail->CharSet		= "base64";
+					$mail->IPAddress	= getenv("REMOTE_ADDR");
+					$mail->timezone		= "+0900";
+					$mail->From 		= $this->send_email;
+					$mail->FromName 	= $md->mime_encode_headers($this->name);
+//					$mail->AddReplyTo($reply_to, $md->mime_encode_headers($real_name));
+					$mail->WordWrap 	= 76;
+
+
+					if(count($ARTo) != 0) 
+					{
+						for($i=0;$i<count($ARTo);$i++) 
+						{
+							$name = $ARTo[$i]["name"];
+							$email = $ARTo[$i]["mail"];
+
+							if($name && $email)
+								$mail->AddAddress($email,$md->mime_encode_headers($HTTP_POST_VARS["receive_name"]));
+							else
+								$mail->AddAddress($email, $md->mime_encode_headers($HTTP_POST_VARS["receive_name"]));
+						}
+					}
+
+
+					if(count($HTTP_POST_FILES) > 0) 
+					{
+						$mail->AddAttachment($HTTP_POST_FILES["mail_attach"]["tmp_name"], $HTTP_POST_FILES["mail_attach"]["name"], $HTTP_POST_FILES["mail_attach"]["type"]);
+					}
+
+
+					$mail->Subject = $md->mime_encode_headers($title);
+					$conFile = getenv("DOCUMENT_ROOT")."/formmail/mailData.html";
+					if($fp = fopen($conFile, "r"))
+					{
+						$contents = fread($fp, filesize($conFile));
+						fclose($fp);
+					}
+						
+					$con = sprintf($contents, $this->title, $this->name, $this->send_email, $this->reply_date, $this->call, nl2br($HTTP_POST_VARS["content"]));
+					$mail->Body = stripslashes($con);
+
+//					die($mail->Body);
+					// 전달일경우 .......
+
+					if(($resultmail = $mail->Send()) === false)
+					{
+						die($mail->Body);
+						return false;
+					}
+					else
+						return true;
+
+				}
+			
+		}
+	}
+?>

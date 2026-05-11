@@ -1,0 +1,69 @@
+<?
+	// 이미지 관련 함수
+	function rename_uni(){
+		$mc = microtime(); return substr($mc,-10).substr($mc,2,6);
+	}
+	function rename_ext($filename){
+		if($filename){
+			$file_dot = explode(".",$filename);
+			$total_size = sizeof($file_dot);
+			$sub_file_ext = $total_size -1;
+			$rename_unis = rename_uni();
+			$changefilename = $rename_unis.".".$file_dot[$sub_file_ext];
+			return $changefilename;
+		}else{
+			return;
+		}
+	}
+       function hancut($str, $len, $suffix = "...")
+        {
+        if ($len >= strlen($str)) return $str;
+            $klen = $len - 1;
+            while(ord($str[$klen]) & 0x80) $klen--;
+        return substr($str, 0, $len - (($len + $klen + 1) % 2)) . $suffix;
+        }
+	function space($num=1){ for($i=0;$i<$num;$i++){ $sp .= "&nbsp;";} return $sp;}
+	function msg_add($msg){ return addslashes(strip_tags(chop(eregi_replace('<script','&lt;script',htmlspecialchars($msg, ENT_QUOTES))))); }
+	function msg_strip($msg){ return stripslashes($msg); }
+?>
+<html>
+<head>
+<link rel="StyleSheet" href="../../css/css.css" type="text/css">
+<title>이름 변경</title>
+<script>
+function go_save(){
+	if(f_check.file_name.value.replace(/\s/g,'') == ''){
+		alert('이름을 입력하세요');
+		return;
+	}
+	if(confirm('변경하시겠습니까?')){
+		f_check.submit();
+	}
+}
+function on_load(){
+	f_check.file_name.focus();
+}
+</script>
+</head>
+<body leftmargin=0 topmargin=0 bgcolor='FFFFFF' onload='on_load()'>
+<iframe src='about:blank' name='ifra' width='0' height='0'></iframe>
+<form name='f_check' action='folder_modify.php' style='margin:0px' target='ifra'>
+<input type='hidden' name='depth' value='<?=$depth?>'>
+<input type='hidden' name='seq' value='<?=$seq?>'>
+<input type='hidden' name='flag' value='<?=$flag?>'>
+<table cellpadding='0' cellspacing='0' border='0' bgcolor='EFEFEF' width=100% height=100%>
+<tr align=cetner width=100% height=100%>
+	<td align=center>
+	<table cellpadding='0' cellspacing='0' border='0'>
+	<tr>
+		<td><b>이름 변경</td>
+		<td width=3></td>
+		<td><input type='text' name='file_name' value='<?=msg_strip($file_name)?>'></td>
+		<td width=3></td>
+		<td><a href="javascript:go_save()"><img src='../../image/menu_mv.gif' border='0'></a></td>
+	</tr>
+	</table>
+	</td>
+</tr>
+</table>
+</form>

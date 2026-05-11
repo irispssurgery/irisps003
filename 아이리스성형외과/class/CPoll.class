@@ -1,0 +1,389 @@
+<?
+	class CPoll
+	{
+		var $db;
+		var $PAGE;
+
+		function CPoll()
+		{
+			global $db;
+
+			if(!isset($db) || !is_object($db))
+				return -1;
+
+			$this->db=$db;
+		}
+
+		function mInsert($pl_title, $pl_content)
+		{
+
+			if(!isset($pl_title) || !isset($pl_content))
+				return false;
+
+			$query="SELECT max(PL_KEY) FROM POLL";
+			$result=$this->db->ExecuteDML($query);
+
+			$max_pl_key=$this->db->getResult($result, 0, 0);
+
+			if(!$max_pl_key)
+				$pl_key=1;
+			else
+				$pl_key=$max_pl_key+1;
+
+			foreach($pl_content as $key => $value)
+			{
+				$query="INSERT INTO POLL (PL_TITLE, PL_CONTENT, PL_KEY, PL_SIGNDATE) VALUES ('".$pl_title."', '".$value."', ".$pl_key.", current_date);";
+				$result=$this->db->ExecuteDML($query);
+			}
+
+			if(!isset($result))
+				return false;
+			else
+				return true;
+		}
+
+		function mModify($pl_title, $pl_content)
+		{
+
+			if(!isset($pl_title) || !isset($pl_content))
+				return false;
+
+			foreach($pl_content as $key => $value)
+			{
+				$query="UPDATE POLL set PL_TITLE='".$pl_title."', PL_CONTENT='".$value."' WHERE PL_IDX=".$key."";
+				$result=$this->db->ExecuteDML($query);
+			}
+
+			if(!isset($result))
+				return false;
+			else
+				return true;
+		}
+		
+		function mGetMaxKey()
+		{
+			$query="SELECT max(PL_KEY) FROM POLL";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function mGetPoll($pl_key)
+		{
+			if(!isset($pl_key))
+				return false;
+
+			$query="SELECT * FROM POLL WHERE PL_KEY=".$pl_key." ORDER BY PL_IDX ASC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function mSetResult($data)
+		{
+			if(!$data)
+				return false;
+
+			$query="SELECT max(TOTALCOUNT) FROM POLL_RESULT WHERE PL_KEY=".$data["PL_KEY"]."";
+			$result=$this->db->ExecuteDML($query);
+
+			$count=$this->db->getResult($result, 0, 0);
+			$TOTALCOUNT=$count+1;
+
+			foreach($data as $key => $value)
+			{
+				if($key=="IMPROVE" || $key=="PL_KEY")
+					continue;
+				else
+					$setResult=$this->whatSelect($value, "INIT");
+
+				$query="INSERT INTO POLL_RESULT (PL_IDX, VERYGOOD, GOOD, COMMON, BAD, VERYBAD, IMPROVE, PL_KEY, TOTALCOUNT) VALUES ";
+				$query.="(".$key.", ".$setResult["VERYGOOD"].", ".$setResult["GOOD"].", ".$setResult["COMMON"].",";
+				$query.=" ".$setResult["BAD"].", ".$setResult["VERYBAD"].", '".$data["IMPROVE"]."', ".$data["PL_KEY"].", ".$TOTALCOUNT.");";
+
+				$result=$this->db->ExecuteDML($query);
+
+			}
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getTotalPeo($pl_key)
+		{
+			if(!$pl_key)
+				return false;
+
+			$query="SELECT max(TOTALCOUNT) FROM POLL_RESULT where PL_KEY=".$pl_key."";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function whatSelect($val, $mode)
+		{
+			if(!isset($val))
+				return false;
+
+			if($mode=="INIT")
+			{
+				switch($val)
+				{
+					case "5":
+						$result["VERYGOOD"]=1;
+						$result["GOOD"]=0;
+						$result["COMMON"]=0;
+						$result["BAD"]=0;
+						$result["VERYBAD"]=0;
+						break;
+					case "4":
+						$result["VERYGOOD"]=0;
+						$result["GOOD"]=1;
+						$result["COMMON"]=0;
+						$result["BAD"]=0;
+						$result["VERYBAD"]=0;
+						break;
+					case "3":
+						$result["VERYGOOD"]=0;
+						$result["GOOD"]=0;
+						$result["COMMON"]=1;
+						$result["BAD"]=0;
+						$result["VERYBAD"]=0;
+						break;
+					case "2":
+						$result["VERYGOOD"]=0;
+						$result["GOOD"]=0;
+						$result["COMMON"]=0;
+						$result["BAD"]=1;
+						$result["VERYBAD"]=0;
+						break;
+					case "1":
+						$result["VERYGOOD"]=0;
+						$result["GOOD"]=0;
+						$result["COMMON"]=0;
+						$result["BAD"]=0;
+						$result["VERYBAD"]=1;
+						break;
+				}
+			}
+			else
+			{
+				switch($val)
+				{
+					case "5":
+						$result["VERYGOOD"]="VERYGOOD=VERYGOOD+1";
+						$result["GOOD"]="GOOD=GOOD";
+						$result["COMMON"]="COMMON=COMMON";
+						$result["BAD"]="BAD=BAD";
+						$result["VERYBAD"]="VERYBAD=VERYBAD";
+						break;
+					case "4":
+						$result["VERYGOOD"]="VERYGOOD=VERYGOOD";
+						$result["GOOD"]="GOOD=GOOD+1";
+						$result["COMMON"]="COMMON=COMMON";
+						$result["BAD"]="BAD=BAD";
+						$result["VERYBAD"]="VERYBAD=VERYBAD";
+						break;
+					case "3":
+						$result["VERYGOOD"]="VERYGOOD=VERYGOOD";
+						$result["GOOD"]="GOOD=GOOD";
+						$result["COMMON"]="COMMON=COMMON+1";
+						$result["BAD"]="BAD=BAD";
+						$result["VERYBAD"]="VERYBAD=VERYBAD";
+						break;
+					case "2":
+						$result["VERYGOOD"]="VERYGOOD=VERYGOOD";
+						$result["GOOD"]="GOOD=GOOD";
+						$result["COMMON"]="COMMON=COMMON";
+						$result["BAD"]="BAD=BAD+1";
+						$result["VERYBAD"]="VERYBAD=VERYBAD";
+						break;
+					case "1":
+						$result["VERYGOOD"]="VERYGOOD=VERYGOOD";
+						$result["GOOD"]="GOOD=GOOD";
+						$result["COMMON"]="COMMON=COMMON";
+						$result["BAD"]="BAD=BAD";
+						$result["VERYBAD"]="VERYBAD=VERYBAD+1";
+						break;
+				}
+			}
+
+			return $result;
+		}
+
+		function getPL()
+		{
+			$query="SELECT max(PL_KEY) from POLL";
+			$result=$this->db->ExecuteDML($query);
+			
+			$query="SELECT * FROM POLL where PL_KEY=".$this->db->getResult($result, 0, 0)." ORDER BY PL_IDX ASC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+			
+			return $recordSet;
+		}
+
+		function ListPLAll()
+		{
+			$query="SELECT * FROM POLL ORDER BY PL_KEY DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function ListPL()
+		{
+			global $PAGE;
+
+			if(!$PAGE)
+				$this->PAGE=1;
+			else
+				$this->PAGE=$PAGE;
+
+			$START_RECORD=(($this->PAGE-1)*5);
+			$GET_RECORD=5;
+
+			$query="SELECT * FROM POLL ORDER BY PL_KEY DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getPlCount($pl_idx, $column)
+		{
+			if(!isset($pl_idx))
+				return false;
+
+			$query="SELECT count(".$column.") FROM POLL_RESULT WHERE PL_IDX=".$pl_idx." AND ".$column."=1";
+			$result=$this->db->ExecuteDML($query);
+
+			$count=$this->db->getResult($result, 0, 0);
+
+			return $count;
+		}
+
+		function getPlSumPart($column, $PL_KEY)
+		{
+			if(!isset($column))
+				return false;
+
+			$query="SELECT sum(".$column.") FROM POLL_RESULT WHERE PL_KEY=".$PL_KEY."";
+			$result=$this->db->ExecuteDML($query);
+
+			$count=$this->db->getResult($result, 0, 0);
+
+			return $count;
+		}
+
+		function mEvaluate($pl_key)
+		{
+			if(!$pl_key)
+				return false;
+
+			$query="SELECT sum(VERYGOOD)+sum(GOOD)+sum(COMMON)+sum(BAD)+sum(VERYBAD) FROM POLL_RESULT AS SUM where PL_KEY=".$pl_key."";
+			$result=$this->db->ExecuteDML($query);
+
+			$total_sum=$this->db->getResult($result, 0, 0);
+
+			return $total_sum;
+		}
+
+		function mDeletePL($pl_key)
+		{
+			if(!$pl_key)
+				return false;
+
+			$query="DELETE FROM POLL where PL_KEY=".$pl_key."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getImprove($pl_key)
+		{
+			if(!$pl_key)
+				return false;
+
+			$query="SELECT DISTINCT(IMPROVE) FROM POLL_RESULT WHERE PL_KEY=".$pl_key."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getPercent($pt)
+		{
+			if(!$pt)
+				return false;
+
+			if($pt==25)
+				$rtnVal=100;
+			else if($pt==23 || $pt==24)
+				$rtnVal=90;
+			else if($pt==22 || $pt==21)
+				$rtnVal=80;
+			else if($pt==19 || $pt==20)
+				$rtnVal=70;
+			else if($pt==17 || $pt==18)
+				$rtnVal=60;
+			else if($pt==16 || $pt==15)
+				$rtnVal=50;
+			else if($pt==13 || $pt==14)
+				$rtnVal=40;
+			else if($pt==12 || $pt=11 || $pt==10)
+				$rtnVal=30;
+			else if($pt==9 || $pt==8 || $pt==7)
+				$rtnVal=20;
+			else
+				$rtnVal=10;
+
+			return $rtnVal;
+
+		}
+
+		function mDeletePLAll($pl_key)
+		{
+			if(!isset($pl_key))
+				return false;
+
+			$query="DELETE FROM POLL where PL_KEY=".$pl_key."";
+			$result=$this->db->ExecuteDML($query);
+	
+			$query="DELETE FROM POLL_RESULT where PL_KEY=".$pl_key."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+	}
+?>

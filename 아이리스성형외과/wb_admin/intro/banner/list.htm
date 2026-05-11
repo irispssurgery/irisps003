@@ -1,0 +1,298 @@
+<?
+ob_start(); 
+session_start(); 
+ 
+extract($HTTP_GET_VARS); 
+extract($HTTP_POST_VARS); 
+extract($HTTP_SESSION_VARS); 
+ 
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+
+include "../../auth_admin.php3";
+
+$inst->Connect(); 
+?>
+<html>
+<head>
+<title><?echo $head_title;?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+<script language='javascript'>
+<!--
+	function checkput(form) {
+		if (form.title.value == form.title.defaultValue) {
+			alert('그룹 제목을 입력하세요');
+			form.title.focus();
+			return false;
+		}
+		form.submit();
+	}
+//-->
+</script>
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+
+<? include "../../admin_top.htm"; ?>
+
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='../../image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 운영관리 &gt; 배너관리</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" height="400" valign="top">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="../image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+<!-- left menu -------------------------------------------------------------------------------------->
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                             <?
+								include "../manage_menu.htm";
+							 ?>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+<!-- left menu -------------------------------------------------------------------------------------->
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="670" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td><img src="../../image/bar07.gif"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td> 
+                              <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td  height="4" bgcolor="#6493B3"></td>
+                                </tr>
+                                <tr> 
+                                  <td height="30" bgcolor="#DEEFFA" align="center"> 
+                                    <b>배 너 그 룹 설 정</b></td>
+                                </tr>
+                                <tr> 
+                                  <td height="1" bgcolor="#93AEBF"></td>
+                                </tr>
+                                <tr> 
+                                  <td height="2" bgcolor="#C5D3DC"></td>
+                                </tr>
+							<? if ($mode=='modify') { ?>
+								<form name='form' method='post' action='modify_ok.php3?no=<? echo $no; ?>' ENCTYPE='multipart/form-data'>	
+                                <tr> 
+                                  <td height="30" align="center"> 
+                                    <input type=text name='title' maxlength=30 size=50 class=ad value="<? echo $title1; ?>"  onBlur="if(!this.value) this.value = this.defaultValue;" onFocus="if(this.value==this.defaultValue) this.value = '';" style='border-width:1pt; border-color:#949494; border-style:solid;' wrap='hard'>
+                                    <input type='button'  name='submit1' value=' 그 룹 수 정 '  style='border-width:1pt; border-color:#949494; border-style:solid;' onClick='checkput(this.form)' class=ad name=button1>
+                                  </td>
+                                </tr>
+							  </form>
+						<? } else { ?>
+								<form name='form' method='post' action='write_ok.php3' ENCTYPE='multipart/form-data'>	
+                                <tr> 
+                                  <td height="30" align="center"> 
+                                    <input type=text name='title' maxlength=30 size=50 class=ad value=" ☞ 등록하실 배너 그룹명을 입력하세요."  onBlur="if(!this.value) this.value = this.defaultValue;" onFocus="if(this.value==this.defaultValue) this.value = '';" style='border-width:1pt; border-color:#949494; border-style:solid;' wrap='hard'>
+                                    <input type='button'  name='submit1' value=' 그 룹 등 록 '  style='border-width:1pt; border-color:#949494; border-style:solid;' onClick='checkput(this.form)' class=ad name=button1>
+                                  </td>
+                                </tr>
+							  </form>
+						<? } ?>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td> 
+                              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td> 
+                                    <table border="0" width="670" cellspacing="0" cellpadding="0">
+                                      <tr> 
+                                        <td  height="4" bgcolor="#94B5CA"></td>
+                                      </tr>
+                                      <tr> 
+                                        <td height="30" bgcolor="#C3E2F6"> 
+                                          <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr> 
+                                              <td width="40" align="center" height="30"><b><font color="#000000">NO</font></b></td>
+                                              <td width="1" bgcolor="#94B5CA"></td>
+                                              <td align="center"><b>그 룹 이 름</b> 
+                                                (클릭하시면 그룹별 배너를 볼수 있습니다.) </td>
+                                              <td bgcolor="#94B5CA" width="1"></td>
+                                              <td width="100" align="center"><b>등록일</b></td>
+                                              <td bgcolor="#94B5CA" width="1"></td>
+                                              <td align="center" width="100"><b>수정 
+                                                / 삭제</b></td>
+                                            </tr>
+                                          </table>
+                                        </td>
+                                      </tr>
+                                      <tr> 
+                                        <td height="3" bgcolor="#B3C6D2"></td>
+                                      </tr>
+                                      <tr> 
+                                        <td height="1"></td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td align="center"> 
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+									<?
+									$db_table="main_coolsite_group";
+									$query="select no from $db_table ";
+									$total=$inst->ExecNumRows($query);
+
+									$pagecount='10'; 
+									$block='10'; 
+
+									$pages=$total/$pagecount;
+									$totalpage=ceil($pages);
+
+									if($page<=0){
+										$page=1;
+									}
+									$pg=$page;
+									$num=$total-(($page-1)*$pagecount);
+									$query_limit = ($pg-1)*$pagecount;
+
+
+									$query="select * from main_coolsite_group ORDER BY no asc limit $query_limit,$pagecount";
+
+									$result=$inst->Execute($query);
+
+									while($row=$inst->ExecFetchArray($result)){
+										$no=$row[no];
+										$title=$row[title];
+										$date1=$row[date1];
+										$day=explode(" ",$date1);
+										$title2=han_cut($title,40);
+										if (($num % 2) == 1) {$bgcolor = "#FFFFFF";}
+										else {$bgcolor = "#F4F4F4";} 
+									?>
+                                      <tr> 
+                                        <td bgcolor="<?=$bgcolor;?>" height="30" align="center" width="40"><?=$num;?></td>
+                                        <td bgcolor="<?=$bgcolor;?>" style="padding-left:5px; padding-right:5px"><a href='sub_list.htm?group_id=<?=$no?>'> 
+                                          <?=$title2?></a></td>
+                                        <td bgcolor="<?=$bgcolor;?>" align="center" width="100"><?=$day[0];?></td>
+                                        <td bgcolor="<?=$bgcolor;?>" align="center" width="100"> 
+                                          <table border="0" cellspacing="0" cellpadding="2">
+                                            <tr> 
+                                              <td><a href='./list.htm?no=<?=$no?>&mode=<?=modify?>&title1=<? echo $title; ?>'><img src="../../image/but02.gif" width="40" height="18" border="0"></a></td>
+                                              <td><a href='delete_ok.php3?no=<?=$no?>' OnClick="return confirm('[<?=$title2?>] 그룹을 삭제하실 경우 [<?=$title2?>] 그룹으로 등록된 배너가 삭제됩니다.')"><img src="../../image/but01.gif" width="40" height="18" border='0'></a></td>
+                                            </tr>
+                                          </table>
+                                        </td>
+                                      </tr>
+									<? 
+									$num--;
+									} ?>
+                                      <tr> 
+                                        <td height="2" colspan="4"></td>
+                                      </tr>
+                                      <tr bgcolor="#B3C6D2"> 
+                                        <td colspan="4" height="2"></td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td align="center">
+                        <table border="0" cellspacing="0" cellpadding="2">
+                          <tr> 
+                            <td>
+								<? getPagingString1($total, $pagecount, $block, $page, $db, $skin, $search, $mtitle, $mcontent, $mname) ?>							
+							</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

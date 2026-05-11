@@ -1,0 +1,67 @@
+<?php 
+ob_start(); 
+session_start(); 
+ 
+extract($HTTP_GET_VARS); 
+extract($HTTP_POST_VARS); 
+extract($HTTP_COOKIE_VARS); 
+ 
+include "../../config/dbconn.php3"; 
+include "../../config/function.php3"; 
+ 
+$inst->Connect(); 
+ 
+
+$mem_id = trim($_POST["auth_id"]);
+$mem_passwd = trim($_POST["auth_passwd"]);
+$mem_passwd = md5($auth_passwd);
+
+
+$query = "SELECT * FROM _members_ WHERE mem_id='{$mem_id}' AND mem_passwd='{$mem_passwd}';";
+$result = mysql_query($query);
+
+if($result) {
+	$numrows = mysql_num_rows($result);
+
+	$query = "UPDATE _members_ SET mem_latestdate=".mktime().", mem_ip_login='".$_SERVER["REMOTE_ADDR"]."', mem_loginnum=mem_loginnum+1, mem_loginfailed=0 WHERE mem_id='".$mem_id."';";
+	mysql_query($query) or Error(mysql_error());
+
+	if(!$numrows) { 
+		echo(" 
+			<script> 
+				window.alert('ID 와 PASSWORD 가 틀립니다. 다시 입력하세요.') 
+				history.go(-1) 
+			</script> 
+		"); 
+		exit; 
+	} else {
+		$rs = mysql_fetch_array($result);
+		$mem_level = $rs["mem_level"];
+		if($mem_level=="" || $mem_level>1) { 
+			echo(" 
+				<script> 
+					window.alert('ID 와 PASSWORD 가 틀립니다. 다시 입력하세요.') 
+					history.go(-1) 
+				</script> 
+			"); 
+			exit; 
+		}else {
+			$_SESSION["MemId"]		   = $rs["mem_id"];
+			$_SESSION["MemPasswd"]	   = $rs["mem_passwd"];
+			$_SESSION["MemLevel"]	   = $rs["mem_level"];
+			$_SESSION["MemName"]	   = $rs["mem_name"];
+			$_SESSION["MemLoginNum"]   = $rs["mem_loginnum"];
+			$_SESSION["MemLatestDate"]   = $rs["mem_latestdate"];
+			$_SESSION["Host"]      = $_SERVER["HTTP_HOST"];
+
+
+		}
+	}
+	mysql_free_result($result);
+}
+
+echo("<meta http-equiv='refresh' content='0;url=/wb_admin/index.htm'>"); //본래창에서 작동
+
+
+$inst->Disconnect(); 
+?>

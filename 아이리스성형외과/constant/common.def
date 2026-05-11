@@ -1,0 +1,45 @@
+<?
+	#자료실 데이타경로
+	DEFINE("BBS_DATA", getenv("DOCUMENT_ROOT")."/pds.data");
+
+	#배너이미지 데이타경로
+	DEFINE("BANNER_DATA", getenv("DOCUMENT_ROOT")."/banner.data");
+
+	#토론 데이타경로
+	DEFINE("dd_DATA", getenv("DOCUMENT_ROOT")."/dd.data");
+
+	#토론주제 이미지 데이타경로
+	DEFINE("topic_DATA", getenv("DOCUMENT_ROOT")."/topic.data");
+
+	#게시판 페이당 목록갯수
+	DEFINE("LIST_BY_PAGE", "10");
+	DEFINE("BLOCK", "10");
+
+	#메인페에지 코드
+	DEFINE("NOTICE_CODE", "NC1");
+
+	#메인페에지 코드
+	DEFINE("RELATION_NEWS", "NC3");
+
+	#게시판 기본코드
+	DEFINE("BBS", "BBS");
+
+	#자료실 기본코드
+	DEFINE("PDS", "PDS");
+
+	#게시판 생성시 기본색상
+	DEFINE("LIST_BORDER_COLOR", "#F5F5F5");
+	DEFINE("LIST_SELECT_COLOR", "#F5F5F5");
+	DEFINE("LIST_NUMBER_COLOR", "#F5F5F5");
+	DEFINE("LIST_TITLE_COLOR", "#F5F5F5");
+	DEFINE("LIST_NAME_COLOR", "#F5F5F5");
+	DEFINE("LIST_FILE_COLOR", "#F5F5F5");
+	DEFINE("LIST_DATE_COLOR", "#F5F5F5");
+	DEFINE("LIST_HIT_COLOR", "#F5F5F5");
+	DEFINE("LINK_COLOR", "black");
+	DEFINE("UNLINK_COLOR", "black");
+	DEFINE("VIEW_MAJOR_COLOR", "#F4F4F4");
+	DEFINE("VIEW_SUBMAJOR_COLOR", "#FFFFFF");
+
+
+?>

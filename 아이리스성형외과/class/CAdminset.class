@@ -1,0 +1,100 @@
+<?
+	class CAdminset
+	{
+		var $db;
+		
+		function CAdminset()
+		{
+			global $db;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+		}
+
+		function UserList($code)
+		{
+			if(!$code)
+				return false;
+
+			$query = "SELECT * FROM kuma_user WHERE part_code='".$code."'";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		function UserInfo($account)
+		{
+			if(!$account)
+				return false;
+
+			$query = "SELECT * FROM kuma_user WHERE id='".$account."'";
+			$result = $this->db->ExecuteDML($query);
+
+			$info = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$info[] = $recordSet;
+			}
+
+			return $info;
+		}
+		
+		function AdminSet($data)
+		{
+			if(!$data)
+				return false;
+
+			$query = "SELECT count(*) FROM admin";
+			$result = $this->db->ExecuteDML($query);
+
+			$total_count_admin = $this->db->getResult($result, 0, 0);
+
+			$this->db->freeResult($result);
+
+			if($total_count_admin > 0)
+			{
+				$query = "DELETE FROM admin";
+				$result = $this->db->ExecuteDML($query);
+			}
+
+			while(list($key, $value) =each($data))
+			{
+				$kf[] = $key;
+				$vf[] = "'".$value."'";
+			}
+
+			$k = implode("," ,$kf);
+			$v = implode("," ,$vf);
+
+			$query = "INSERT INTO admin (".$k.") VALUES (".$v.");";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function is_Admin($superuser)
+		{
+			if(!$superuser)
+				return false;
+
+			$query = "SELECT count(*) FROM admin WHERE superuser='".$superuser."'";
+			$result = $this->db->ExecuteDML($query);
+
+			$count = $this->db->getResult($result, 0, 0);
+
+			$this->db->freeResult($result);
+
+			return $count;
+		}
+	}	
+?>

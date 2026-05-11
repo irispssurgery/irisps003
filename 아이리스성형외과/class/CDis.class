@@ -1,0 +1,542 @@
+<?
+	class CDis
+	{
+		var $db;
+		var $save_data;
+		var $origin_data;
+		var $site;
+
+		function CDis()
+		{
+			global $db;
+			global $site;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+			$this->site=$site;
+		}
+
+		function Insert($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+
+			if(isset($data["dd_savedata"]) && isset($data["dd_origindata"]))
+			{
+				$this->save_data = time();
+				$this->origin_data = $data["dd_savedata"];
+
+				if(!$this->FileUpload(dd_DATA))
+					return false;
+
+				$data["dd_savedata"] = $this->save_data;
+			}
+			
+			$query = "SELECT max(dd_idx)+1 FROM detail_discuss WHERE dl_code='".$data["dl_code"]."'";
+			$result = $this->db->ExecuteDML($query);
+
+			$dd_id = $this->db->getResult($result, 0, 0);
+
+			$this->db->freeResult($result);
+
+			if(!$dd_id)
+				$dd_id=1;
+
+			while(list($key, $value) = each($data))
+			{
+				$kf[]= $key;
+				$vf[]="'".$value."'";
+			}	
+		
+			$k = implode(",", $kf);
+			$v = implode(",", $vf);
+
+			$query = "INSERT INTO detail_discuss (".$k.", dd_id, dd_hit) VALUES (".$v.", ".$dd_id.", 1);";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function View($code, $idx)
+		{
+			if(!isset($code) || !isset($idx))
+				return false;
+
+			$query = "SELECT * FROM detail_discuss WHERE dl_code='".$code."' AND dd_idx=".$idx;
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		function Reply($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+
+			if(isset($data["dd_savedata"]) && isset($data["dd_origindata"]))
+			{
+				$this->save_data = time();
+				$this->origin_data = $data["dd_savedata"];
+
+				if(!$this->FileUpload(dd_DATA))
+					return false;
+
+				$data["dd_savedata"] = $this->save_data;
+			}
+		
+			$query = "SELECT dd_id, dd_depth FROM detail_discuss WHERE dl_code='".$data["dl_code"]."' AND dd_idx=".$data["dd_idx"]."";
+			$result = $this->db->ExecuteDML($query);
+
+			$dd_id = $this->db->getResult($result, 0 ,0);
+			$dd_depth = $this->db->getResult($result, 0 ,1);
+
+			$depth_size = strlen($dd_depth)+1;
+
+			$query = "SELECT count(*) FROM detail_discuss WHERE dl_code='".$data["dl_code"]."' AND dd_id=".$dd_id." AND LENGTH(dd_depth)=".$depth_size."";
+			$result = $this->db->ExecuteDML($query);
+
+			$depth = $this->db->getResult($result, 0, 0);
+
+			if(count($depth) >= 27)
+				return false;
+	
+			$dd_depth = $dd_depth."".chr(ord($dd_depth)+$depth);
+			
+			while(list($key, $value) = each($data))
+			{	
+				if($key == "dd_idx")
+					continue;
+
+				$kf[] = $key;
+				$vf[] = "'".$value."'";
+			}
+
+			$k = implode(",", $kf);
+			$v = implode(",", $vf);
+
+			$query = "INSERT INTO detail_discuss (".$k.", dd_depth, dd_id, dd_hit) VALUES (".$v.", '".$dd_depth."', ".$dd_id.", 1);";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function Modify($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+
+			if($data["dd_savedata"] && $data["dd_origindata"])
+			{
+				$query = "SELECT dd_savedata FROM detail_discuss WHERE dd_idx=".$data["dd_idx"];
+				$result = $this->db->ExecuteDML($query);
+
+				$save_data = $this->db->getResult($result, 0, 0);
+
+				$this->db->freeResult($result);
+
+				if(file_exists(dd_DATA."/".$save_data))
+					unlink(dd_DATA."/".$save_data);
+
+				$this->save_data = time();
+				$this->origin_data = $data["dd_savedata"];
+
+				if(!$this->FileUpload(dd_DATA))
+					return false;
+
+				$data["dd_savedata"] = $this->save_data;
+			}
+
+			
+			while(list($key, $value) = each($data))
+			{
+				if($key == "dd_idx" || $key == "dl_code")
+					continue;
+
+				$field[] = "".$key." = '".$value."'";
+			}
+
+			$f = implode(",", $field);
+			
+			$query = "UPDATE detail_discuss SET ".$f." WHERE dl_code='".$data["dl_code"]."' AND dd_idx=".$data["dd_idx"];
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function getUserDiscuss($dl_code)
+		{
+			if(!$dl_code)
+				return false;
+
+			$query="SELECT count(*) FROM detail_discuss WHERE dl_code='".$dl_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function Modify1($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+
+			if($data["dd_save_data"] && $data["dd_origin_data"])
+			{
+				$query = "SELECT dd_save_data FROM dd WHERE ddcode_code='".$data["ddcode_code"]."' AND dd_idx=".$data["dd_idx"];
+				$result = $this->db->ExecuteDML($query);
+
+				$save_data = $this->db->getResult($result, 0, 0);
+
+				$this->db->freeResult($result);
+
+				if(isset($save_data))
+					unlink(dd_DATA."/".$save_data);
+
+				$this->save_data = time();
+				$this->origin_data = $data["dd_save_data"];
+
+				if(!$this->FileUpload(dd_DATA))
+					return false;
+
+				$data["dd_save_data"] = $this->save_data;
+			}
+
+			while(list($key, $value) = each($data))
+			{
+				if($key == "dd_idx" || $key == "ddcode_code")
+					continue;
+
+				$field[] = "".$key." = '".$value."'";
+			}
+
+			$f = implode(",", $field);
+			
+			$query = "UPDATE dd SET ".$f." WHERE ddcode_code='".$data["ddcode_code"]."' AND dd_idx=".$data["dd_idx"];
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function Deletedd($dl_code, $dd_idx)
+		{
+			if(!$dl_code || !$dd_idx)
+				return false;
+
+			$query = "SELECT dd_savedata FROM detail_discuss WHERE dd_idx=".$dd_idx;
+			$result = $this->db->ExecuteDML($query);
+
+			$dd_savedata = $this->db->getResult($result, 0, 0);
+
+			if($dd_savedata)
+				unlink(dd_DATA."/".$dd_savedata);
+
+			$query = "DELETE FROM detail_discuss WHERE dl_code='".$dl_code."' AND dd_idx=".$dd_idx."";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+		
+		function DeleteddAll($ddcode_code, $data)
+		{
+
+			if(!$data || !is_array($data))
+				return false;
+			
+			$idx = implode(",", $data);
+			$query = "SELECT dd_save_data FROM dd WHERE ddcode_code='".$ddcode_code."' AND dd_idx IN (".$idx.");";
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				if($recordSet["dd_save_data"])
+					unlink(dd_DATA."/".$recordSet["dd_save_data"]);
+			}
+
+			$query = "DELETE FROM dd WHERE ddcode_code='".$ddcode_code."' AND dd_idx IN (".$idx.");";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function Infodd($code)
+		{	
+			if(!isset($code))
+				return false;
+
+			$query = "SELECT * FROM dd_code WHERE ddcode_code='".$code."'";
+			$result = $this->db->ExecuteDML($query);
+
+			$info = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$info[]=$recordSet;
+			}		
+
+			return $info;
+		}
+		
+		function Infodd1($code)
+		{	
+			if(!isset($code))
+				return false;
+
+			$query = "SELECT * FROM dd_code WHERE ddcode_code='".$code."'";
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$info[]=$recordSet;
+			}		
+
+			return $info;
+		}	
+
+		function listddAll($code, $search_word, $search_key)
+		{
+			if(!isset($code))
+				return false;
+
+			if($search_word && $search_key)
+				$SQL = "AND ".$search_key." LIKE '%".$search_word."%'";
+
+			$query = "SELECT * FROM detail_discuss WHERE dl_code='".$code."' ".$SQL." ORDER BY dd_id DESC, dd_depth ASC";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		function listdd($code, $search_word, $search_key)
+		{
+			global $PAGE;
+
+			if(!isset($code))
+				return false;
+
+			if(!$PAGE)
+				$PAGE=1;
+
+			$this->PAGE=$PAGE;
+			$GET_RECORD=15;
+			$START_RECORD=($PAGE-1) * $GET_RECORD;
+
+			if($search_word && $search_key)
+				$SQL = "AND ".$search_key." LIKE '%".$search_word."%'";
+
+			$query = "SELECT * FROM detail_discuss WHERE dl_code='".$code."' ".$SQL." ORDER BY dd_id DESC, dd_depth ASC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;
+			}
+
+			return $list;
+		}
+
+		function TodayddList($ddcode_code)
+		{
+			if(!$ddcode_code)
+				return false;
+
+			$query = "SELECT * FROM dd WHERE ddcode_code='".$ddcode_code."' AND dd_signdate='".date("Y-m-d")."' ORDER BY dd_idx DESC LIMIT ".dd_COUNT_LIST."";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;	
+			}
+
+			return $list;
+		}
+
+		function TodayPdsList($ddcode_code)
+		{
+			if(!$ddcode_code)
+				return false;
+
+			$query = "SELECT * FROM dd WHERE ddcode_code='".$ddcode_code."' AND dd_signdate='".date("Y-m-d")."' ORDER BY dd_idx DESC LIMIT ".PDS_COUNT_LIST."";
+			$result = $this->db->ExecuteDML($query);
+
+			$list = array();
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[] = $recordSet;	
+			}
+
+			return $list;
+		}
+
+		function getTotalCount($code, $search_word, $search_key)
+		{
+			if(!isset($code))
+				return false;
+
+			if($search_word && $search_key)
+				$SQL = "AND ".$search_key." LIKE '%".$search_word."%'";
+
+			$query = "SELECT count(*) FROM detail_discuss WHERE dl_code='".$code."' ".$SQL."";
+			$result = $this->db->ExecuteDML($query);
+
+			$total_count = $this->db->getResult($result, 0, 0);
+
+			return $total_count;
+		}
+
+		function IncreaseHit($dl_code, $dd_idx)
+		{
+			if(!isset($dl_code) || !isset($dd_idx))
+				return false;
+
+			$query = "UPDATE detail_discuss SET dd_hit = dd_hit + 1 WHERE dl_code='".$dl_code."' AND dd_idx=".$dd_idx;
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function getID($ddcode_code, $dd_idx)
+		{
+			if(!isset($ddcode_code) || !isset($dd_idx))
+				return false;
+
+			$query = "SELECT dd_userid FROM dd WHERE ddcode_code='".$ddcode_code."' AND dd_idx=".$dd_idx;
+			$result = $this->db->ExecuteDML($query);
+
+			$id = $this->db->getResult($result, 0, 0);
+
+			return $id;
+		}
+
+		function FileUpload($save_path)
+		{
+			if(!$save_path)
+				return false;
+
+			if(copy($this->origin_data, $save_path."/".$this->save_data))
+			{
+				unlink($this->origin_data);
+				return true;
+			}
+			else
+			{
+				unlink($this->origin_data);
+				return false;
+			}
+		}
+
+		function getPasswd($dd_idx)
+		{
+			if(!$dd_idx)
+				return false;
+
+			$query = "SELECT dd_passwd FROM dd WHERE dd_idx = ".$dd_idx;
+			$result = $this->db->ExecuteDML($query);
+
+			$dd_passwd = $this->db->getResult($result, 0, 0);
+
+			$this->db->freeResult($result);
+
+			return $dd_passwd;
+		}
+
+		function ddDelete($ddcode_code, $dd_idx, $is_file)
+		{
+			if(!$ddcode_code || !$dd_idx)
+				return false;
+
+			if($is_file == "Y")
+			{
+				$query = "SELECT dd_save_data FROM dd WHERE ddcode_code='".$ddcode_code."' AND dd_idx=".$dd_idx;
+				$result = $this->db->ExecuteDML($query);
+
+				$dd_save_data = $this->db->getResult($result, 0, 0);
+
+				if($dd_save_data)
+					unlink(dd_DATA."/".$dd_save_data);
+			}
+			
+			$query = "DELETE FROM dd WHERE ddcode_code='".$ddcode_code."' AND dd_idx=".$dd_idx."";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+
+		}
+
+		function getWriteName($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="SELECT dd_user FROM detail_discuss WHERE dd_idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			$dd_name=$this->db->getResult($result, 0, 0);
+
+			return $dd_name;
+		}
+
+		function getNoticedd($code)
+		{
+			if(!$code)
+				return false;
+
+			$query="SELECT * FROM dd WHERE ddcode_code='".$code."' AND is_notice='Y' ORDER BY dd_idx DESC LIMIT 3";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getddByCount($code, $site_code, $count)
+		{
+			if(!$code || !$site_code || !$count)
+				return false;
+
+			$query="SELECT * FROM dd WHERE ddcode_code='".$code."' AND site_code='".$site_code."' AND is_notice='N' ORDER BY dd_idx DESC LIMIT ".$count."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getSiteNameByCode($site_code)
+		{
+			$site_name=$this->site->getSiteName($site_code);
+
+			return $site_name;
+		}
+
+
+		function _Cdd($inst)
+		{
+			$this->db->_CDatabase();
+			unset($inst);
+		}
+	}
+?>

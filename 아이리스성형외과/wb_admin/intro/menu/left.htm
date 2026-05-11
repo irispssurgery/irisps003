@@ -1,0 +1,59 @@
+<?
+
+$table = 'km_vod_menu';
+
+//$sum = sql_one_one($table,'sum(file_size)',"where user_id='$_SESSION[cookie_id]'");
+?>
+<html>
+<head>
+<link rel="StyleSheet" href="dtree.css" type="text/css"/>
+<script type="text/javascript" src="dtree.js"></script>
+<STYLE type=text/css>BODY {
+        OVERFLOW-X: hidden; OVERFLOW: scroll
+}
+body
+{scrollbar-face-color:#ffffff;scrollbar-shadow-color:#dddddd;
+scrollbar-highlight-color:#FFffff; scrollbar-3dlight-color:#dddddd;
+scrollbar-darkshadow-color:#FFffff; scrollbar-track-color: #ffffff;
+scrollbar-arrow-color:#000000;}
+td{font-size:12px}
+</STYLE>
+<script>
+function showmenu(mouse)
+{
+ return false;
+}
+document.onmousedown = showmenu; 
+document.oncontextmenu = showmenu;
+</script>
+</head>
+<body leftmargin=0 topmargin=0> 
+<form name='f_value' style='margin:0px' style='margin:0px'>
+<input type='hidden' name='seq' value=''>
+<input type='hidden' name='depth' value=''>
+<input type='hidden' name='flag' value=''>
+<input type='hidden' name='mouse_value' value=''>
+</form>
+<div class="dtree" style="overflow-x:auto;overflow-y:auto;width:150px;height:360px">
+	<p><a href="javascript: d.openAll();">전체 열기</a> | <a href="javascript: d.closeAll();">전체 닫기</a></p>
+	<script type="text/javascript">
+		<!--
+		d = new dTree('d');
+		d.add(0,-1,'VOD 전체','vod.htm?seq=0&depth=1');
+		<?
+		$query="select seq,reply,depth,vod_menu from $table where flag='D' order by seq ASC, sort ASC, depth ASC";
+		$result=$inst->Execute($query);
+		$j=1;
+
+		while($row=$inst->ExecFetchArray($result)){
+		?>
+		d.add('<?=$row[seq]?>','<?=$row[reply]?>','<?=$row[vod_menu]?>','vod.htm?seq=<?=$row[seq]?>&depth=<?=$row[depth]+1?>','aa.jpg');
+		<?
+		$j++;
+		}?>
+		document.write(d);
+		//-->
+	</script>
+</div>
+</body>
+</html>

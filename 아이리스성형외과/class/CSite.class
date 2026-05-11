@@ -1,0 +1,117 @@
+<?
+	class CSite
+	{
+		var $db;
+
+		function CSite()
+		{
+			global $db;
+				
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+		}
+		
+		function InsertSite($data)
+		{
+			if(!$data)
+				return false;
+
+			while(list($key, $value) =each($data))
+			{
+				$cols[]=$key;
+				$rows[]="'".$value."'";
+			}
+
+			$column=implode(",", $cols);
+			$tuple=implode(",", $rows);
+
+			$query="INSERT INTO site_kind (".$column.", site_signdate) VALUES (".$tuple.", current_date);";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function listSiteAll()
+		{
+			$query="SELECT * FROM site_kind ORDER BY site_idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function delSite($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="DELETE FROM site_kind WHERE site_idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function modifySite($data)
+		{
+			if(!$data)
+				return false;
+
+			foreach($data as $key => $value)
+			{
+				if($key=="site_idx")
+					continue;
+
+				$column[]="".$key."='".$value."'";
+			}
+
+			$tuple=implode(",", $column);
+
+			$query="UPDATE site_kind SET ".$tuple." WHERE site_idx=".$data["site_idx"]."";
+			$result=$this->db->ExecuteDML($query);
+
+			if(!$result)
+				return false;
+			else
+				return true;
+		}
+
+		function getSite($idx)
+		{
+			if(!$idx)
+				return false;
+
+			$query="SELECT * FROM site_kind WHERE site_idx=".$idx."";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getSiteName($site_code)
+		{
+			if(!$site_code)
+				return false;
+
+			$query="SELECT site_name FROM site_kind WHERE site_code='".$site_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+	}
+?>

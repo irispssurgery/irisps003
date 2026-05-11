@@ -1,0 +1,82 @@
+<? 
+
+	if(!$mode)
+
+		include "./result_bbs_view.php";
+
+	else
+
+		include "./admin/bbs/result_bbs_view.php";
+
+?>
+
+<html>
+
+<head>
+
+<title>Untitled Document</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+
+<link href="./watercorea.css" rel="stylesheet" type="text/css">
+
+<Script language="javascript">
+
+
+
+function pwdInput(idx, is_kinds, is_uploaded_file, bbscode_code)
+
+{
+
+	window.open("/bbs/form_bbs_passwd.html?idx="+idx+"&mode="+is_kinds+"&is_uploaded_file="+is_uploaded_file+"&bbscode_code="+bbscode_code,"","width=370, height=130");
+
+}
+
+
+
+</Script>
+
+</head>
+
+
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="eeeeee">
+
+<form name="form1" method="post" action="" enctype="multipart/form-data">
+
+<center>
+
+    <table width="580" border="0" bordercolor="<?echo $list_border_color;?>" cellpadding="0" cellspacing="0" bordercolorlight='silver' bordercolordark='white'>
+
+    <?echo nl2br(stripslashes($board_write));?>
+
+    <tr> 
+
+      <td colspan="2" align="center">
+
+	  <input type="hidden" name="bbscode_code" value="<?echo $bbscode_code;?>">
+
+	  <input type="hidden" name="is_uploaded_file" value="<?echo $is_uploaded_file;?>">
+
+	  <input type="hidden" name="bbs_name" value="<?echo $name;?>">
+
+	  <input type="hidden" name="bbs_userid" value="<?echo $user;?>">
+
+	  <br>
+
+		<?echo $button;?>  
+
+	  </td>
+
+    </tr>
+
+  </table>
+
+</center>
+
+</form>
+
+</body>
+
+</html>
+

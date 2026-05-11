@@ -1,0 +1,160 @@
+<?
+ob_start();
+session_start();
+session_cache_limiter('private');
+
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+extract($HTTP_SESSION_VARS);
+extract($HTTP_COOKIE_VARS);
+
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+include "../../auth_admin.php3";
+
+?>
+<html>
+<head>
+<title><?=$head_title;?></title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+</head>
+
+<script>
+// 화면 리사이즈
+function reSize() {
+  var myIframe = document.getElementById('papermain');
+	if (myIframe) {
+		if (myIframe.contentDocument && myIframe.contentDocument.body.offsetHeight) {
+			myIframe.height = myIframe.contentDocument.body.offsetHeight +10;    
+		} else if (myIframe.Document && myIframe.Document.body.scrollHeight) {
+			myIframe.height = myIframe.Document.body.scrollHeight;
+		} else {
+		window.setTimeout("reSize()",1000);
+	}
+  }
+}
+</script>
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 홈페이지관리 &gt; 게시판관리 &gt; 게시판설정</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" height="400" valign="top">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+<!-- left menu -------------------------------------------------------------------------------------->
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                             <?
+								include "left.htm";
+							 ?>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+<!-- left menu -------------------------------------------------------------------------------------->
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:10px;padding-right:10px">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td><img src="image/title01.gif" width="300" height="30"></td>
+                    </tr>
+                    <tr> 
+                      <td bgcolor="#D4D4D4" height="1"></td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>				
+					<tr> 
+                      <td> 
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr valign="top"> 
+                            <td width='100%' height='550'>
+							<? if ($mode=="List") { ?>
+								<IFRAME name='papermain' id='papermain' marginWidth="0" marginHeight="0" src="../../../fsboard/lib/admin_setup.php?mode=List&mem_id=<?=$MemId?>&MemLevel=1&MODE_ADMIN=admin" frameBorder="0" onload="reSize();" width="100%" height="100%" cellpadding="0" ALLOWTRANSPARENCY=true  scrolling=no></IFRAME>
+							<? }elseif($mode=="CreateBoard"){ ?> 
+								<IFRAME name='papermain' id='papermain' marginWidth="0" marginHeight="0" src="../../../fsboard/lib/admin_setup.php?mode=CreateBoard" frameBorder="0" onload="reSize();" width="100%" height="100%"  cellpadding="0" ALLOWTRANSPARENCY=true  scrolling=no></IFRAME>
+							<? }elseif($mode=="admin"){ ?> 
+								<IFRAME name='papermain' id='papermain' marginWidth="0" marginHeight="0" src="../../../fsboard/index.php?id=<?=$id?>&mode=admin" frameBorder="0" onload="reSize();" width="100%" height="100%"  cellpadding="0" ALLOWTRANSPARENCY=true  scrolling=no></IFRAME>
+							<? } ?>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                     <tr> 
+                      <td>&nbsp; </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

@@ -1,0 +1,670 @@
+<?
+ob_start();
+session_start();
+session_cache_limiter('private');
+
+extract($HTTP_GET_VARS);
+extract($HTTP_POST_VARS);
+extract($HTTP_SESSION_VARS);
+extract($HTTP_COOKIE_VARS);
+
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+include "../../../config/utilpage.htm"; 
+include "../../auth_admin.php3";
+
+$inst->Connect();
+include "../member/member_config.php";
+?>
+<html>
+<head>
+<title><?=$head_title;?></title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+<script language="JavaScript">
+<!--
+	function getfocus(){ 
+      form.table_name.focus(); 
+    } 
+	function content_check(form) {
+		if (form.passwd.value == '') {
+			alert('비밀번호를 입력하세요 게시판 관리시 필요합니다.');
+			form.passwd.focus();
+			return false;
+		}
+		else if (form.boardname.value == '') {
+			alert('게시판명을 입력하세요');
+			form.boardname.focus();
+			return false;
+		}
+	}
+	
+	function xedit()
+	{	
+		
+		if (form.use_xedit[1].checked==true) 
+		{
+			form.use_html[0].disabled=false;
+			form.use_html[1].disabled=false;
+		} 
+		else 
+		{
+			form.use_html[0].disabled=true;
+			form.use_html[1].disabled=true;
+		}
+
+	}
+//-->
+</script>
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 홈페이지관리 &gt; 게시판관리 &gt; 게시판설정</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" height="400" valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+<!-- left menu -------------------------------------------------------------------------------------->
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                             <?
+								include "left.htm";
+							 ?>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+<!-- left menu -------------------------------------------------------------------------------------->
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="720" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td><img src="image/bar04.gif" width="720" height="40"></td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+					<?
+					$table="main_board_cfg";
+					$query="select * from $table where db='$db'";
+					$row=$inst->ExecFetch($query);
+					if ($row)
+					{
+						$db=$row[db]; 
+						$board_type=$row[board_type]; 
+						$admin_user_id=$row[admin_id]; 
+						$passwd=$row[passwd]; 
+						$boardname=$row[boardname]; 
+						$cool_use=$row[cool_use]; 
+						$cool_no=$row[cool_no]; 
+						$new_use=$row[new_use]; 
+						$new_time=$row[new_time]; 
+						$title_img=$row[title_img]; 
+						$title_length=$row[title_length]; 
+						$title_color=$row[title_color]; 
+						$content_color=$row[content_color]; 
+						$board_length=$row[board_length]; 
+						$pagecount=$row[pagecount]; 
+						$block=$row[block]; 
+						$use_html=$row[use_html];
+						$use_secret=$row[use_secret];
+						$use_vod=$row[use_vod];
+						$use_nick=$row[use_nick];				
+						$use_phone=$row[use_phone];				
+						$list_reply=$row[list_reply]; 
+						$list_access=$row[list_access]; 
+						$list_view=$row[list_view]; 
+						$list_write=$row[list_write];
+						$file_download=$row[file_download];
+						$file_attach=$row[file_attach];
+						$mail_notice=$row[mail_notice]; 
+						$mail_admin=$row[mail_admin]; 
+						$menu=$row[skin];
+						$admit=$row[admit]; 
+						$ip_admit=$row[ip_admit]; 
+						$memo_admit=$row[memo_admit];
+						$skin=$row[skin];
+						$color1=$row[color1];
+						$color2=$row[color2];
+						$color3=$row[color3];
+						$category=$row[category];
+						$cautionWord = $row[cautionWord];
+						$cautionip   = $row[cautionip];
+					}
+					?>
+
+                    <tr> 
+                      <td>
+						<form name='form' method='post' action='modify_ok.php3' enctype='multipart/form-data' onSubmit='return content_check(this)'>
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+					      <input type='hidden' name='db_table' value='<?=$db?>'>
+                          <tr> 
+                            <td> 
+                              <table border="0" width="720" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td  height="4" bgcolor="#94B5CA"></td>
+                                </tr>
+                                <tr> 
+                                  <td height="30" bgcolor="#C3E2F6" align="center"> 
+                                    <font color=""><b>게시판 환경설정 </b></font></td>
+                                </tr>
+                                <tr> 
+                                  <td height="3" bgcolor="#B3C6D2"></td>
+                                </tr>
+                                <tr> 
+                                  <td height="1"></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td> 
+                              <table border="0" width="720" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td width="110" align="center"  bgcolor="F8F8F8" height="30" ><b>관리자 
+                                    설정 </b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8" style="padding-left:5px" width="230"> 
+                                    <select name='admin_user_id' class='select_type' style='width:150'>
+									<?
+										$query="select tb.code code from grouptb tb,member_conf mc where tb.code=3";
+
+										$row=$inst->ExecFetch($query);
+										if ($row)
+										{
+											$grade_code=$row[code];
+										}else{
+											$grade_code=1;
+										}
+
+									$query="select id,name from member where grade <= $grade_code ORDER BY no desc";
+
+										$result=$inst->Execute($query);
+										while($row=$inst->ExecFetchArray($result)){
+											$id        = $row[id];
+											$name    = $row[name];
+											if ($id==$admin_user_id) $select='selected';
+									?>							 
+																<option value='<?=$id;?>' <?=$select?>><?=$id;?> - <?=$name;?></option>
+									<?
+											$select='';
+										}
+									?>
+                                    </select>
+                                  </td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="F8F8F8" width="110"><b>게시판 종류</b></td>
+									<?
+									$s_board    = Convert_radio_select("select",$board_type,"board");
+									$s_gallery  = Convert_radio_select("select",$board_type,"gallery");
+									$s_schedule = Convert_radio_select("select",$board_type,"schedule");
+									$s_vod      = Convert_radio_select("select",$board_type,"vod");
+									$s_disscuss = Convert_radio_select("select",$board_type,"disscuss");
+									$s_request  = Convert_radio_select("select",$board_type,"request");
+									?>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8" style="padding-left:5px"> 
+                                    <select name='board_type' class='select_type'>
+                                      <option value='board' <?=$s_board?>>게시판</option>
+                                      <option value='gallery' <?=$s_gallery?>>갤러리</option>
+                                      <option value='schedule' <?=$s_schedule?>>행사일정</option>
+                                      <option value='vod' <?=$s_vod?>>VOD</option>
+                                      <option value='disscuss' <?=$s_disscuss?>>토론방</option>
+                                      <option value='request' <?=$s_request?>>요청처리</option>
+                                    </select>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="image/table_line_b.gif"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="30"><b>Db_Name </b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px"><?=$db?></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center"><b>Passwd</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px"> 
+                                    <input type='text' name='passwd' value='<?=$passwd?>' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="image/table_line_b.gif"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>타이틀이미지</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+                                    <input type='text' name='title_img' value='<?=$title_img?>' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="F8F8F8"><b>게시판 이름</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8" style="padding-left:5px"> 
+                                    <input type='text' name='boardname' value='<?=$boardname?>' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                </tr>
+								<?
+								//COOL 사용여부
+								if ($cool_use=='yes'){
+									$yc_checked='checked';
+									$nc_checked='';
+								}else{
+									$yc_checked='';
+									$nc_checked='checked';
+								}
+
+								//NEW 사용여부
+								if ($new_use=='yes'){
+									$yn_checked='checked';
+									$nn_checked='';
+								}else{
+									$yn_checked='';
+									$nn_checked='checked';
+								}
+
+								//HTML 사용유무
+
+								$arr_use_html  = Convert_radio($use_html,"yes","no");
+								$arr_category  = Convert_radio($category,"yes","no");
+								?>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="30"><b>COOL사용</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px" > 
+                                    <input type='radio' name='cool_use' value='yes' <?=$yc_checked;?>>
+                                    YES &nbsp; 
+                                    <input type='radio' name='cool_use' value='no' <?=$nc_checked;?>>
+                                    NO </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center"><b>COOL표시 </b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px"> 
+                                    <input type='text' name='cool_no' value='<?=$cool_no;?>' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>New 
+                                    사용</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+                                    <input type='radio' name='new_use' value='yes' <?=$yn_checked;?>>
+                                    YES &nbsp; 
+                                    <input type='radio' name='new_use' value='no' <?=$nn_checked;?>>
+                                    NO </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="F8F8F8"><b>New 기간[日] 
+                                    </b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8" style="padding-left:5px"> 
+                                    <input type='text' name='new_time' value='<?=$new_time;?>' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>카테고리 사용</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+						<input type='radio' name='category' value='yes' <?=$arr_category[0];?>>YES &nbsp;
+						<input type='radio' name='category' value='no' <?=$arr_category[1];?>>NO &nbsp;						
+									</td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="F8F8F8"><b>HTML 사용유무</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8" style="padding-left:5px"> 
+						<input type='radio' name='use_html' value='yes' <?=$arr_use_html[0]?>>YES &nbsp; 
+                        <input type='radio' name='use_html' value='no' <?=$arr_use_html[1]?>>NO
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>내용갯수</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+                                    <input type='text' name='pagecount' value='<?=$pagecount;?>' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center" bgcolor="F8F8F8"><b>블록갯수</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8" style="padding-left:5px"> 
+                                    <input type='text' name='block' value='<?=$block;?>' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="30"><b>게시판 길이</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+
+                                  <td style="padding-left:5px" > 
+                                    <input type='text' name='board_length' value='<?=$board_length;?>' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center"><b>제목 길이</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px"> 
+                                    <input type='text' name='title_length' value='<?=$title_length;?>' size='20' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center" height="30"><b>리스트보기</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan='5'> 
+								  <? Convert_Grouptb($inst,$list_access,"list_access[]"); ?>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center" height="30"><b>내용보기</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan='5'> 
+								   <? Convert_Grouptb($inst,$list_view,"list_view[]"); ?>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center" height="30"><b>글쓰기</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan='5'> 
+								   <? Convert_Grouptb($inst,$list_write,"list_write[]"); ?>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center" height="30"><b>답변하기</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan='5'> 
+								   <? Convert_Grouptb($inst,$list_reply,"list_reply[]"); ?>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center" height="30"><b>파일첨부</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan='5'> 
+
+								   <? Convert_Grouptb($inst,$file_attach,"file_attach[]"); ?>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+
+                                <tr> 
+                                  <td align="center" height="30"><b>다운로드</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan='5'> 
+								   <? Convert_Grouptb($inst,$file_download,"file_download[]"); ?>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+								<?
+								//IP 공개여부
+								if ($ip_admit=='yes'){
+									$yp_checked='checked';
+									$np_checked='';
+								}else{
+									$yp_checked='';
+									$np_checked='checked';
+								}
+
+								//메모글 사용여부
+								if ($memo_admit=='yes'){
+									$ym_checked='checked';
+									$nm_checked='';
+								}else{
+									$ym_checked='';
+									$nm_checked='checked';
+								}
+
+								//공개/비공개 사용여부
+								if ($use_secret=='yes'){
+									$ys_checked='checked';
+									$ns_checked='';
+								}else{
+									$ys_checked='';
+									$ns_checked='checked';
+								}
+
+								//VOD_Link 사용여부
+								if ($use_vod=='yes'){
+									$yv_checked='checked';
+									$nv_checked='';
+								}else{
+									$yv_checked='';
+									$nv_checked='checked';
+								}
+
+								//닉 네임 사용여부
+								if ($use_nick=='yes'){
+									$yn_checked='checked';
+									$nn_checked='';
+								}else{
+									$yn_checked='';
+									$nn_checked='checked';
+								}
+
+								//첨부파일 사용여부
+								if ($use_file=='yes'){
+									$yn_checked='checked';
+									$nn_checked='';
+								}else{
+									$yf_checked='';
+									$nf_checked='checked';
+								}
+
+								//관리자 메일 사용여부
+								if ($mail_notice=='yes'){
+									$ya_checked='checked';
+									$na_checked='';
+								}else{
+									$ya_checked='';
+									$na_checked='checked';
+								}
+
+								 
+								$arr_use_phone = Convert_radio($use_phone,"yes","no");
+								?>
+
+                                <tr> 
+                                  <td align="center" height="30"><b>IP 공개 여부</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px" > 
+                                    <input type='radio' name='ip_admit' value='yes' <?=$yp_checked;?>>공개 &nbsp; 
+                                    <input type='radio' name='ip_admit' value='no' <?=$np_checked;?>>공개하지 않음 </td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center"><b>덧글 허용여부</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px"> 
+                                    <input type='radio' name='memo_admit' value='yes' <?=$ym_checked;?>>허용 &nbsp; 
+                                    <input type='radio' name='memo_admit' value='no' <?=$nm_checked;?>>허용하지 않음</td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>공개/비공개</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+                                    <input type='radio' name='use_secret' value='yes' <?=$ys_checked;?>>사용 &nbsp; 
+                                    <input type='radio' name='use_secret' value='no' <?=$ns_checked;?>>사용하지 않음</td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>동영상 Link</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+                                    <input type='radio' name='use_vod' value='yes' <?=$yv_checked;?>>사용 &nbsp; 
+                                    <input type='radio' name='use_vod' value='no' <?=$nv_checked;?>>사용하지 않음</td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+								<tr> 
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>닉 네임</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px"> 
+                                    <input type='radio' name='use_nick' value='yes' <?=$yn_checked;?>>사용 &nbsp; 
+                                    <input type='radio' name='use_nick' value='no' <?=$nn_checked;?>>사용하지 않음</td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td align="center"  bgcolor="F8F8F8" height="30"><b>연락처</b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td bgcolor="F8F8F8"  style="padding-left:5px">
+									<input type='radio' name='use_phone' value='yes' <?=$arr_use_phone[0]?>>사용 &nbsp; 
+									<input type='radio' name='use_phone' value='no' <?=$arr_use_phone[1];?>>사용하지 않음
+									</td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="30"><b>관리자 메일</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan="5"> 
+                                    <input type='text' name='mail_admin' value='<?=$mail_admin?>' size='44' style='background-color:white; border-width:1; border-color:#dfdfdf; border-style:solid;'>
+                                    <input type='radio' name='mail_notice' value='yes' <?=$ya_checked;?>>Yes &nbsp; 
+                                    <input type='radio' name='mail_notice' value='no' <?=$na_checked;?>>No </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="30"><b>본문필터링</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan="5">
+								<textarea name="cautionWord" style="word-break:break-all" cols='72' rows='5'><?=$cautionWord?></textarea>
+								  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" background="image/table_line_b.gif" height="2"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="30"><b>차단IP</b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td  style="padding-left:5px" colspan="5">
+								<textarea name="cautionip" style="word-break:break-all" cols='72' rows='5'><?=$cautionip?></textarea>
+								  </td>
+                                </tr>
+
+                                <tr bgcolor="#B3C6D2"> 
+                                  <td colspan="7" height="2"></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp; </td>
+                    </tr>
+                    <tr> 
+                      <td align="center"><input type='image' src="image/but07.gif" width="80" height="30" border="0"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+				  </form>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

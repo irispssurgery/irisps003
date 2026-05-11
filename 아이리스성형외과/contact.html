@@ -1,0 +1,202 @@
+<?
+include "top.html";
+?>
+<link href="css/iris.css" rel="stylesheet" type="text/css">
+<script language="Javascript" src="java/form_member_write.js"></script>
+<!-- 메인start -->
+<script language="JavaScript">
+<!--
+function MM_openBrWindow(theURL,winName,features) { //v2.0
+  window.open(theURL,winName,features);
+}
+
+function checkForm()
+{
+	var form=document.contact;
+
+	if(!form.title.value)
+	{
+		alert("간략한 제목을 입력하여 주십시요.");
+		form.title.focus();
+
+		return false;
+	}
+
+	if(!form.user_name.value)
+	{
+		alert("이름을 입력하여 주십시요.");
+		form.user_name.focus();
+		return false;
+	}
+
+	if(!form.user_email.value)
+	{
+		alert("이메일을 입력하여 주십시요.");
+		form.user_email.focus();
+
+		return false;
+	}
+
+	if(!form.user_tel.value)
+	{
+		alert("연락처를 입력하여 주십시요.");
+		form.user_tel.focus();
+		return false;
+	}
+
+	if(!form.content.value)
+	{
+		alert("간략한 내용을 입력하여 주십시요.");
+		form.content.focus();
+
+		return false;
+	}
+}
+
+//-->
+</script>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td height="688" bgcolor="DCCB94" valign="top" width="864"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="26"><img src="images/x.gif" width="26" height="5"></td>
+          <td width="1" bgcolor="#4F4233"><img src="images/x.gif" width="1" height="5"></td>
+          <td bgcolor="#5F543A" height="105" valign="top"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td bgcolor="#000000" width="187" height="105"><img src="images/x.gif" width="187" height="135"></td>
+              </tr>
+              <tr> 
+                <td width="187" valign="top" background="images/left_bg.gif" bgcolor="#5F543A" height="400"> 
+                  <?
+include "left_menu.html";
+?>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td width="1" bgcolor="#4F4233"><img src="images/x.gif" width="1" height="5"></td>
+          <td height="688" valign="top"> 
+            <?
+include "sub_baner_02.html";
+?>
+            <table width="647" border="0" cellspacing="0" cellpadding="0" align="center">
+              <tr> 
+                <td colspan="2" height="7"></td>
+              </tr>
+            </table>
+            <table width="634" border="0" cellspacing="1" cellpadding="5" align="center" bgcolor="EEEEEE">
+              <tr> 
+                <td bgcolor="DCCB94" > 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td bgcolor="EEEEEE"> 
+                        <table width="610" border="0" cellspacing="0" cellpadding="0" align="center">
+                          <tr> 
+                            <td height="19" colspan="2"></td>
+                          </tr>
+                          <tr> 
+                            <td colspan="2"><img src="images/iris_title_06.gif" width="610" height="41"></td>
+                          </tr>
+                          <tr> 
+                            <td height="19" colspan="2"></td>
+                          </tr>
+                        </table>
+                        <table width="575" border="0" cellspacing="0" cellpadding="0" align="center">
+                          <tr> 
+                            <td align="center" bgcolor="D2CCAF" height="48"><img src="images/box_title_02.gif" width="575" height="48"></td>
+                          </tr>
+                          <tr> 
+                            <td align="center" bgcolor="D2CCAF" height="200" valign="top"> 
+                              <form name="contact" method="post" action="./proc_contact.php" onsubmit="return checkForm();">
+                                <table width="500" border="0" cellspacing="0" cellpadding="5">
+                                  <tr> 
+                                    <td width="90"><img src="images/us_text_01.gif" width="90" height="18"></td>
+                                    <td> 
+                                      <input id=user_id style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 300px; HEIGHT: 18px" name="title">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/us_text_02.gif" width="90" height="18"></td>
+                                    <td> 
+                                      <input id=user_id style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" name="user_name">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/us_text_03.gif" width="90" height="18"></td>
+                                    <td> 
+                                      <input id=user_id style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" name="user_email">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/us_text_04.gif" width="90" height="18"></td>
+                                    <td> 
+                                      <input id=user_id style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 148px; HEIGHT: 18px" name="user_tel">
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/us_text_05.gif" width="90" height="18"></td>
+                                    <td> 
+                                      <input type="radio" name="doctor" value="sikbmw95@chollian.net" checked>
+                                      <b>서일경 원장</b> 
+                                      <input type="radio" name="doctor" value="plastica@hanmail.net">
+                                      <b>경희상 원장</b></td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                  <tr> 
+                                    <td><img src="images/us_text_06.gif" width="90" height="18"></td>
+                                    <td> 
+                                      <textarea id="user_id" style="BORDER-RIGHT: #A8A292 1px solid; BORDER-TOP: #A8A292 1px solid; BORDER-LEFT: #A8A292 1px solid; BORDER-BOTTOM: #A8A292 1px solid; FONT-SIZE: 10pt; width: 300px; HEIGHT: 150px" name="content"></textarea>
+                                    </td>
+                                  </tr>
+                                  <tr bgcolor="9D926E"> 
+                                    <td colspan="2" height="1"></td>
+                                  </tr>
+                                 </table>
+                              <br>
+                              <input type="image" src="images/join_btn2.gif" width="106" height="23"> 
+                              <a href="javascript:document.forms[0].reset();"><img src="images/join_btn3.gif" width="106" height="23" border="0"></a>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td bgcolor="D2CCAF"><img src="images/box_down.gif" width="575" height="111"></td>
+                          </tr>
+                        </table></form>
+                        <br>
+                        <br>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+    <td background="images/main_right_bg.gif" valign="top">
+<?
+include "right_baner.html";
+?>	 
+      </td>
+  </tr>
+</table>
+<?
+include "down.html";
+?>
+<!-- 메인end -->

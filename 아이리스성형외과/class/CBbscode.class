@@ -1,0 +1,245 @@
+<?
+	class CBbscode
+	{
+		var $db;
+	
+		function CBbscode()
+		{	
+			global $db;
+
+			if(!$db || !is_object($db))
+				return false;
+
+			$this->db=$db;
+		}	
+
+		function Insert($data)
+		{
+			if(!$data || !is_array($data))
+				return false;
+
+			$query = "SELECT max(bbscode_idx) FROM bbs_code";
+			$result = $this->db->ExecuteDML($query);
+
+			$idx = $this->db->getResult($result, 0, 0);
+			
+			if(!$idx)
+			{
+				$idx=1;
+			}
+			else
+			{
+				$idx++;
+			}
+
+			if($data["is_uploaded_file"] == "Y")
+				$DEFAULT_CODE=PDS;
+			else
+				$DEFAULT_CODE=BBS;
+
+			$bbscode_code = $DEFAULT_CODE."".$idx;
+
+		
+			while(list($key, $value) = each($data))
+			{
+				$kf[] = $key;
+				$vf[] = "'".$value."'";
+			}	
+
+			$k = implode(",", $kf);
+			$v = implode(",", $vf);
+
+			$query = "INSERT INTO bbs_code (".$k.", bbscode_code) VALUES (".$v.", '".$bbscode_code."');";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function listBbsAll()
+		{
+			$query = "SELECT * FROM bbs_code ORDER BY bbscode_idx DESC";
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[]=$recordSet;
+			}
+
+			return $list;
+		}
+
+		function listPdsAll()
+		{
+			$query = "SELECT * FROM bbs_code WHERE bbscode_code LIKE '%".PDS."%' ORDER BY bbscode_idx DESC";
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[]=$recordSet;
+			}
+
+			return $list;
+		}
+
+		function listBbs()
+		{
+			global $PAGE;
+
+			if(!$PAGE)
+				$PAGE=1;
+
+			$this->PAGE=$PAGE;
+			$GET_RECORD=20;
+			$START_RECORD=($this->PAGE-1) * 20;
+
+			$query = "SELECT * FROM bbs_code ORDER BY bbscode_idx DESC LIMIT ".$START_RECORD.", ".$GET_RECORD."";
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$list[]=$recordSet;
+			}
+
+			return $list;
+		}
+
+		function Erase($data)
+		{
+
+			if(!isset($data) || !is_array($data))
+				return false;
+
+			$idx = implode(",", $data);
+
+			$query = "DELETE FROM bbs_code WHERE bbscode_idx IN (".$idx.");";
+			$result = $this->db->ExecuteDML($query);
+
+			return $result;
+		}
+
+		function View($idx)
+		{
+			if(!$idx || is_int($idx))
+				return false;
+
+			$query = "SELECT * FROM bbs_code WHERE bbscode_idx=".$idx;
+			$result = $this->db->ExecuteDML($query);
+
+			while($recordSet = $this->db->FetchArray($result))
+			{
+				$info[] = $recordSet;
+			}
+
+			return $info;
+		}
+
+		function Modify($data)
+		{
+			if(!isset($data) || !is_array($data))
+				return false;
+		
+
+			while(list($key, $value) = each($data))
+			{
+				if($key == "bbscode_idx")
+					continue;
+
+				$field[]= "".$key." = '".$value."'";
+			}
+
+			$f = implode(",", $field);
+
+			$query = "UPDATE bbs_code SET ".$f." WHERE bbscode_idx=".$data["bbscode_idx"];
+
+			$result = $this->db->ExecuteDML($query);
+			return $result;
+		}
+
+		function getAccount($bbscode_idx)
+		{
+			if(!$bbscode_idx)
+				return false;
+
+			$query = "SELECT bbscode_id, bbscode_passwd FROM bbs_code WHERE bbscode_idx=".$bbscode_idx."";
+			$result = $this->db->ExecuteDML($query);
+
+			$account["bbscode_id"] = $this->db->getResult($result, 0, 0);
+			$account["bbscode_passwd"]= $this->db->getResult($result, 0, 1);
+
+			$this->db->freeResult($result);
+	
+			return $account;
+		}
+
+		function getTotalCount()
+		{
+			$query = "SELECT count(*) FROM bbs_code";
+			$result = $this->db->ExecuteDML($query);
+
+			$total_count = $this->db->getResult($result, 0, 0);
+
+			$this->db->freeResult($result);
+
+			return $total_count;
+		}
+
+		function getTotalCountByCode($bbscode_code)
+		{
+			if(!$bbscode_code)
+				return false;
+
+			$query="SELECT count(*) FROM bbs WHERE bbscode_code='".$bbscode_code."'";
+			$result=$this->db->ExecuteDML($query);
+
+			return $this->db->getResult($result, 0, 0);
+		}
+
+		function getTotalBBS()
+		{
+			$query="SELECT * FROM bbs_code ORDER BY bbscode_idx DESC";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getDistinctSite()
+		{
+			$query="SELECT distinct(site_code) FROM bbs_code";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function getBbsBySite($site)
+		{
+			if(!$site)
+				return false;
+
+			$query="SELECT * FROM bbs_code WHERE site_code='".$site."'";
+			$result=$this->db->ExecuteDML($query);
+
+			while($resultSet=$this->db->FetchArray($result))
+			{
+				$recordSet[]=$resultSet;
+			}
+
+			return $recordSet;
+		}
+
+		function _CBbscode($inst)
+		{
+			$this->db->_CDatabase();
+			unset($inst);
+		}
+	}
+?>

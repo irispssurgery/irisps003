@@ -1,0 +1,284 @@
+<?
+ob_start(); 
+session_start(); 
+ 
+extract($HTTP_GET_VARS); 
+extract($HTTP_POST_VARS); 
+extract($HTTP_SESSION_VARS); 
+ 
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+ 
+include "../../auth_admin.php3";
+
+$inst->Connect(); 
+?>
+<html>
+<head>
+<title><?echo $head_title;?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+<script language='javascript'>
+<!--
+	function checkput(form) {
+         
+		if (form.group.value == '') {
+			alert('그룹을 선택하세요');
+			form.group.focus();
+			return false;
+		}
+		else if (form.title.value == '') {
+			alert('제목을 입력하세요');
+			form.title.focus();
+			return false;
+		}
+		else if (form.homepage.value == '') {
+			alert('홈페이지를 입력하세요');
+			form.homepage.focus();
+			return false;
+		}
+		form.submit();
+	}
+
+	function imgview()
+	{
+		img_pre = 'pre';
+		if(event.srcElement.value.match(/(.jpg|.jpeg|.gif|.png)/)) {
+		    document.images[img_pre].src = event.srcElement.value;
+		    document.images[img_pre].style.display = '';
+		} else {
+			document.images[img_pre].style.display = 'none';
+		}
+	}
+//-->
+</script>
+</head>
+
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0">
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+<? include "../../admin_top.htm"; ?>
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='../../image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 운영관리 &gt; 배너관리</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" height="400" valign="top">
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="../image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+<!-- left menu -------------------------------------------------------------------------------------->
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                             <?
+								include "../manage_menu.htm";
+							 ?>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+<!-- left menu -------------------------------------------------------------------------------------->
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:30px">
+                  <table width="97%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td><img src="../../image/bar07.gif"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td>
+<!-- Start ------------------------------------------------------------------------------------------>
+ <?
+$db_table="main_coolsite";
+
+$query="select * from $db_table where no='$no'";
+$row=$inst->ExecFetch($query);
+
+if ($row){
+	$title=$row[title];
+	$homepage=$row[homepage];
+	$banner=$row[banner];
+	$date1=$row[date1];
+	$show=$row[show];
+	$seq      = $row[seq];
+}
+
+$db_table1="main_coolsite_group";
+
+$query="select * from $db_table1 where no='$group_id'";
+$row=$inst->ExecFetch($query);
+
+if ($row){
+	$title_g=$row[title];
+}
+?>
+							  <table width="100%" border="0">
+								<form name='form' method='post' action='sub_modify_ok.php3' ENCTYPE='multipart/form-data'>
+								<input type='hidden' name='group_id' value='<?=$group_id?>'>
+								<input type='hidden' name='no' value='<?=$no?>'>
+								<tr> 
+								  <td> 
+									<table width="100%" align="center" cellpadding="0" cellspacing="0" border="1" bordercolor="#E0E0E0" style="border-collapse:collapse;" class="defstyle">
+									  <tr> 
+									    <td height="30" align="center"> 
+										<b><font color='blue'>[ <? echo $title_g; ?> 그 룹 ]</font> 배 너 설 정</b></td>
+									  </tr>
+									</table>
+								  </td>
+								</tr>
+								<tr> 
+								  <td> 
+									 <table width="100%" align="center" cellpadding="0" cellspacing="0" border="1" bordercolor="#E0E0E0" style="border-collapse:collapse;" class="defstyle">
+									  <tr> 
+										<td width="100" align="center" height="30" ><b>그룹</b></td>
+										<td style="padding-left:5px"> 
+											<select name="group">
+											<?
+												$query="select no,title,date1 from main_coolsite_group";
+												$result=$inst->Execute($query);
+												while($row=$inst->ExecFetchArray($result)){
+													$no_o=$row[no];
+													$title_o=$row[title];
+													if ($group_id==$no_o){
+														 echo ("<option value='$no_o' selected>$title_o</option>");
+													}else{
+														 echo ("<option value='$no_o'>$title_o</option>");
+													
+													}
+											
+												}
+											
+											?>
+											</select>
+										</td>
+									  </tr>
+									  <tr> 
+										<td align="center" height="30" bgcolor="F8F8F8"><b>제목</b></td>
+										<td style="padding-left:5px" bgcolor="F8F8F8"> 
+										  <input type='text' name='title' value='<?=$title;?>' size=50 class=form1>
+										</td>
+									  </tr>
+									  <tr> 
+										<td align="center" height="30"><b>홈페이지</b></td>
+										<td  style="padding-left:5px"> 
+										  <input type='text' name='homepage' value='<?=$homepage;?>' size=50 class=form1>
+										</td>
+									  </tr>
+									  <tr> 
+										<td align="center" height="30" bgcolor="F8F8F8"><b>SEQ</b></td>
+										<td  style="padding-left:5px" bgcolor="F8F8F8"> 
+										  <input type='text' name='seq' value='<?=$seq;?>' size=5 class=form1>
+										</td>
+									  </tr>
+									  <tr> 
+										<td align="center" height="60"><b>첨부파일</b></td>
+										<td style="padding-left:5px"> 
+										  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+											<tr> 
+											  <td> 
+												<input type='file' name='banner' size='50' style='font-size:09pt; background-color:#FFFFFF;  height:20' class="form1" onChange='imgview()'>
+												<input type='hidden' name='MAX_FILE_SIZE' value='찾아보기...' style='font-size:09pt; background-color:#ffffff; border:1 solid black; height:20'>
+											  </td>
+											</tr>
+										  </table>
+										</td>
+									  </tr>
+									  <tr> 
+										<td align="center" height="30" bgcolor="F8F8F8"><b></b></td>
+										<td  style="padding-left:5px" bgcolor="F8F8F8"> 
+											&nbsp;<font color=green>♤</font> 배너 이미지 미리보기 <font color=green>♤</font>&nbsp;[ 이미지 사이즈 : 15 X 33 ]<br>
+											&nbsp;<img id='pre' style='display:none;' border='0'>
+										</td>
+									  </tr>
+									</table>
+								  </td>
+								</tr>
+								<tr> 
+								  <td height="40" align="center"><input type='button' name='submit1' value=' 수정하자 ' style='font-size:09pt; background-color:#FFFFFF; border:1 solid black; height:20' onClick='checkput(this.form)' id=button1>
+									<input type='button' name='button' value=' 뒤로가기 ' onclick='history.go(-1);' style='font-size:09pt; background-color:#FFFFFF; border:1 solid black; height:20'></td>
+								</tr>
+								</form>
+							  </table>
+<!-- End -------------------------------------------------------------------------------------------->
+                            </td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<? $inst->Disconnect(); ?>

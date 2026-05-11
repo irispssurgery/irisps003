@@ -1,0 +1,562 @@
+<?
+ob_start(); 
+session_start(); 
+ 
+extract($HTTP_GET_VARS); 
+extract($HTTP_POST_VARS); 
+extract($HTTP_SESSION_VARS); 
+ 
+include "../../../config/dbconn.php3"; 
+include "../../../config/function.php3"; 
+
+include "../../auth_admin.php3";
+
+$inst->Connect(); 
+
+$table="km_menu";
+
+if ($action == 'save')
+{
+	$page_access = implode($_POST["page_access"], ",");
+	
+	if ($page_type == 'html') $db='';
+
+	$update_qry  = " update $table set ". 
+			    "  use_chk        = '$use_chk' ". 
+				" , page_access   = '$page_access' ". 
+				" , page_type     = '$page_type' ". 
+				" , boardname     = '$db' ". 
+				" , sub_list_type = '$sub_list_type' ". 
+				" , site_header   = '$site_header' ". 
+				" , site_footer   = '$site_footer' ". 
+		        " where flag='$flag' and seq=$seq and depth=($depth-1)"; 
+	$inst->Execute($update_qry);  
+
+	getLink($PHP_SELF."?flag=".$flag."&seq=".$seq."&depth=".$depth."&pwd=".$pwd."&file=".$file,"메뉴 설정이 저장되었습니다.        ",$history);
+}
+
+$query="select * from $table where flag='$flag' and seq=$seq and depth=($depth-1)";
+
+$row=$inst->ExecFetch($query);
+if ($row)
+{
+	$menu_name=$row[menu_name]; 
+	$menu_dir=$row[menu_dir]; 
+	$menu_file=$row[menu_file]; 
+	$use_chk=$row[use_chk]; 
+	$page_type=$row[page_type]; 
+	$boardname=$row[boardname]; 
+}
+
+//$pwd="../../../intro/sub01/";
+$pwd="../../../".$menu_dir;
+$file=$menu_file;
+$preview="http://".getenv("SERVER_NAME")."/".$menu_dir."sub_page.htm?page_idx=".$row[seq];
+
+if ($action == 'edit')
+{
+	$fp = fopen($pwd.$file , "w");
+	fwrite($fp, stripslashes(str_replace("\r\n", "\n", $content)));
+	fclose($fp);
+
+	@chmod($pwd.$file , 0707);
+
+	getLink($PHP_SELF."?flag=".$flag."&seq=".$seq."&depth=".$depth."&pwd=".$pwd."&file=".$file,"HTML 내용이 저장되었습니다.        ",$history);
+}
+if ($action == 'file_delete')
+{
+	@unlink($pwd.$file);
+	getLink($PHP_SELF,$alert,$history);
+}
+if ($action == 'filemake')
+{
+	$savefile  = $pwd.$filename.'.php';
+	
+	if (is_file($savefile))
+	getLink("","이미 존재하는 파일입니다.        ",-1);
+
+	$fp = fopen($savefile , "w");
+	fclose($fp);
+
+	@chmod($savefile , 0707);
+	
+	getLink($PHP_SELF."?pwd=".$pwd."&file=".$filename.'.php',$alert,$history);
+}
+?>
+<html>
+<head>
+<title><?=$head_title;?></title>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<link rel="stylesheet" href="../../css/css.css" type="text/css">
+<script type="text/javascript" src="/js/util.js"></script>
+<script language="JavaScript" src="/easy_editor/easyEditor.js"></script>
+<script>
+
+function listView() {
+	var f = document.theForm;
+	if( f.list_type[0].checked ) {
+		document.all.list_view[0].style.display="none"; 
+		document.all.list_view[1].style.display="none"; 
+		document.all.list_view[2].style.display="none"; 
+		document.all.list_view[3].style.display="none"; 
+	} else if( f.list_type[1].checked ) {
+		document.all.list_view[0].style.display=""; 
+		document.all.list_view[1].style.display=""; 
+		document.all.list_view[2].style.display="none"; 
+		document.all.list_view[3].style.display="none"; 
+	} else if( f.list_type[2].checked ) {
+		document.all.list_view[0].style.display=""; 
+		document.all.list_view[1].style.display=""; 
+		document.all.list_view[2].style.display=""; 
+		document.all.list_view[3].style.display=""; 
+	}
+}
+
+function sublistView() {
+	var f = document.theForm;
+	if( f.sub_list_type[0].checked ) {
+		document.all.sub_list_view[0].style.display="none"; 
+		document.all.sub_list_view[1].style.display="none"; 
+		document.all.sub_list_view[2].style.display="none"; 
+		document.all.sub_list_view[3].style.display="none"; 
+	} else if( f.sub_list_type[1].checked ) {
+		document.all.sub_list_view[0].style.display=""; 
+		document.all.sub_list_view[1].style.display=""; 
+		document.all.sub_list_view[2].style.display="none"; 
+		document.all.sub_list_view[3].style.display="none"; 
+	} else if( f.sub_list_type[2].checked ) {
+		document.all.sub_list_view[0].style.display=""; 
+		document.all.sub_list_view[1].style.display=""; 
+		document.all.sub_list_view[2].style.display=""; 
+		document.all.sub_list_view[3].style.display=""; 
+	}
+}
+
+function toggle(value){
+	if(value=='1') tr1.style.display = '';
+	else tr1.style.display = 'none';
+
+	if(value=='2') tr2.style.display = '';
+	else tr2.style.display = 'none';
+
+	if(value=='3') tr3.style.display = '';
+	else tr3.style.display = 'none';
+}
+
+var bRemberIndex = 0;
+
+function OnSelect() {
+	var f = document.theForm;
+
+	if ( f.page_type.selectedIndex == 0 || f.page_type.value == "" ) {
+		if ( bRemberIndex ) {
+			f.db.value = "";
+		}
+		toggle(2);
+		//f.db.focus();
+		f.page_type.selectedIndex = 0;
+	} else if ( f.page_type.selectedIndex == 1 || f.page_type.value == "" ) {
+		if ( bRemberIndex ) {
+			f.db.value = "";
+		}
+		toggle(3);
+		f.db.focus();
+		f.page_type.selectedIndex = 1;
+	} else {
+		bRemberIndex = 1;
+		f.db.value = f.page_type.value;
+		toggle(1);
+	}
+}
+</script>
+</head>
+<body bgcolor="#165E90" text="#000000" leftmargin="0" topmargin="0" <? if ($page_type=="board"){ ?> onload="OnSelect();" <? } ?>>
+<table width="1000" border="0" cellspacing="0" cellpadding="0" align="center">
+<!-- admin menu ----------------------------------------------------------------------------------->
+
+<? include "../../admin_top.htm"; ?>
+
+<!-- admin menu ----------------------------------------------------------------------------------->
+  <tr> 
+    <td background="../../image/top_bg2.gif" height="30"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr> 
+          <td width="7"><img src="../../image/top_left.gif" width="7" height="30"></td>
+          <td> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr> 
+                <td width="220">&nbsp;</td>
+                <td><img src='../../image/dot.gif' width='4' height='4' border='0' absmiddle='0' vspace='3' > 
+                  홈 &gt; 메뉴관리</td>
+                <td width="360" valign="top">&nbsp;</td>
+              </tr>
+            </table>
+          </td>
+          <td width="7"><img src="../../image/top_right2.gif" width="7" height="30"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+        <tr> 
+          <td background="../../image/top_left.gif" width="7"></td>
+          <td bgcolor="#FFFFFF" valign="top" style="padding-top:10px"> 
+            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td width="200" valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td align="center"><img src="image/left_title.gif" width="180" height="70"></td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td align="center"> 
+                        <table border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="../../image/left_menu_top.gif" width="182" height="5"></td>
+                          </tr>
+                          <tr> 
+                            <td background="../../image/left_menu_bg.gif" align="center" style="padding-top:5px; padding-bottom:5px"> 
+                              <table width="90%" border="0" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td style="padding-top:10px; padding-bottom:10px" background="../../image/left_bg.gif"> 
+                                    <!-- 왠쪽 메뉴 시작-->
+                             <?
+								include "./menu_left.htm";
+							 ?>
+
+                                    <!-- 왠쪽 메뉴 끝-->
+                                  </td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td><img src="../../image/left_menu_bottom.gif" width="182" height="5"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td align="center">&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+                <td width="1" bgcolor="#E9E9E9"></td>
+                <td valign="top" style="padding-left:20px">
+                  <table width="750" border="0" cellspacing="0" cellpadding="0">
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr> 
+                            <td><img src="image/title01.jpg" width="300" height="25"></td>
+                          </tr>
+                          <tr> 
+                            <td bgcolor="#D4D4D4" height="1"></td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                   <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr> 
+                      <td> 
+                        <table width="750" border="0" cellspacing="0" cellpadding="0">
+						<form name="theForm" action='<?=$PHP_SELF?>' method='post' onsubmit="return saveCheck(this)">
+						<input type="hidden" name=action value="save">
+						<input type="hidden" name="pwd" value='<?=$pwd?>'>
+						<input type="hidden" name="flag" value='<?=$flag?>'>
+						<input type="hidden" name="seq" value='<?=$seq?>'>
+						<input type="hidden" name="depth" value='<?=$depth?>'>					
+                          <tr> 
+                            <td> 
+                              <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td  height="3" bgcolor="425EA0"></td>
+                                </tr>
+                                <tr> 
+                                  <td bgcolor="f7f7f7" height="25"> 
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                      <tr> 
+                                        <td width="107" align="center"><b><font color="#000000">분류</font></b></td>
+                                        <td width="1" bgcolor="#999999"></td>
+                                        <td align="center"><b><font color="#000000">내용</font></b></td>
+                                      </tr>
+                                    </table>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td height="1" bgcolor="dadada"></td>
+                                </tr>
+                                <tr> 
+                                  <td height="2" bgcolor="#E9E9E9"></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr> 
+                            <td> 
+                              <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                                <tr> 
+                                  <td width="100" align="center" height="25" ><b><font color="#000000">메뉴명</font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td width="263" style="padding-left:5px"><?=$menu_name?></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td width="110" align="center" height="25"><b><font color="#000000">사용여부</font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td width="264" style="padding-left:5px"> 
+                                    <input name="use_chk" type="radio" value="yes" <?=Convert_radio_select("radio",$use_chk,"yes")?>>예&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<input name="use_chk" type="radio" value="no" <?=Convert_radio_select("radio",$use_chk,"no")?>>아니오
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="../../image/table_line_b.gif"></td>
+                                </tr>
+                                <tr> 
+                                  <td width="110" align="center" height="25" bgcolor="F8F8F8"><b><font color="#000000">URL</font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td width="" style="padding-left:5px" bgcolor="F8F8F8" colspan="5"><?=$preview?><a href="<?=$preview?>" target="_blank">[미리보기]</a></td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="../../image/table_line_b.gif"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="25"><b><font color="#000000">접근권한</font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px" colspan="5"> 
+								<?
+									$query="select * from grouptb ORDER BY idx";
+									$result=$inst->Execute($query);
+									while($row=$inst->ExecFetchArray($result)){
+										$idx     = $row[idx];
+										$code    = $row[code];
+										$group_name    = $row[group_name];
+										$group_nick    = $row[group_nick];
+
+										$str_selected = Convert_radio_select("radio",$code,"1");
+								?>
+										<input type='checkbox' name='page_access[]' value='<?=$code?>' onfocus='this.blur()' <?=$str_selected?> ><?=$group_name?>&nbsp;&nbsp;&nbsp;
+								<?	
+									}
+								?>                                    
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="../../image/table_line_b.gif"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="25" bgcolor="F8F8F8"><b><font color="#000000">페이지 유형</font></b></td>
+                                  <td bgcolor="#DFDFDF"></td>
+                                  <td width="200" style="padding-left:5px" bgcolor="F8F8F8"> 
+                                    <select name="page_type" id="page_type" style="width:210px" onChange='javascript:OnSelect();'>
+									<option value="html" <? If ($page_type=="html"){?> SELECTED <?}?>>html 페이지</option>
+									<option value="board" <? If ($page_type=="board"){?> SELECTED <?}?>>게시판</option>
+									<option value="history" <? If ($page_type=="history"){?> SELECTED <?}?>>연혁</option>
+									<option value="sulmoon" <? If ($page_type=="sulmoon"){?> SELECTED <?}?>>설문조사</option>
+									<option value="member_join" <? If ($page_type=="member_join"){?> SELECTED <?}?>>회원가입</option>
+									<option value="member_login" <? If ($page_type=="member_login"){?> SELECTED <?}?>>회원로그인</option>
+									<option value="member_info" <? If ($page_type=="member_info"){?> SELECTED <?}?>>회원정보수정</option>
+									<option value="link" <? If ($page_type=="link"){?> SELECTED <?}?>>링크</option>
+									</select>&nbsp;<font color="#2267a2"></font>
+                                  </td>
+								  <td colspan="5" bgcolor="F8F8F8">
+									<table id='tr1' style='DISPLAY: none' border='0' cellspacing='0' cellpadding='0'>
+									  <tr>
+										<td>
+										</td>
+									  </tr>
+									</table>
+									<table id='tr2' border='0' cellspacing='0' cellpadding='0'>
+									  <tr>
+									    <td width="1" bgcolor="#DFDFDF"></td>
+									    <td width="108" align="center" height="25"><b><font color="#000000">HTML 편집</font></b></td>
+									    <td width="1" bgcolor="#DFDFDF"></td>
+										<td width="" style="padding-left:5px">
+										<? if ($menu_file) { ?>
+											<?=$menu_file?> <IMG alt=사용 src="../../image/part_edit.gif" align=absMiddle border=0>
+										<? }else{ ?>
+											<input type="text" name="menu_file" id="menu_file" style="width:210; height:18; padding:2; border:1 solid #AFAFAF;background-color:CFD2F6">
+										<? } ?>
+										</td>
+									  </tr>
+									</table>
+									<table id='tr3' style='DISPLAY: none' border='0' cellspacing='0' cellpadding='0'>
+									  <tr>
+									    <td width="1" bgcolor="#DFDFDF"></td>
+									    <td width="108" align="center" height="25"><b><font color="#000000">게시판 선택</font></b></td>
+									    <td width="1" bgcolor="#DFDFDF"></td>
+										<td width="" style="padding-left:5px">
+										  <select name="db" id="site_footer" style="width:210; height:18; padding:2; border:1 solid #AFAFAF;background-color:CFD2F6">
+									<?
+										$query="select * from main_board_cfg ORDER BY boardname ASC";
+										$result=$inst->Execute($query);
+										while($row=$inst->ExecFetchArray($result)){
+											$db            = $row[db];
+											$boardname1     = $row[boardname];
+											$str_selected = Convert_radio_select("selected",$boardname,"$db");
+									?>
+											<option value="<?=$db?>" <?=$str_selected?>><?=$boardname1?></option>
+									<?
+										}
+									?>
+										  </select>
+										</td>
+									  </tr>
+									</table>
+								  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="../../image/table_line_b.gif"></td>
+                                </tr>
+                                <tr> 
+                                  <td width="100" align="center" height="25" ><b><font color="#000000">사이트 헤더</font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px">
+                                    <select name="site_header" id="site_header" style="width:210px">
+									<option value="main_header.htm">main_header.htm</option>
+									<option value="sub_header.htm" selected>sub_header.htm</option>
+									</select>&nbsp;<font color="#2267a2"></font>								  
+								  </td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td width="110" align="center" height="25"><b><font color="#000000">사이트 푸터</font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td width="264" style="padding-left:5px"> 
+                                    <select name="site_footer" id="site_footer" style="width:210px">
+									<option value="main_fotter.htm">main_fotter.htm</option>
+									<option value="sub_fotter.htm" selected>sub_fotter.htm</option>
+									</select>&nbsp;<font color="#2267a2"></font>
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="../../image/table_line_b.gif"></td>
+                                </tr>
+                                <tr> 
+                                  <td width="110" align="center" height="25" bgcolor="F8F8F8"><b><font color="#000000">좌측 메뉴</font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td width="" style="padding-left:5px" bgcolor="F8F8F8" colspan="5">
+									<input type="radio" name="sub_list_type" value="1" onclick="javascript:sublistView();" checked>&nbsp;TEXT 출력&nbsp;&nbsp;<input type="radio" name="sub_list_type" value="2" onclick="javascript:sublistView();" >&nbsp;IMAGE 출력&nbsp;&nbsp;<input type="radio" name="sub_list_type" value="3" onclick="javascript:sublistView();" >&nbsp;이미지 롤오버 출력&nbsp;&nbsp;<input type="radio" name="sub_list_type" value="4" onclick="javascript:sublistView();" >&nbsp;플래쉬 출력
+								  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="../../image/table_line_b.gif"></td>
+                                </tr>
+                                <tr id="sub_list_view" style="display:none;"> 
+                                  <td width="110" align="center"><b><font color="#000000">메뉴 이미지1</font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td width="" style="padding-left:5px" height="25" colspan="5"><input name="top_list_img1" type="file" class="box_c" size="50">&nbsp;&nbsp;(마우스 OUT 이미지)</a></td>
+                                </tr>
+                                <tr> 
+                                  <td id="sub_list_view" colspan="7" height="2" background="../../image/table_line_b.gif"></td>
+                                </tr>
+                                <tr id="sub_list_view" style="display:none;"> 
+                                  <td width="110" align="center"><b><font color="#000000">메뉴 이미지2</font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td width="" style="padding-left:5px" height="25" colspan="5"><input name="top_list_img1" type="file" class="box_c" size="50">&nbsp;&nbsp;(마우스 OVER 이미지)</a></td>
+                                </tr>
+                                <tr id="sub_list_view" style="display:none;"> 
+                                  <td colspan="7" height="2" background="../../image/table_line_b.gif"></td>
+                                </tr>
+                                <tr> 
+                                  <td align="center" height="25"><b><font color="#000000">설정 값 복사</font></b></td>
+                                  <td width="1" bgcolor="#DFDFDF"></td>
+                                  <td style="padding-left:5px" colspan="5"> 
+									<input type='checkbox' name='copy_cfg' value='1' onfocus='this.blur()'> <font color="#CE7272">[선택시 같은 레벨의 메뉴에 설정값 복사]</font>                                  
+                                  </td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" background="../../image/table_line_b.gif"></td>
+                                </tr>
+                                <tr> 
+                                  <td colspan="7" height="2" bgcolor="#B3C6D2"></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr align="center"> 
+                            <td height="40"><input alt="저장보기" name="send" type="image" src="../../image/bt_complete.gif" width="62" height="21"><a href="menu_list.htm"><img alt="목록보기" src="../../image/bt_list.gif" width="62" height="21" border="0"></a></td>
+                          </tr>
+						  </form>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr> 
+                      <td align="center">
+			<?
+				if ($page_type=="html"){
+			?>
+
+					    <table width="750" border="0" cellspacing="0" cellpadding="0">
+						<form action='<?=$PHP_SELF?>' method='post' onsubmit="return saveCheck(this)">
+						<input type="hidden" name=action value="edit">
+						<input type="hidden" name="pwd" value='<?=$pwd?>'>
+						<input type="hidden" name="flag" value='<?=$flag?>'>
+						<input type="hidden" name="seq" value='<?=$seq?>'>
+						<input type="hidden" name="depth" value='<?=$depth?>'>
+                          <tr>
+							<td height=23 align=center width='750'>
+								<? include "/home/webroin/public_html/fckeditor/fckeditor.php"; ?>
+								<?
+									if ($pwd && $file)
+									{
+										$fileo = file($pwd.$file);
+										$rows  = sizeof($fileo) * 19;
+										$rows  = $rows < 400 ? 400 : $rows;
+										$content  = implode('',$fileo);
+									}
+
+									$oFCKeditor = new FCKeditor('content');          // textarea name
+									$oFCKeditor->BasePath = '../../../fckeditor/'; // 설치한 폴더 지정
+									$oFCKeditor->Value      = $content ; // 로딩시 출력
+									$oFCKeditor->Width      = 750;      // width
+									$oFCKeditor->Height     = 500;      // height
+									$oFCKeditor->Create();
+								?>
+							</td>
+						  </tr>
+                          <tr align="center"> 
+                            <td height="40"><input alt="HTML 편집하기" name="send" type="image" src="../../image/bt_edit.gif" width="62" height="21"></td>
+                          </tr>
+						  </form>
+						</table> 
+			<?
+				}
+			?>
+					  </td>
+                    </tr>
+                    <tr> 
+                      <td>&nbsp;</td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+          <td bgcolor="#FFFFFF" background="../../image/top_right2.gif" width="7"></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+<? include "../../admin_bottom.htm"; ?>
+<!-- admin bottom ----------------------------------------------------------------------------------->
+  <tr>
+    <td height="5"></td>
+  </tr>
+</table>
+</body>
+</html>
+<script language="JavaScript" type="text/JavaScript">
+sublistView();
+</script>
+<? $inst->Disconnect(); ?>
